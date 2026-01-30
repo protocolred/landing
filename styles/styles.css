@@ -499,7 +499,7 @@ img {
   padding: 4px;
 }
 
-#block-app {
+.desktop > #list > #block-app {
   align-items: center;
   text-align: center;
   gap: 16px;
