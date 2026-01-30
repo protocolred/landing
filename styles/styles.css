@@ -245,6 +245,22 @@ img {
   position: relative;
 }
 
+.horizon-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.horizon-bg svg {
+  width: 100%;
+  height: 100%;
+}
+
 .block-text {
   position: absolute;
   top: 0;
@@ -499,30 +515,51 @@ img {
   padding: 4px;
 }
 
-.desktop > #list > #block-app {
+.desktop > #list > #app {
   align-items: center;
   text-align: center;
   gap: 16px;
+  min-width: 800px;
+  max-width: 100%;
+  cursor: pointer;
 }
 
-#block-app .app-hero {
+#app .app-hero {
   font-size: var(--font-big);
   font-weight: 600;
   letter-spacing: 3px;
+  cursor: pointer;
 }
 
-#block-app .app-sub {
+#app .app-sub {
   opacity: 0.8;
-  max-width: 720px;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   line-height: 1.5;
+  cursor: pointer;
 }
 
-#block-app .app-sub p {
+#app .app-sub p {
   margin: 0;
+  min-width: 400px;
 }
 
-#block-app .app-sub p + p {
+#app .app-sub p + p {
   margin-top: 10px;
+}
+
+#app .app-sub p:nth-child(1) {
+  min-width: 800px;
+}
+
+#app .app-sub p:nth-child(2) {
+  min-width: 600px;
+}
+
+#app .app-sub p:nth-child(3) {
+  min-width: 400px;
 }
 
 .footer {
@@ -542,6 +579,14 @@ img {
     height: auto;
     min-height: 100dvh;
     padding: 120px 0 140px;
+  }
+
+  .desktop > #list > #app {
+    min-width: 0;
+  }
+
+  #app .app-sub p {
+    min-width: 0;
   }
 
   .main-text {

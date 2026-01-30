@@ -17,21 +17,18 @@
     <div class="desktop">
         <header class="header">
             <button class="logo logo-button" type="button">RED</button>
-            <a href="#block-main">ABOUT</a>
-            <a href="#block-create">DEMO</a>
-            <a href="#block-app">APP</a>
+            <a href="#" data-target="block-main">ABOUT</a>
+            <a href="#demo" data-target="demo">DEMO</a>
+            <a href="#app" data-target="app">APP</a>
         </header>
 
         <div id="list">
-            <section class="block" id="block-main">
-                <div class="parallax">
-                    <img class="parallax-1" src="images/parallax/landing-background-small-0.png" alt="">
-                    <img class="parallax-2" src="images/parallax/landing-background-small-1.png" alt="">
-                    <img class="parallax-3" src="images/parallax/landing-background-small-2.png" alt="">
-                    <img class="parallax-4" src="images/parallax/landing-background-small-3.png" alt="">
-                    <div class="background-gradient"></div>
-                </div>
-                <div class="block-text">
+	            <section class="block" id="block-main">
+	                <div class="horizon-bg" id="horizon-bg" aria-hidden="true"></div>
+	                <div class="parallax">
+	                    <div class="background-gradient"></div>
+	                </div>
+	                <div class="block-text">
                     <div class="main-text" id="protocol-text">
                         <div class="main-text-row" data-text="PROTOCOL">
                             <div class="glitch-letter">P</div>
@@ -67,7 +64,7 @@
                 </div>
             </section>
 
-            <section class="block block-create" id="block-create">
+            <section class="block block-create" id="demo">
                 <div class="block-create-copy">
                     <div class="protocol-lines">
                         <div class="protocol-line">This is a protocol, not a game</div>
@@ -100,7 +97,7 @@
 <!--                </div>-->
             </section>
 
-            <section class="block" id="block-app">
+            <section class="block" id="app">
                 <div class="app-hero" id="bottom-hero"></div>
                 <div class="app-sub" id="bottom-sub"></div>
 
@@ -123,11 +120,13 @@
         <!--<footer class="footer">Made for the App — quiet, private, connected.</footer>-->
     </div>
 </div>
-<script>
-    (function () {
-        const letters = document.querySelectorAll('.glitch-letter')
-        const protocolText = document.getElementById('protocol-text')
-        const characters = '2470ABCDEFGHIJKLNOPQRSTUVXYZ'
+	<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" defer></script>
+	<script src="scripts/horizon-bg.js" defer></script>
+	<script>
+	    (function () {
+	        const letters = document.querySelectorAll('.glitch-letter')
+	        const protocolText = document.getElementById('protocol-text')
+	        const characters = '2470ABCDEFGHIJKLNOPQRSTUVXYZ'
 
         const runTextEffect = () => {
             let tick = 0
@@ -161,14 +160,14 @@
             protocolText.addEventListener('click', runTextEffect)
         }
 
-        const headerLinks = Array.from(document.querySelectorAll('.header a[href^="#"]'))
+        const headerLinks = Array.from(document.querySelectorAll('.header a[data-target]'))
         const sections = headerLinks
-            .map(link => document.querySelector(link.getAttribute('href')))
+            .map(link => document.getElementById(link.getAttribute('data-target')))
             .filter(Boolean)
 
         const setActive = (id) => {
             headerLinks.forEach(link => {
-                const isActive = link.getAttribute('href') === `#${id}`
+                const isActive = link.getAttribute('data-target') === id
                 link.classList.toggle('active', isActive)
             })
         }
@@ -188,6 +187,11 @@
 
         const initActive = () => {
             const hashId = window.location.hash?.replace('#', '')
+            if (hashId === 'block-main') {
+                history.replaceState(null, '', window.location.pathname + window.location.search)
+                setActive('block-main')
+                return
+            }
             if (hashId) {
                 setActive(hashId)
                 return
@@ -199,6 +203,24 @@
 
         requestAnimationFrame(initActive)
         window.addEventListener('load', initActive)
+
+        headerLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                if (event.defaultPrevented) return
+                if (event.button !== 0) return
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+                const targetId = link.getAttribute('data-target')
+                if (!targetId) return
+                if (targetId !== 'block-main') return
+
+                event.preventDefault()
+                history.replaceState(null, '', window.location.pathname + window.location.search)
+                const el = document.getElementById(targetId)
+                if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'})
+                setActive(targetId)
+            })
+        })
 
         const storeMain = document.getElementById('store-main')
         const toggleStoreOnScroll = () => {
@@ -239,6 +261,81 @@
         const bottomHeroEl = document.getElementById('bottom-hero')
         const bottomSubEl = document.getElementById('bottom-sub')
 
+        const SCRAMBLE_CHARACTERS = '2470ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+[]{};:,.<>?'
+        const scrambleTokens = new WeakMap()
+
+        const getRandomChar = () => {
+            const randomIndex = Math.floor(Math.random() * SCRAMBLE_CHARACTERS.length)
+            return SCRAMBLE_CHARACTERS[randomIndex]
+        }
+
+        const animateScrambleText = (el, fromText, toText, durationMs = 500) => {
+            if (!el) return Promise.resolve()
+
+            const from = typeof fromText === 'string' ? fromText : String(fromText ?? '')
+            const to = typeof toText === 'string' ? toText : String(toText ?? '')
+            if (from === to) {
+                el.textContent = to
+                return Promise.resolve()
+            }
+
+            const token = (scrambleTokens.get(el) || 0) + 1
+            scrambleTokens.set(el, token)
+
+            const maxLen = Math.max(from.length, to.length)
+            const toPadded = to.padEnd(maxLen, ' ')
+
+            const order = Array.from({length: maxLen}, (_, i) => i)
+            for (let i = order.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[order[i], order[j]] = [order[j], order[i]]
+            }
+
+            const settledMask = Array.from({length: maxLen}, () => false)
+            let nextToSettle = 0
+            const start = performance.now()
+
+            return new Promise(resolve => {
+                const frame = (now) => {
+                    if (scrambleTokens.get(el) !== token) return resolve()
+
+                    const progress = Math.min(1, (now - start) / durationMs)
+                    const desiredSettled = Math.floor(progress * maxLen)
+                    while (nextToSettle < desiredSettled) {
+                        const idx = order[nextToSettle]
+                        settledMask[idx] = true
+                        nextToSettle++
+                    }
+
+                    let out = ''
+                    for (let i = 0; i < maxLen; i++) {
+                        const targetChar = toPadded[i]
+                        if (settledMask[i]) {
+                            out += targetChar
+                            continue
+                        }
+                        if (targetChar === ' ' || targetChar === '\n' || targetChar === '\t') {
+                            out += targetChar
+                            continue
+                        }
+                        out += getRandomChar()
+                    }
+
+                    el.textContent = out.replace(/\s+$/, '')
+
+                    if (progress < 1) {
+                        requestAnimationFrame(frame)
+                        return
+                    }
+
+                    el.textContent = to
+                    resolve()
+                }
+
+                requestAnimationFrame(frame)
+            })
+        }
+
         const renderParagraphs = (el, paragraphs) => {
             if (!el) return
             el.innerHTML = ''
@@ -264,20 +361,123 @@
             return items[Math.floor(Math.random() * items.length)]
         }
 
+        let bottomCopies = []
+        let currentBottomCopy = null
+        let bottomCopiesLoading = null
+
+        const fetchBottomCopies = async () => {
+            const response = await fetch('texts/bottom-block.variants.json', {cache: 'no-store'})
+            if (!response.ok) throw new Error(`Failed to load bottom variants: ${response.status}`)
+            const variants = await response.json()
+            return Object.values(variants).filter(v => v && typeof v === 'object')
+        }
+
+        const ensureBottomCopiesLoaded = async () => {
+            if (Array.isArray(bottomCopies) && bottomCopies.length > 0) return bottomCopies
+            if (bottomCopiesLoading) return bottomCopiesLoading
+
+            bottomCopiesLoading = fetchBottomCopies()
+                .then((copies) => {
+                    bottomCopies = copies
+                    return copies
+                })
+                .catch(() => {
+                    bottomCopies = []
+                    return bottomCopies
+                })
+                .finally(() => {
+                    bottomCopiesLoading = null
+                })
+
+            return bottomCopiesLoading
+        }
+
+        const pickNextBottomCopy = () => {
+            if (!Array.isArray(bottomCopies) || bottomCopies.length === 0) return null
+            if (bottomCopies.length === 1) return bottomCopies[0]
+
+            let next = getRandomItem(bottomCopies)
+            let guard = 0
+            while (next === currentBottomCopy && guard < 10) {
+                next = getRandomItem(bottomCopies)
+                guard++
+            }
+            return next
+        }
+
+        const transitionBottomBlockCopy = async (copy) => {
+            if (!copy || typeof copy !== 'object') return
+
+            const heroTo = typeof copy.hero === 'string' ? copy.hero : ''
+            const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : []
+
+            const heroFrom = bottomHeroEl?.textContent ?? ''
+            const jobs = []
+            if (bottomHeroEl) {
+                jobs.push(animateScrambleText(bottomHeroEl, heroFrom, heroTo, 500))
+            }
+
+            if (bottomSubEl) {
+                const existing = Array.from(bottomSubEl.querySelectorAll('p'))
+
+                while (existing.length < paragraphsTo.length) {
+                    const p = document.createElement('p')
+                    bottomSubEl.appendChild(p)
+                    existing.push(p)
+                }
+
+                for (let i = 0; i < existing.length; i++) {
+                    const el = existing[i]
+                    const from = el.textContent ?? ''
+                    const to = paragraphsTo[i] ?? ''
+                    jobs.push(
+                        animateScrambleText(el, from, to, 500).then(() => {
+                            if (i >= paragraphsTo.length) el.remove()
+                        })
+                    )
+                }
+            }
+
+            await Promise.all(jobs)
+            currentBottomCopy = copy
+        }
+
         const loadBottomBlockCopy = async () => {
             try {
-                const response = await fetch('texts/bottom-block.variants.json', {cache: 'no-store'})
-                if (!response.ok) throw new Error(`Failed to load bottom variants: ${response.status}`)
-                const variants = await response.json()
-                const copies = Object.values(variants).filter(v => v && typeof v === 'object')
-                const randomCopy = getRandomItem(copies)
-                if (randomCopy) applyBottomBlockCopy(randomCopy)
+                await ensureBottomCopiesLoaded()
+                const randomCopy = pickNextBottomCopy()
+                if (randomCopy) {
+                    currentBottomCopy = randomCopy
+                    applyBottomBlockCopy(randomCopy)
+                }
             } catch {
                 // Keep the HTML fallback.
             }
         }
 
 	        loadBottomBlockCopy()
+
+	        const bottomBlockEl = document.getElementById('app')
+	        const onBottomBlockActivate = (event) => {
+	            if (!bottomBlockEl) return
+	            if (event?.target?.closest?.('a')) return
+	            ensureBottomCopiesLoaded().then(() => {
+	                const next = pickNextBottomCopy()
+	                if (!next) return
+	                transitionBottomBlockCopy(next)
+	            })
+	        }
+
+	        if (bottomBlockEl) {
+	            bottomBlockEl.addEventListener('click', onBottomBlockActivate)
+	            bottomBlockEl.addEventListener('keydown', (event) => {
+	                if (event.key !== 'Enter' && event.key !== ' ') return
+	                if (event.target?.closest?.('a')) return
+	                event.preventDefault()
+	                onBottomBlockActivate(event)
+	            })
+	            if (!bottomBlockEl.hasAttribute('tabindex')) bottomBlockEl.tabIndex = 0
+	        }
 
 	        const redButton = document.querySelector('.header .logo-button')
 	        const onRedClick = () => {
