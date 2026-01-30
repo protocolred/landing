@@ -86,6 +86,22 @@ img {
   width: 0;
 }
 
+.page-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.page-bg__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(0, 220, 255, 0.08) 0%, rgba(0, 2, 19, 0.9) 65%),
+    linear-gradient(180deg, rgba(0, 2, 19, 0.25) 0%, rgba(0, 2, 19, 0.95) 80%);
+}
+
 .main {
   width: 100%;
   min-height: 100%;
@@ -98,6 +114,7 @@ img {
   font-weight: 300;
   letter-spacing: 2px;
   overflow-x: hidden;
+  z-index: 1;
 }
 
 .desktop > #list {
@@ -119,7 +136,7 @@ img {
   max-width: 100%;
   height: 100dvh;
   box-sizing: border-box;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, var(--color-black) 60%);
+  background: transparent;
 }
 
 .desktop .header {
@@ -247,11 +264,7 @@ img {
 
 .horizon-bg {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
+  inset: 0;
   pointer-events: none;
   overflow: hidden;
 }

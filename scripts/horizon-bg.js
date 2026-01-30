@@ -4,7 +4,7 @@
 
   const vbWidth = 1024;
   const vbHeight = 608;
-  const section = container.closest("section") || document.getElementById("block-main");
+  const section = container.closest("section");
   const prefersReducedMotion =
     typeof window.matchMedia === "function" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -14,14 +14,25 @@
   let parallaxLayer = null;
   let parallaxRaf = 0;
 
-  const updateParallax = () => {
-    if (!parallaxLayer || !section || prefersReducedMotion) return;
+  const getParallaxProgress = () => {
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight || 0;
+      if (!viewportHeight) return 0;
+      return clamp01((viewportHeight - rect.top) / (viewportHeight + rect.height));
+    }
 
-    const rect = section.getBoundingClientRect();
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-    if (!viewportHeight) return;
+    const docHeight = document.documentElement.scrollHeight || 0;
+    const maxScroll = Math.max(1, docHeight - viewportHeight);
+    return clamp01((window.scrollY || 0) / maxScroll);
+  };
 
-    const progress = clamp01((viewportHeight - rect.top) / (viewportHeight + rect.height));
+  const updateParallax = () => {
+    if (!parallaxLayer || prefersReducedMotion) return;
+
+    const progress = getParallaxProgress();
     const centered = progress - 0.5;
 
     const translateY = centered * vbHeight * 0.06;
