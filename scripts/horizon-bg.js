@@ -87,7 +87,7 @@
       .append("stop")
       .attr("offset", "0%")
       .attr("stop-color", "#00dcff")
-      .attr("stop-opacity", 0.28);
+      .attr("stop-opacity", 0.12);
 
     hazeGradient
       .append("stop")
@@ -127,7 +127,7 @@
       .attr("y", 0)
       .attr("width", vbWidth)
       .attr("height", vbHeight)
-      .attr("fill", "#000213");
+      .attr("fill", "#00000b");
 
     parallaxLayer
       .append("ellipse")
@@ -146,7 +146,7 @@
       .attr("stroke", "url(#horizonLine)")
       .attr("stroke-width", 2)
       .attr("vector-effect", "non-scaling-stroke")
-      .attr("opacity", 0.65);
+      .attr("opacity", 0.45);
 
     updateParallax();
     return true;
