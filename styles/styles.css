@@ -8,9 +8,9 @@
   --color-white: rgba(227, 227, 227, 0.8);
   --color-white-bright: #f1f1f1;
 
-  --bg-top: #0b0d1e;
-  --bg-mid: #05071a;
-  --bg-bottom: #00000b;
+  --bg-top: #1a204f;
+  --bg-mid: #0d1235;
+  --bg-bottom: #020217;
 
   --font-minimal: 6px;
   --font-small: 12px;
@@ -61,8 +61,8 @@ body {
 body {
   margin: 0;
   background:
-    radial-gradient(900px 560px at 50% 18%, rgba(0, 220, 255, 0.05) 0%, rgba(0, 0, 0, 0) 70%),
-    radial-gradient(760px 520px at 20% 40%, rgba(157, 16, 40, 0.035) 0%, rgba(0, 0, 0, 0) 72%),
+    radial-gradient(900px 560px at 50% 18%, rgba(0, 220, 255, 0.11) 0%, rgba(0, 0, 0, 0) 74%),
+    radial-gradient(760px 520px at 20% 40%, rgba(157, 16, 40, 0.075) 0%, rgba(0, 0, 0, 0) 77%),
     linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bottom) 100%);
   background-color: var(--color-black);
   color: #fff;
@@ -349,9 +349,9 @@ body.legal-body::-webkit-scrollbar-thumb:hover {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(980px 620px at 50% 32%, rgba(0, 220, 255, 0.055) 0%, rgba(0, 220, 255, 0.015) 42%, rgba(0, 0, 0, 0) 78%),
-    radial-gradient(860px 640px at 62% 62%, rgba(157, 16, 40, 0.05) 0%, rgba(157, 16, 40, 0.012) 44%, rgba(0, 0, 0, 0) 80%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.46) 50%, rgba(0, 0, 0, 0.88) 86%, rgba(0, 0, 0, 0.98) 100%);
+    radial-gradient(980px 620px at 50% 32%, rgba(0, 220, 255, 0.075) 0%, rgba(0, 220, 255, 0.02) 44%, rgba(0, 0, 0, 0) 80%),
+    radial-gradient(860px 640px at 62% 62%, rgba(157, 16, 40, 0.065) 0%, rgba(157, 16, 40, 0.016) 46%, rgba(0, 0, 0, 0) 82%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.26) 52%, rgba(0, 0, 0, 0.7) 86%, rgba(0, 0, 0, 0.9) 100%);
 }
 
 .page-bg__grain {
@@ -838,6 +838,18 @@ body.legal-body::-webkit-scrollbar-thumb:hover {
   min-width: 400px;
 }
 
+.desktop > #list > #app {
+  justify-content: flex-start;
+  padding-top: 160px;
+  padding-bottom: 160px;
+}
+
+.desktop > #list > #app .store.store-bottom {
+  position: relative;
+  bottom: auto;
+  margin-top: auto;
+}
+
 .footer {
   width: 100%;
   padding: 40px 0;
@@ -864,6 +876,17 @@ body.legal-body::-webkit-scrollbar-thumb:hover {
 
   .desktop > #list > #app {
     min-width: 0;
+  }
+
+  .desktop > #list > #app {
+    padding-top: 120px;
+    padding-bottom: 140px;
+  }
+
+  .desktop > #list > #app .store.store-bottom {
+    position: relative;
+    bottom: auto;
+    margin-top: auto;
   }
 
   #app .app-sub {
@@ -923,7 +946,7 @@ body.legal-body::-webkit-scrollbar-thumb:hover {
 
   #store-main {
     position: fixed;
-    bottom: calc(69px + 16px + env(safe-area-inset-bottom, 0px));
+    bottom: 200px;
     left: 0;
     right: 0;
   }
