@@ -85,6 +85,20 @@ body.legal-body {
   overflow-y: auto;
 }
 
+/* Legal pages: monochrome variant (used by privacy.html) */
+body.legal-body.legal-body--mono {
+  background: #000;
+  --color-black: #000;
+  --color-black-light: rgba(227, 227, 227, 0.7);
+  --color-red: rgba(227, 227, 227, 0.92);
+  --color-red-light: rgba(227, 227, 227, 0.92);
+}
+
+body.legal-body.legal-body--mono .page-bg,
+body.legal-body.legal-body--mono .horizon-bg {
+  display: none !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -137,29 +151,31 @@ body.legal-body::-webkit-scrollbar-thumb:hover {
   color: var(--color-red);
   line-height: 1;
   border-top: 5px solid var(--color-red);
-  padding-top: 6px;
+  padding-top: 2px;
 }
 
 .legal-button {
+  /* Match landing header links (.desktop .header > a) */
   appearance: none;
   background: transparent;
-  border: 1px solid rgba(227, 227, 227, 0.2);
-  color: rgba(227, 227, 227, 0.92);
-  padding: 10px 14px;
-  border-radius: 999px;
+  border: none;
+  border-top: 0 solid transparent;
+  color: inherit;
+  padding: 0;
+  margin: 0;
   font: inherit;
-  letter-spacing: 2px;
+  font-weight: 600;
+  letter-spacing: 3px;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+  transition: 0.5s all;
 }
 
 .legal-button:hover {
-  border-color: rgba(227, 227, 227, 0.5);
-  background: rgba(255, 255, 255, 0.05);
+  border-top: 2px solid currentColor;
 }
 
 .legal-button:active {
-  transform: translateY(1px);
+  /* keep consistent with header links (no press shift) */
 }
 
 .legal-button:focus-visible {
