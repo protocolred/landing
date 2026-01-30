@@ -73,6 +73,18 @@ body {
   overscroll-behavior: none;
 }
 
+body.legal-body {
+  display: block;
+  align-items: initial;
+  justify-content: initial;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -84,6 +96,166 @@ img {
 
 ::-webkit-scrollbar {
   width: 0;
+}
+
+body.legal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.legal-body::-webkit-scrollbar-thumb {
+  background: rgba(227, 227, 227, 0.22);
+  border-radius: 8px;
+}
+
+body.legal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(227, 227, 227, 0.32);
+}
+
+.legal-page {
+  width: 100%;
+  min-height: 100%;
+}
+
+.legal-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(227, 227, 227, 0.12);
+}
+
+.legal-header__brand {
+  margin-right: auto;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: var(--color-red);
+  line-height: 1;
+  border-top: 5px solid var(--color-red);
+  padding-top: 6px;
+}
+
+.legal-button {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(227, 227, 227, 0.2);
+  color: rgba(227, 227, 227, 0.92);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font: inherit;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+}
+
+.legal-button:hover {
+  border-color: rgba(227, 227, 227, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.legal-button:active {
+  transform: translateY(1px);
+}
+
+.legal-button:focus-visible {
+  outline: 2px solid var(--color-red-light);
+  outline-offset: 4px;
+}
+
+.legal-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.legal-container h1 {
+  margin: 18px 0 8px;
+  font-size: var(--font-giant);
+  letter-spacing: 1px;
+}
+
+.legal-container h2 {
+  margin: 28px 0 10px;
+  font-size: var(--font-big);
+  letter-spacing: 1px;
+}
+
+.legal-container h3 {
+  margin: 18px 0 8px;
+  font-size: var(--font-normal-plus);
+  letter-spacing: 1px;
+}
+
+.legal-container p,
+.legal-container li {
+  line-height: 1.65;
+  color: rgba(227, 227, 227, 0.9);
+}
+
+.legal-container a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.legal-meta {
+  margin: 0 0 18px;
+  font-size: var(--font-small);
+  letter-spacing: 1px;
+  color: rgba(227, 227, 227, 0.65);
+}
+
+.legal-toc {
+  margin: 22px 0 24px;
+  padding: 16px 16px;
+  border: 1px solid rgba(227, 227, 227, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.legal-toc a {
+  text-decoration: none;
+}
+
+.legal-toc ol {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.legal-toc li {
+  margin: 8px 0;
+}
+
+.legal-hr {
+  border: 0;
+  height: 1px;
+  background: rgba(227, 227, 227, 0.12);
+  margin: 28px 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .legal-header {
+    padding: 14px 14px calc(14px + env(safe-area-inset-top, 0px));
+  }
+
+  .legal-container {
+    padding-left: calc(16px + env(safe-area-inset-left, 0px));
+    padding-right: calc(16px + env(safe-area-inset-right, 0px));
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .legal-container h1 {
+    font-size: clamp(34px, 8.5vw, 48px);
+  }
+
+  .legal-container h2 {
+    font-size: clamp(24px, 6.5vw, 34px);
+  }
 }
 
 .page-bg {
@@ -354,7 +526,7 @@ img {
 .store.store-bottom {
   position: relative;
   bottom: auto;
-  margin-top: 40px;
+  margin-top: auto;
 }
 
 .store img {
@@ -535,6 +707,7 @@ img {
   min-width: 800px;
   max-width: 100%;
   cursor: pointer;
+  padding-bottom: 100px;
 }
 
 #app .app-hero {
@@ -542,6 +715,7 @@ img {
   font-weight: 600;
   letter-spacing: 3px;
   cursor: pointer;
+  min-height: var(--app-hero-min-height, 0px);
 }
 
 #app .app-sub {
@@ -552,6 +726,7 @@ img {
   align-items: center;
   line-height: 1.5;
   cursor: pointer;
+  min-height: var(--app-sub-min-height, 0px);
 }
 
 #app .app-sub p {
@@ -585,20 +760,40 @@ img {
 
 @media only screen and (max-width: 600px) {
   :root {
-    --logo-pop-dir: -1;
+    --logo-pop-dir: 1;
+  }
+
+  body {
+    justify-content: flex-start;
+    align-items: stretch;
   }
 
   .desktop > #list > .block {
     height: auto;
     min-height: 100dvh;
-    padding: 120px 0 140px;
+    padding: 120px 0 calc(140px + env(safe-area-inset-bottom, 0px));
   }
 
   .desktop > #list > #app {
     min-width: 0;
   }
 
+  #app .app-sub {
+    width: 100%;
+    align-items: stretch;
+    text-align: left;
+    padding-left: calc(16px + env(safe-area-inset-left, 0px));
+    padding-right: calc(16px + env(safe-area-inset-right, 0px));
+  }
+
   #app .app-sub p {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #app .app-sub p:nth-child(1),
+  #app .app-sub p:nth-child(2),
+  #app .app-sub p:nth-child(3) {
     min-width: 0;
   }
 
@@ -624,11 +819,23 @@ img {
     position: absolute;
     bottom: 100px;
     margin-top: 0;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 12px;
+    height: auto;
+  }
+
+  .store img {
+    height: 60px;
+  }
+
+  #ios-store img {
+    padding: 10px;
   }
 
   #store-main {
     position: fixed;
-    bottom: calc(69px + 16px);
+    bottom: calc(69px + 16px + env(safe-area-inset-bottom, 0px));
     left: 0;
     right: 0;
   }
@@ -636,16 +843,33 @@ img {
   .desktop .header {
     top: auto;
     bottom: 0;
-    height: 69px;
+    height: calc(69px + env(safe-area-inset-bottom, 0px));
     line-height: 70px;
     justify-content: center;
-    gap: 20px;
+    gap: 14px;
     background: rgba(0, 0, 0, 0.6);
-    padding: 0 16px;
+    padding: 0 12px env(safe-area-inset-bottom, 0px);
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+
+  .desktop .header .logo {
+    border-top: 0;
+    padding-top: 0;
+    border-bottom: 20px solid var(--color-red);
+    padding-bottom: 20px;
+  }
+
+  .desktop .header .logo.logo-button {
+    border-top: 0;
+    border-bottom: 5px solid var(--color-red);
+    padding-top: 0;
+    padding-bottom: 2px;
   }
 
   .desktop .header > a {
     margin-right: 0;
+    white-space: nowrap;
   }
 
   .desktop .header > a:hover {
