@@ -16,7 +16,7 @@
 <div class="main">
     <div class="desktop">
         <header class="header">
-            <a class="logo" href="#block-main">PROTOCOL</a>
+            <button class="logo logo-button" type="button">RED</button>
             <a href="#block-main">ABOUT</a>
             <a href="#block-create">DEMO</a>
             <a href="#block-app">APP</a>
@@ -32,9 +32,16 @@
                     <div class="background-gradient"></div>
                 </div>
                 <div class="block-text">
-                    <div class="main-text">
-                        <div class="main-text-row">
-                            <div>P</div><div>R</div><div>O</div><div>T</div><div>O</div><div>C</div><div>O</div><div>L</div>
+                    <div class="main-text" id="protocol-text">
+                        <div class="main-text-row" data-text="PROTOCOL">
+                            <div class="glitch-letter">P</div>
+                            <div class="glitch-letter">R</div>
+                            <div class="glitch-letter">O</div>
+                            <div class="glitch-letter">T</div>
+                            <div class="glitch-letter">O</div>
+                            <div class="glitch-letter">C</div>
+                            <div class="glitch-letter">O</div>
+                            <div class="glitch-letter">L</div>
                         </div>
                     </div>
                 </div>
@@ -45,7 +52,7 @@
                     <div><a target="_blank" href="privacy.html">PRIVACY</a></div>
                 </div>
 
-                <div class="store">
+                <div class="store" id="store-main">
                     <div id="ios-store">
                         <a href="https://testflight.apple.com/join/5z8kZqg6" target="_blank">
                             <img src="images/buttons/apple-store-badge.svg" alt="Download on the App Store"/>
@@ -61,42 +68,41 @@
             </section>
 
             <section class="block block-create" id="block-create">
-                <div class="block-create-slogan">
-                    <div>CREATE</div>
-                </div>
-
-                <div class="phone">
-                    <img src="images/phone/role.png" alt="Character preview"/>
-                    <div class="phone-title">Nova Synthia</div>
-
-                    <div class="phone-stats">
-                        <div class="luck">
-                            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
-                        </div>
-                        <div class="red">
-                            <div class="box"></div><div class="box"></div><div class="box"></div>
-                        </div>
-                        <div class="blue">
-                            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
-                        </div>
-                    </div>
-
-                    <div class="phone-stats-info">
-                        <div>LUCK</div>
-                        <div>STRENGTH</div>
-                        <div>INTELLECT</div>
+                <div class="block-create-copy">
+                    <div class="protocol-lines">
+                        <div class="protocol-line">This is a protocol, not a game</div>
+                        <div class="protocol-line">Consent recorded, behavior measured</div>
+                        <div class="protocol-line protocol-joke" id="protocol-joke"></div>
                     </div>
                 </div>
 
-                <div class="block-create-slogan">
-                    <div>USING AI</div>
-                    <div>NEW WORLDS</div>
-                </div>
+<!--                <div class="phone">-->
+<!--                    <img src="images/phone/role.png" alt="Character preview"/>-->
+<!--                    <div class="phone-title">Nova Synthia</div>-->
+
+<!--                    <div class="phone-stats">-->
+<!--                        <div class="luck">-->
+<!--                            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>-->
+<!--                        </div>-->
+<!--                        <div class="red">-->
+<!--                            <div class="box"></div><div class="box"></div><div class="box"></div>-->
+<!--                        </div>-->
+<!--                        <div class="blue">-->
+<!--                            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="phone-stats-info">-->
+<!--                        <div>LUCK</div>-->
+<!--                        <div>STRENGTH</div>-->
+<!--                        <div>INTELLECT</div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </section>
 
             <section class="block" id="block-app">
-                <div class="app-hero">Protocol</div>
-                <div class="app-sub">A quiet place for signal and light.</div>
+                <div class="app-hero" id="bottom-hero">Protocol</div>
+                <div class="app-sub" id="bottom-sub">Forest App is the official mobile client for the Protocol — join the trials and track your progress</div>
 
                 <div class="store store-bottom">
                     <div id="ios-store">
@@ -114,8 +120,208 @@
             </section>
         </div>
 
-        <footer class="footer">Создано для тишины, сигнала и связи.</footer>
+        <!--<footer class="footer">Made for the Forest App — quiet, private, connected.</footer>-->
     </div>
 </div>
+<script>
+    (function () {
+        const letters = document.querySelectorAll('.glitch-letter')
+        const protocolText = document.getElementById('protocol-text')
+        const characters = '2470ABCDEFGHIJKLNOPQRSTUVXYZ'
+
+        const runTextEffect = () => {
+            let tick = 0
+            const maxTicks = 18
+            const settleOffsets = Array.from({length: letters.length}, (_, i) => i + 4)
+
+            const timer = setInterval(() => {
+                tick++
+                letters.forEach((letter, index) => {
+                    const finalChar = letter.dataset.final || letter.textContent
+                    if (tick < settleOffsets[index]) {
+                        const randomIndex = Math.floor(Math.random() * characters.length)
+                        letter.textContent = characters[randomIndex]
+                    } else {
+                        letter.textContent = finalChar
+                    }
+                })
+
+                if (tick > maxTicks + letters.length) {
+                    clearInterval(timer)
+                }
+            }, 80)
+        }
+
+        letters.forEach(letter => {
+            letter.dataset.final = letter.textContent
+        })
+
+        runTextEffect()
+        if (protocolText) {
+            protocolText.addEventListener('click', runTextEffect)
+        }
+
+        const headerLinks = Array.from(document.querySelectorAll('.header a[href^="#"]'))
+        const sections = headerLinks
+            .map(link => document.querySelector(link.getAttribute('href')))
+            .filter(Boolean)
+
+        const setActive = (id) => {
+            headerLinks.forEach(link => {
+                const isActive = link.getAttribute('href') === `#${id}`
+                link.classList.toggle('active', isActive)
+            })
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setActive(entry.target.id)
+                    }
+                })
+            },
+            {root: null, threshold: 0.6}
+        )
+
+        sections.forEach(section => observer.observe(section))
+
+        const initActive = () => {
+            const hashId = window.location.hash?.replace('#', '')
+            if (hashId) {
+                setActive(hashId)
+                return
+            }
+            if (sections[0]) {
+                setActive(sections[0].id)
+            }
+        }
+
+        requestAnimationFrame(initActive)
+        window.addEventListener('load', initActive)
+
+        const storeMain = document.getElementById('store-main')
+        const toggleStoreOnScroll = () => {
+            if (!storeMain) return
+            const isAtTop = window.scrollY <= 1
+            storeMain.classList.toggle('is-hidden', !isAtTop)
+        }
+
+        window.addEventListener('scroll', toggleStoreOnScroll, {passive: true})
+        toggleStoreOnScroll()
+
+        const jokeEl = document.getElementById('protocol-joke')
+        const setRandomJoke = (jokes) => {
+            if (!jokeEl || !Array.isArray(jokes) || jokes.length === 0) return
+            const randomIndex = Math.floor(Math.random() * jokes.length)
+            jokeEl.textContent = jokes[randomIndex]
+        }
+
+        const loadJokes = async () => {
+            try {
+                const response = await fetch('texts/jokes.json', {cache: 'no-store'})
+                if (!response.ok) throw new Error(`Failed to load jokes: ${response.status}`)
+                const jokes = await response.json()
+                setRandomJoke(jokes)
+                if (jokeEl) jokeEl.addEventListener('click', () => setRandomJoke(jokes))
+            } catch {
+                setRandomJoke([
+                    'No plot armor.',
+                    'No badges. Just logs.',
+                    'Deviation noted.',
+                    'We saw that.'
+                ])
+            }
+        }
+
+        loadJokes()
+
+        const bottomHeroEl = document.getElementById('bottom-hero')
+        const bottomSubEl = document.getElementById('bottom-sub')
+
+        const renderParagraphs = (el, paragraphs) => {
+            if (!el) return
+            el.innerHTML = ''
+            paragraphs.forEach(text => {
+                const p = document.createElement('p')
+                p.textContent = text
+                el.appendChild(p)
+            })
+        }
+
+        const applyBottomBlockCopy = (copy) => {
+            if (!copy || typeof copy !== 'object') return
+            if (bottomHeroEl && typeof copy.hero === 'string' && copy.hero.trim()) {
+                bottomHeroEl.textContent = copy.hero
+            }
+            if (bottomSubEl && Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
+                renderParagraphs(bottomSubEl, copy.paragraphs)
+            }
+        }
+
+        const getRandomItem = (items) => {
+            if (!Array.isArray(items) || items.length === 0) return null
+            return items[Math.floor(Math.random() * items.length)]
+        }
+
+        const loadBottomBlockCopy = async () => {
+            try {
+                const response = await fetch('texts/bottom-block.variants.json', {cache: 'no-store'})
+                if (!response.ok) throw new Error(`Failed to load bottom variants: ${response.status}`)
+                const variants = await response.json()
+                const copies = Object.values(variants).filter(v => v && typeof v === 'object')
+                const randomCopy = getRandomItem(copies)
+                if (randomCopy) applyBottomBlockCopy(randomCopy)
+            } catch {
+                // Keep the HTML fallback.
+            }
+        }
+
+	        loadBottomBlockCopy()
+
+	        const redButton = document.querySelector('.header .logo-button')
+	        const onRedClick = () => {
+	        }
+	        if (redButton) {
+	            redButton.setAttribute('aria-pressed', 'false')
+
+	            const setExpanded = (isExpanded) => {
+	                redButton.classList.toggle('is-expanded', isExpanded)
+	                redButton.setAttribute('aria-pressed', String(isExpanded))
+	            }
+
+	            const collapseViaZero = () => {
+	                redButton.classList.add('is-collapsing')
+	                setExpanded(false)
+
+	                let cleaned = false
+	                const cleanup = () => {
+	                    if (cleaned) return
+	                    cleaned = true
+	                    redButton.classList.remove('is-collapsing')
+	                }
+
+	                const onTransitionEnd = (event) => {
+	                    if (event.propertyName !== 'transform') return
+	                    cleanup()
+	                }
+
+	                redButton.addEventListener('transitionend', onTransitionEnd, {once: true})
+	                setTimeout(cleanup, 260)
+	            }
+
+	            redButton.addEventListener('click', () => {
+	                const isExpanded = redButton.classList.contains('is-expanded')
+	                if (isExpanded) {
+	                    collapseViaZero()
+	                } else {
+	                    redButton.classList.remove('is-collapsing')
+	                    setExpanded(true)
+	                }
+	                onRedClick()
+	            })
+	        }
+	    })()
+	</script>
 </body>
 </html>
