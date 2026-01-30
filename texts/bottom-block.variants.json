@@ -7,14 +7,6 @@
       "You won’t get “good job” or “wrong”. You will get another trial."
     ]
   },
-  "12": {
-    "hero": "Red Forest",
-    "paragraphs": [
-      "A sequence of compact experiments: choice, timing, endurance, risk. Simple interactions that become meaningful when repeated.",
-      "The system does not read minds. It infers patterns from actions: hesitation, reversals, accuracy, persistence, and how you handle uncertainty.",
-      "Continue when ready. Stop when you prefer agency over data."
-    ]
-  },
   "13": {
     "hero": "Calibration",
     "paragraphs": [
@@ -48,7 +40,7 @@
     ]
   },
   "17": {
-    "hero": "Offline‑first",
+    "hero": "Offline",
     "paragraphs": [
       "The content pack lives inside the client. Core trials remain available even when the network disappears.",
       "That does not make the Protocol less real. It makes it harder to blame latency for your decisions.",
@@ -56,7 +48,7 @@
     ]
   },
   "18": {
-    "hero": "Points / Luck / Mind",
+    "hero": "Luck",
     "paragraphs": [
       "Rewards exist so your actions have weight. Sometimes it’s points. Sometimes it’s luck. Sometimes it’s mind.",
       "The rule is simple: the more deliberate your interaction — attention, restraint, strategy, endurance — the more meaningful the reward becomes.",
@@ -74,7 +66,7 @@
   "20": {
     "hero": "Official Client",
     "paragraphs": [
-      "Forest App is the official mobile client for the Protocol. It delivers trials and displays what the system is willing to show.",
+      "App is the official mobile client for the Protocol. It delivers trials and displays what the system is willing to show.",
       "The interface stays clean. The narration stays clinical. The implications do not.",
       "Join the sequence. Track your stats. Learn what the Protocol thinks you are — without asking it to be polite."
     ]
