@@ -2,7 +2,6 @@
 (() => {
   // src/core/constants.ts
   var IDS = {
-    horizonBg: "horizon-bg",
     protocolText: "protocol-text",
     protocolJoke: "protocol-joke",
     storeMain: "store-main",
@@ -13,21 +12,7 @@
   var SELECTORS = {
     headerNavItems: ".header [data-target]",
     headerLogoButton: ".header .logo-button",
-    glitchLetters: ".glitch-letter",
-    pageBgLayers: "[data-parallax-layer]",
-    pageBgLayerStars: ".page-bg__layer--stars",
-    pageBgLayerNebula: ".page-bg__layer--nebula",
-    pageBgLayerGrid: ".page-bg__layer--grid"
-  };
-  var PARALLAX = {
-    layers: [
-      { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06 },
-      { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08 },
-      { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12 },
-      { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1 }
-    ],
-    maxOffsetPx: 300,
-    startOffsetFactor: 4
+    glitchLetters: ".glitch-letter"
   };
   var TEXT = {
     glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
@@ -120,6 +105,174 @@
         "App is the official mobile client for the Protocol. It delivers trials and displays what the system is willing to show.",
         "The interface stays clean. The narration stays clinical. The implications do not.",
         "Join the sequence. Track your stats. Learn what the Protocol thinks you are \u2014 without asking it to be polite."
+      ]
+    },
+    "9": {
+      hero: "Audit Trail",
+      paragraphs: [
+        "Nothing here is \u201Cpersonal\u201D. It\u2019s behavioral. The Protocol prefers verbs over adjectives.",
+        "Every input becomes a timestamped receipt. Not because we don\u2019t trust you \u2014 because we trust drift.",
+        "If you want to disappear, try being perfectly consistent."
+      ]
+    },
+    "10": {
+      hero: "Latency",
+      paragraphs: [
+        "Delay is not a bug. It\u2019s a mirror with a timer.",
+        "When the system slows down, you reveal what you were doing for \u2014 outcome, certainty, or control.",
+        "We record the pause. We record what you do to end it."
+      ]
+    },
+    "11": {
+      hero: "Bias",
+      paragraphs: [
+        "The Protocol does not ask what you believe. It watches what you bet on.",
+        "Bias is not a moral flaw. It\u2019s compression \u2014 a shortcut that costs you in edge cases.",
+        "If you insist you\u2019re unbiased, we will politely offer you more edge cases."
+      ]
+    },
+    "12": {
+      hero: "Attention Budget",
+      paragraphs: [
+        "You spend attention the way you spend money: on purpose, by habit, or by accident.",
+        "Short trials, long implications. We measure where the budget leaks.",
+        "When you run out, the Protocol learns what you call \u201Cenough\u201D."
+      ]
+    },
+    "13": {
+      hero: "Controls",
+      paragraphs: [
+        "The interface has few controls because the subject already has many.",
+        "When the options shrink, style becomes visible: patience, impulse, ritual, improvisation.",
+        "Minimal input. Maximum inference."
+      ]
+    },
+    "14": {
+      hero: "Friction",
+      paragraphs: [
+        "Friction is introduced to keep \u201Cyes\u201D from meaning nothing.",
+        "If you push harder, the Protocol learns persistence. If you stop, it learns boundaries.",
+        "Either way, the measurement completes."
+      ]
+    },
+    "15": {
+      hero: "Entropy",
+      paragraphs: [
+        "Order is expensive. You pay for it with time, attention, and restraint.",
+        "We vary the noise and watch which strategy survives the weather.",
+        "When the world gets messy, do you get sharper \u2014 or louder?"
+      ]
+    },
+    "16": {
+      hero: "Compliance",
+      paragraphs: [
+        "Compliance is not obedience. It\u2019s coordination under uncertainty.",
+        "Some trials are easy on purpose. The question is what you do with \u201Ceasy\u201D.",
+        "If you treat every prompt like a threat, the Protocol will notice."
+      ]
+    },
+    "17": {
+      hero: "Escalation",
+      paragraphs: [
+        "When you don\u2019t get what you want, what do you do next?",
+        "Repeat, renegotiate, circumvent, or quit \u2014 each is a signature.",
+        "Escalation is a behavior. The Protocol doesn\u2019t argue with behaviors."
+      ]
+    },
+    "18": {
+      hero: "Cold Start",
+      paragraphs: [
+        "At the beginning, the model knows almost nothing. That\u2019s the point.",
+        "The first few trials are not tests. They are calibration for the calibration.",
+        "We begin with ignorance and watch how you treat it."
+      ]
+    },
+    "19": {
+      hero: "Noise Floor",
+      paragraphs: [
+        "Every instrument has a noise floor. Every person does too.",
+        "We run small tasks to find the minimum signal you can produce on command.",
+        "If you think you\u2019re \u201Calways the same\u201D, you haven\u2019t met your noise floor yet."
+      ]
+    },
+    "20": {
+      hero: "Edge Cases",
+      paragraphs: [
+        "Most systems look smart in the average case. Most people look calm too.",
+        "The Protocol quietly prefers the edge: low information, weird constraints, inconvenient outcomes.",
+        "If you want to impress it, be stable when it would be reasonable not to be."
+      ]
+    },
+    "21": {
+      hero: "Memory",
+      paragraphs: [
+        "We don\u2019t measure what you can recall. We measure what you choose to carry forward.",
+        "Some information is sticky. Some is useful. Some is poison.",
+        "Your profile is the residue of what you keep."
+      ]
+    },
+    "22": {
+      hero: "Apology",
+      paragraphs: [
+        "The Protocol does not need an apology. It needs data.",
+        "If you make a mistake, you can correct it. If you hesitate, we time it.",
+        "If you explain yourself, we learn what you think a mistake is."
+      ]
+    },
+    "23": {
+      hero: "Negotiation",
+      paragraphs: [
+        "Some subjects try to negotiate with the instructions. This is common.",
+        "Negotiation reveals preferences: fairness, dominance, clarity, loopholes, companionship.",
+        "The Protocol will not negotiate back. It will only remember."
+      ]
+    },
+    "24": {
+      hero: "Witness",
+      paragraphs: [
+        "A system that observes you changes you. That effect is part of the measurement.",
+        "You may perform. You may hide. You may rebel. You may forget you are being watched.",
+        "All four are informative."
+      ]
+    },
+    "25": {
+      hero: "Human Factors",
+      paragraphs: [
+        "Comfort, pride, boredom, irritation \u2014 these are not distractions. They are control variables.",
+        "When the trial feels \u201Cbeneath you\u201D, what happens to your care?",
+        "The Protocol is interested in your floor, not your peak."
+      ]
+    },
+    "26": {
+      hero: "Break Glass",
+      paragraphs: [
+        "Safety features exist for the moment a clean experiment becomes a messy life.",
+        "If you ever need to stop, stopping is allowed. The Protocol treats exits as data, not betrayal.",
+        "You can end a trial. You cannot undo that you wanted to."
+      ]
+    },
+    "27": {
+      hero: "Spoilers",
+      paragraphs: [
+        "You can try to predict the next trial. Most subjects do.",
+        "When you seek spoilers, we learn what you fear: surprise, failure, or wasted effort.",
+        "The Protocol can be patient. It has more trials than you have predictions."
+      ]
+    },
+    "28": {
+      hero: "Versioning",
+      paragraphs: [
+        "Models evolve. Rules get patched. Your behavior drifts anyway.",
+        "We tag changes, compare before/after, and call it \u201Cprogress\u201D when it aligns.",
+        "If you miss the old Protocol, that is a type of attachment."
+      ]
+    },
+    "29": {
+      hero: "Exit",
+      paragraphs: [
+        "There is always an exit. The question is what it costs you to use it.",
+        "Leaving early is not failure. Staying too long is not virtue.",
+        "Choose the ending you can defend when nobody is clapping."
       ]
     }
   };
@@ -429,6 +582,31 @@
     });
   }
 
+  // src/features/jokes.ts
+  function initJokes() {
+    const jokeElement = byId(IDS.protocolJoke);
+    if (!jokeElement) return;
+    const jokes = getJokes();
+    if (!Array.isArray(jokes) || jokes.length === 0) return;
+    const setRandomJoke = () => {
+      var _a;
+      const randomIndex = Math.floor(Math.random() * jokes.length);
+      jokeElement.textContent = (_a = jokes[randomIndex]) != null ? _a : "";
+    };
+    setRandomJoke();
+    jokeElement.addEventListener("click", setRandomJoke);
+  }
+
+  // node_modules/d3-array/src/range.js
+  function range(start2, stop, step) {
+    start2 = +start2, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start2, start2 = 0, 1) : n < 3 ? 1 : +step;
+    var i = -1, n = Math.max(0, Math.ceil((stop - start2) / step)) | 0, range2 = new Array(n);
+    while (++i < n) {
+      range2[i] = start2 + i * step;
+    }
+    return range2;
+  }
+
   // node_modules/d3-dispatch/src/dispatch.js
   var noop = { value: () => {
   } };
@@ -481,9 +659,9 @@
     }
   };
   function get(type2, name) {
-    for (var i = 0, n = type2.length, c; i < n; ++i) {
-      if ((c = type2[i]).name === name) {
-        return c.value;
+    for (var i = 0, n = type2.length, c2; i < n; ++i) {
+      if ((c2 = type2[i]).name === name) {
+        return c2.value;
       }
     }
   }
@@ -545,7 +723,7 @@
   // node_modules/d3-selection/src/selection/select.js
   function select_default(select) {
     if (typeof select !== "function") select = selector_default(select);
-    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
         if ((node = group[i]) && (subnode = select.call(node, node.__data__, i, group))) {
           if ("__data__" in node) subnode.__data__ = node.__data__;
@@ -580,7 +758,7 @@
   function selectAll_default(select) {
     if (typeof select === "function") select = arrayAll(select);
     else select = selectorAll_default(select);
-    for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = [], parents = [], j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
         if (node = group[i]) {
           subgroups.push(select.call(node, node.__data__, i, group));
@@ -634,7 +812,7 @@
   // node_modules/d3-selection/src/selection/filter.js
   function filter_default(match) {
     if (typeof match !== "function") match = matcher_default(match);
-    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
         if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
           subgroup.push(node);
@@ -735,7 +913,7 @@
     if (!arguments.length) return Array.from(this, datum);
     var bind = key ? bindKey : bindIndex, parents = this._parents, groups = this._groups;
     if (typeof value !== "function") value = constant_default(value);
-    for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
+    for (var m2 = groups.length, update = new Array(m2), enter = new Array(m2), exit = new Array(m2), j = 0; j < m2; ++j) {
       var parent = parents[j], group = groups[j], groupLength = group.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
       bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);
       for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
@@ -781,7 +959,7 @@
   // node_modules/d3-selection/src/selection/merge.js
   function merge_default(context) {
     var selection2 = context.selection ? context.selection() : context;
-    for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
+    for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m2 = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m2; ++j) {
       for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
         if (node = group0[i] || group1[i]) {
           merge[i] = node;
@@ -796,7 +974,7 @@
 
   // node_modules/d3-selection/src/selection/order.js
   function order_default() {
-    for (var groups = this._groups, j = -1, m = groups.length; ++j < m; ) {
+    for (var groups = this._groups, j = -1, m2 = groups.length; ++j < m2; ) {
       for (var group = groups[j], i = group.length - 1, next = group[i], node; --i >= 0; ) {
         if (node = group[i]) {
           if (next && node.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node, next);
@@ -810,10 +988,10 @@
   // node_modules/d3-selection/src/selection/sort.js
   function sort_default(compare) {
     if (!compare) compare = ascending;
-    function compareNode(a, b) {
-      return a && b ? compare(a.__data__, b.__data__) : !a - !b;
+    function compareNode(a2, b) {
+      return a2 && b ? compare(a2.__data__, b.__data__) : !a2 - !b;
     }
-    for (var groups = this._groups, m = groups.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, sortgroups = new Array(m2), j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
         if (node = group[i]) {
           sortgroup[i] = node;
@@ -823,8 +1001,8 @@
     }
     return new Selection(sortgroups, this._parents).order();
   }
-  function ascending(a, b) {
-    return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+  function ascending(a2, b) {
+    return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
   }
 
   // node_modules/d3-selection/src/selection/call.js
@@ -842,7 +1020,7 @@
 
   // node_modules/d3-selection/src/selection/node.js
   function node_default() {
-    for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
+    for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
       for (var group = groups[j], i = 0, n = group.length; i < n; ++i) {
         var node = group[i];
         if (node) return node;
@@ -865,7 +1043,7 @@
 
   // node_modules/d3-selection/src/selection/each.js
   function each_default(callback) {
-    for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
+    for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
       for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
         if (node = group[i]) callback.call(node, node.__data__, i, group);
       }
@@ -1149,7 +1327,7 @@
     return function() {
       var on = this.__on;
       if (!on) return;
-      for (var j = 0, i = -1, m = on.length, o; j < m; ++j) {
+      for (var j = 0, i = -1, m2 = on.length, o; j < m2; ++j) {
         if (o = on[j], (!typename.type || o.type === typename.type) && o.name === typename.name) {
           this.removeEventListener(o.type, o.listener, o.options);
         } else {
@@ -1163,7 +1341,7 @@
   function onAdd(typename, value, options) {
     return function() {
       var on = this.__on, o, listener = contextListener(value);
-      if (on) for (var j = 0, m = on.length; j < m; ++j) {
+      if (on) for (var j = 0, m2 = on.length; j < m2; ++j) {
         if ((o = on[j]).type === typename.type && o.name === typename.name) {
           this.removeEventListener(o.type, o.listener, o.options);
           this.addEventListener(o.type, o.listener = listener, o.options = options);
@@ -1181,7 +1359,7 @@
     var typenames = parseTypenames2(typename + ""), i, n = typenames.length, t;
     if (arguments.length < 2) {
       var on = this.node().__on;
-      if (on) for (var j = 0, m = on.length, o; j < m; ++j) {
+      if (on) for (var j = 0, m2 = on.length, o; j < m2; ++j) {
         for (i = 0, o = on[j]; i < n; ++i) {
           if ((t = typenames[i]).type === o.type && t.name === o.name) {
             return o.value;
@@ -1223,7 +1401,7 @@
 
   // node_modules/d3-selection/src/selection/iterator.js
   function* iterator_default() {
-    for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
+    for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
       for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
         if (node = group[i]) yield node;
       }
@@ -1491,16 +1669,16 @@
     return this.rgb().formatRgb();
   }
   function color(format) {
-    var m, l;
+    var m2, l;
     format = (format + "").trim().toLowerCase();
-    return (m = reHex.exec(format)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
+    return (m2 = reHex.exec(format)) ? (l = m2[1].length, m2 = parseInt(m2[1], 16), l === 6 ? rgbn(m2) : l === 3 ? new Rgb(m2 >> 8 & 15 | m2 >> 4 & 240, m2 >> 4 & 15 | m2 & 240, (m2 & 15) << 4 | m2 & 15, 1) : l === 8 ? rgba(m2 >> 24 & 255, m2 >> 16 & 255, m2 >> 8 & 255, (m2 & 255) / 255) : l === 4 ? rgba(m2 >> 12 & 15 | m2 >> 8 & 240, m2 >> 8 & 15 | m2 >> 4 & 240, m2 >> 4 & 15 | m2 & 240, ((m2 & 15) << 4 | m2 & 15) / 255) : null) : (m2 = reRgbInteger.exec(format)) ? new Rgb(m2[1], m2[2], m2[3], 1) : (m2 = reRgbPercent.exec(format)) ? new Rgb(m2[1] * 255 / 100, m2[2] * 255 / 100, m2[3] * 255 / 100, 1) : (m2 = reRgbaInteger.exec(format)) ? rgba(m2[1], m2[2], m2[3], m2[4]) : (m2 = reRgbaPercent.exec(format)) ? rgba(m2[1] * 255 / 100, m2[2] * 255 / 100, m2[3] * 255 / 100, m2[4]) : (m2 = reHslPercent.exec(format)) ? hsla(m2[1], m2[2] / 100, m2[3] / 100, 1) : (m2 = reHslaPercent.exec(format)) ? hsla(m2[1], m2[2] / 100, m2[3] / 100, m2[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
   }
   function rgbn(n) {
     return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
   }
-  function rgba(r, g, b, a) {
-    if (a <= 0) r = g = b = NaN;
-    return new Rgb(r, g, b, a);
+  function rgba(r, g, b, a2) {
+    if (a2 <= 0) r = g = b = NaN;
+    return new Rgb(r, g, b, a2);
   }
   function rgbConvert(o) {
     if (!(o instanceof Color)) o = color(o);
@@ -1549,8 +1727,8 @@
     return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}${hex((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
   }
   function rgb_formatRgb() {
-    const a = clampa(this.opacity);
-    return `${a === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a === 1 ? ")" : `, ${a})`}`;
+    const a2 = clampa(this.opacity);
+    return `${a2 === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a2 === 1 ? ")" : `, ${a2})`}`;
   }
   function clampa(opacity) {
     return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
@@ -1562,11 +1740,11 @@
     value = clampi(value);
     return (value < 16 ? "0" : "") + value.toString(16);
   }
-  function hsla(h, s, l, a) {
-    if (a <= 0) h = s = l = NaN;
+  function hsla(h, s, l, a2) {
+    if (a2 <= 0) h = s = l = NaN;
     else if (l <= 0 || l >= 1) h = s = NaN;
     else if (s <= 0) h = NaN;
-    return new Hsl(h, s, l, a);
+    return new Hsl(h, s, l, a2);
   }
   function hslConvert(o) {
     if (o instanceof Hsl) return new Hsl(o.h, o.s, o.l, o.opacity);
@@ -1620,8 +1798,8 @@
       return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
     },
     formatHsl() {
-      const a = clampa(this.opacity);
-      return `${a === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a === 1 ? ")" : `, ${a})`}`;
+      const a2 = clampa(this.opacity);
+      return `${a2 === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a2 === 1 ? ")" : `, ${a2})`}`;
     }
   }));
   function clamph(value) {
@@ -1661,24 +1839,24 @@
   var constant_default2 = (x) => () => x;
 
   // node_modules/d3-interpolate/src/color.js
-  function linear(a, d) {
+  function linear(a2, d) {
     return function(t) {
-      return a + t * d;
+      return a2 + t * d;
     };
   }
-  function exponential(a, b, y) {
-    return a = Math.pow(a, y), b = Math.pow(b, y) - a, y = 1 / y, function(t) {
-      return Math.pow(a + t * b, y);
+  function exponential(a2, b, y) {
+    return a2 = Math.pow(a2, y), b = Math.pow(b, y) - a2, y = 1 / y, function(t) {
+      return Math.pow(a2 + t * b, y);
     };
   }
   function gamma(y) {
-    return (y = +y) === 1 ? nogamma : function(a, b) {
-      return b - a ? exponential(a, b, y) : constant_default2(isNaN(a) ? b : a);
+    return (y = +y) === 1 ? nogamma : function(a2, b) {
+      return b - a2 ? exponential(a2, b, y) : constant_default2(isNaN(a2) ? b : a2);
     };
   }
-  function nogamma(a, b) {
-    var d = b - a;
-    return d ? linear(a, d) : constant_default2(isNaN(a) ? b : a);
+  function nogamma(a2, b) {
+    var d = b - a2;
+    return d ? linear(a2, d) : constant_default2(isNaN(a2) ? b : a2);
   }
 
   // node_modules/d3-interpolate/src/rgb.js
@@ -1722,9 +1900,9 @@
   var rgbBasisClosed = rgbSpline(basisClosed_default);
 
   // node_modules/d3-interpolate/src/number.js
-  function number_default(a, b) {
-    return a = +a, b = +b, function(t) {
-      return a * (1 - t) + b * t;
+  function number_default(a2, b) {
+    return a2 = +a2, b = +b, function(t) {
+      return a2 * (1 - t) + b * t;
     };
   }
 
@@ -1741,10 +1919,10 @@
       return b(t) + "";
     };
   }
-  function string_default(a, b) {
+  function string_default(a2, b) {
     var bi = reA.lastIndex = reB.lastIndex = 0, am, bm, bs, i = -1, s = [], q = [];
-    a = a + "", b = b + "";
-    while ((am = reA.exec(a)) && (bm = reB.exec(b))) {
+    a2 = a2 + "", b = b + "";
+    while ((am = reA.exec(a2)) && (bm = reB.exec(b))) {
       if ((bs = bm.index) > bi) {
         bs = b.slice(bi, bs);
         if (s[i]) s[i] += bs;
@@ -1780,16 +1958,16 @@
     scaleX: 1,
     scaleY: 1
   };
-  function decompose_default(a, b, c, d, e, f) {
+  function decompose_default(a2, b, c2, d, e, f) {
     var scaleX, scaleY, skewX;
-    if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
-    if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
-    if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
-    if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
+    if (scaleX = Math.sqrt(a2 * a2 + b * b)) a2 /= scaleX, b /= scaleX;
+    if (skewX = a2 * c2 + b * d) c2 -= a2 * skewX, d -= b * skewX;
+    if (scaleY = Math.sqrt(c2 * c2 + d * d)) c2 /= scaleY, d /= scaleY, skewX /= scaleY;
+    if (a2 * d < b * c2) a2 = -a2, b = -b, skewX = -skewX, scaleX = -scaleX;
     return {
       translateX: e,
       translateY: f,
-      rotate: Math.atan2(b, a) * degrees,
+      rotate: Math.atan2(b, a2) * degrees,
       skewX: Math.atan(skewX) * degrees,
       scaleX,
       scaleY
@@ -1799,8 +1977,8 @@
   // node_modules/d3-interpolate/src/transform/parse.js
   var svgNode;
   function parseCss(value) {
-    const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
-    return m.isIdentity ? identity : decompose_default(m.a, m.b, m.c, m.d, m.e, m.f);
+    const m2 = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
+    return m2.isIdentity ? identity : decompose_default(m2.a, m2.b, m2.c, m2.d, m2.e, m2.f);
   }
   function parseSvg(value) {
     if (value == null) return identity;
@@ -1824,18 +2002,18 @@
         s.push("translate(" + xb + pxComma + yb + pxParen);
       }
     }
-    function rotate(a, b, s, q) {
-      if (a !== b) {
-        if (a - b > 180) b += 360;
-        else if (b - a > 180) a += 360;
-        q.push({ i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default(a, b) });
+    function rotate(a2, b, s, q) {
+      if (a2 !== b) {
+        if (a2 - b > 180) b += 360;
+        else if (b - a2 > 180) a2 += 360;
+        q.push({ i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default(a2, b) });
       } else if (b) {
         s.push(pop(s) + "rotate(" + b + degParen);
       }
     }
-    function skewX(a, b, s, q) {
-      if (a !== b) {
-        q.push({ i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default(a, b) });
+    function skewX(a2, b, s, q) {
+      if (a2 !== b) {
+        q.push({ i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default(a2, b) });
       } else if (b) {
         s.push(pop(s) + "skewX(" + b + degParen);
       }
@@ -1848,14 +2026,14 @@
         s.push(pop(s) + "scale(" + xb + "," + yb + ")");
       }
     }
-    return function(a, b) {
+    return function(a2, b) {
       var s = [], q = [];
-      a = parse(a), b = parse(b);
-      translate(a.translateX, a.translateY, b.translateX, b.translateY, s, q);
-      rotate(a.rotate, b.rotate, s, q);
-      skewX(a.skewX, b.skewX, s, q);
-      scale(a.scaleX, a.scaleY, b.scaleX, b.scaleY, s, q);
-      a = b = null;
+      a2 = parse(a2), b = parse(b);
+      translate(a2.translateX, a2.translateY, b.translateX, b.translateY, s, q);
+      rotate(a2.rotate, b.rotate, s, q);
+      skewX(a2.skewX, b.skewX, s, q);
+      scale(a2.scaleX, a2.scaleY, b.scaleX, b.scaleY, s, q);
+      a2 = b = null;
       return function(t) {
         var i = -1, n = q.length, o;
         while (++i < n) s[(o = q[i]).i] = o.x(t);
@@ -2178,9 +2356,9 @@
   }
 
   // node_modules/d3-transition/src/transition/interpolate.js
-  function interpolate_default(a, b) {
-    var c;
-    return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a, b);
+  function interpolate_default(a2, b) {
+    var c2;
+    return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c2 = color(b)) ? (b = c2, rgb_default) : string_default)(a2, b);
   }
 
   // node_modules/d3-transition/src/transition/attr.js
@@ -2333,7 +2511,7 @@
   // node_modules/d3-transition/src/transition/filter.js
   function filter_default2(match) {
     if (typeof match !== "function") match = matcher_default(match);
-    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
         if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
           subgroup.push(node);
@@ -2346,7 +2524,7 @@
   // node_modules/d3-transition/src/transition/merge.js
   function merge_default2(transition2) {
     if (transition2._id !== this._id) throw new Error();
-    for (var groups0 = this._groups, groups1 = transition2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
+    for (var groups0 = this._groups, groups1 = transition2._groups, m0 = groups0.length, m1 = groups1.length, m2 = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m2; ++j) {
       for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
         if (node = group0[i] || group1[i]) {
           merge[i] = node;
@@ -2396,7 +2574,7 @@
   function select_default3(select) {
     var name = this._name, id2 = this._id;
     if (typeof select !== "function") select = selector_default(select);
-    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
         if ((node = group[i]) && (subnode = select.call(node, node.__data__, i, group))) {
           if ("__data__" in node) subnode.__data__ = node.__data__;
@@ -2412,7 +2590,7 @@
   function selectAll_default2(select) {
     var name = this._name, id2 = this._id;
     if (typeof select !== "function") select = selectorAll_default(select);
-    for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, subgroups = [], parents = [], j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
         if (node = group[i]) {
           for (var children2 = select.call(node, node.__data__, i, group), child, inherit2 = get2(node, id2), k = 0, l = children2.length; k < l; ++k) {
@@ -2542,7 +2720,7 @@
   // node_modules/d3-transition/src/transition/transition.js
   function transition_default() {
     var name = this._name, id0 = this._id, id1 = newId();
-    for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
         if (node = group[i]) {
           var inherit2 = get2(node, id0);
@@ -2656,7 +2834,7 @@
     } else {
       id2 = newId(), (timing = defaultTiming).time = now(), name = name == null ? null : name + "";
     }
-    for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
+    for (var groups = this._groups, m2 = groups.length, j = 0; j < m2; ++j) {
       for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
         if (node = group[i]) {
           schedule_default(node, name, id2, i, group, timing || inherit(node, id2));
@@ -2712,6 +2890,187 @@
     return { type: t };
   }
 
+  // node_modules/d3-force/src/constant.js
+  function constant_default4(x) {
+    return function() {
+      return x;
+    };
+  }
+
+  // node_modules/d3-force/src/lcg.js
+  var a = 1664525;
+  var c = 1013904223;
+  var m = 4294967296;
+  function lcg_default() {
+    let s = 1;
+    return () => (s = (a * s + c) % m) / m;
+  }
+
+  // node_modules/d3-force/src/simulation.js
+  var initialRadius = 10;
+  var initialAngle = Math.PI * (3 - Math.sqrt(5));
+  function simulation_default(nodes) {
+    var simulation, alpha = 1, alphaMin = 1e-3, alphaDecay = 1 - Math.pow(alphaMin, 1 / 300), alphaTarget = 0, velocityDecay = 0.6, forces = /* @__PURE__ */ new Map(), stepper = timer(step), event = dispatch_default("tick", "end"), random = lcg_default();
+    if (nodes == null) nodes = [];
+    function step() {
+      tick();
+      event.call("tick", simulation);
+      if (alpha < alphaMin) {
+        stepper.stop();
+        event.call("end", simulation);
+      }
+    }
+    function tick(iterations) {
+      var i, n = nodes.length, node;
+      if (iterations === void 0) iterations = 1;
+      for (var k = 0; k < iterations; ++k) {
+        alpha += (alphaTarget - alpha) * alphaDecay;
+        forces.forEach(function(force) {
+          force(alpha);
+        });
+        for (i = 0; i < n; ++i) {
+          node = nodes[i];
+          if (node.fx == null) node.x += node.vx *= velocityDecay;
+          else node.x = node.fx, node.vx = 0;
+          if (node.fy == null) node.y += node.vy *= velocityDecay;
+          else node.y = node.fy, node.vy = 0;
+        }
+      }
+      return simulation;
+    }
+    function initializeNodes() {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.index = i;
+        if (node.fx != null) node.x = node.fx;
+        if (node.fy != null) node.y = node.fy;
+        if (isNaN(node.x) || isNaN(node.y)) {
+          var radius = initialRadius * Math.sqrt(0.5 + i), angle = i * initialAngle;
+          node.x = radius * Math.cos(angle);
+          node.y = radius * Math.sin(angle);
+        }
+        if (isNaN(node.vx) || isNaN(node.vy)) {
+          node.vx = node.vy = 0;
+        }
+      }
+    }
+    function initializeForce(force) {
+      if (force.initialize) force.initialize(nodes, random);
+      return force;
+    }
+    initializeNodes();
+    return simulation = {
+      tick,
+      restart: function() {
+        return stepper.restart(step), simulation;
+      },
+      stop: function() {
+        return stepper.stop(), simulation;
+      },
+      nodes: function(_) {
+        return arguments.length ? (nodes = _, initializeNodes(), forces.forEach(initializeForce), simulation) : nodes;
+      },
+      alpha: function(_) {
+        return arguments.length ? (alpha = +_, simulation) : alpha;
+      },
+      alphaMin: function(_) {
+        return arguments.length ? (alphaMin = +_, simulation) : alphaMin;
+      },
+      alphaDecay: function(_) {
+        return arguments.length ? (alphaDecay = +_, simulation) : +alphaDecay;
+      },
+      alphaTarget: function(_) {
+        return arguments.length ? (alphaTarget = +_, simulation) : alphaTarget;
+      },
+      velocityDecay: function(_) {
+        return arguments.length ? (velocityDecay = 1 - _, simulation) : 1 - velocityDecay;
+      },
+      randomSource: function(_) {
+        return arguments.length ? (random = _, forces.forEach(initializeForce), simulation) : random;
+      },
+      force: function(name, _) {
+        return arguments.length > 1 ? (_ == null ? forces.delete(name) : forces.set(name, initializeForce(_)), simulation) : forces.get(name);
+      },
+      find: function(x, y, radius) {
+        var i = 0, n = nodes.length, dx, dy, d2, node, closest;
+        if (radius == null) radius = Infinity;
+        else radius *= radius;
+        for (i = 0; i < n; ++i) {
+          node = nodes[i];
+          dx = x - node.x;
+          dy = y - node.y;
+          d2 = dx * dx + dy * dy;
+          if (d2 < radius) closest = node, radius = d2;
+        }
+        return closest;
+      },
+      on: function(name, _) {
+        return arguments.length > 1 ? (event.on(name, _), simulation) : event.on(name);
+      }
+    };
+  }
+
+  // node_modules/d3-force/src/x.js
+  function x_default(x) {
+    var strength = constant_default4(0.1), nodes, strengths, xz;
+    if (typeof x !== "function") x = constant_default4(x == null ? 0 : +x);
+    function force(alpha) {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.vx += (xz[i] - node.x) * strengths[i] * alpha;
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length;
+      strengths = new Array(n);
+      xz = new Array(n);
+      for (i = 0; i < n; ++i) {
+        strengths[i] = isNaN(xz[i] = +x(nodes[i], i, nodes)) ? 0 : +strength(nodes[i], i, nodes);
+      }
+    }
+    force.initialize = function(_) {
+      nodes = _;
+      initialize();
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default4(+_), initialize(), force) : strength;
+    };
+    force.x = function(_) {
+      return arguments.length ? (x = typeof _ === "function" ? _ : constant_default4(+_), initialize(), force) : x;
+    };
+    return force;
+  }
+
+  // node_modules/d3-force/src/y.js
+  function y_default(y) {
+    var strength = constant_default4(0.1), nodes, strengths, yz;
+    if (typeof y !== "function") y = constant_default4(y == null ? 0 : +y);
+    function force(alpha) {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.vy += (yz[i] - node.y) * strengths[i] * alpha;
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length;
+      strengths = new Array(n);
+      yz = new Array(n);
+      for (i = 0; i < n; ++i) {
+        strengths[i] = isNaN(yz[i] = +y(nodes[i], i, nodes)) ? 0 : +strength(nodes[i], i, nodes);
+      }
+    }
+    force.initialize = function(_) {
+      nodes = _;
+      initialize();
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default4(+_), initialize(), force) : strength;
+    };
+    force.y = function(_) {
+      return arguments.length ? (y = typeof _ === "function" ? _ : constant_default4(+_), initialize(), force) : y;
+    };
+    return force;
+  }
+
   // node_modules/d3-zoom/src/transform.js
   function Transform(k, x, y) {
     this.k = k;
@@ -2761,99 +3120,134 @@
     return node.__zoom;
   }
 
-  // src/features/horizonBg.ts
-  function initHorizonBg() {
-    const container = byId(IDS.horizonBg);
-    if (!container) return;
-    const vbWidth = 1024;
-    const vbHeight = 608;
-    const render = () => {
-      container.innerHTML = "";
-      const horizonY = vbHeight * 0.56;
-      const svg = select_default2(container).append("svg").attr("viewBox", `0 0 ${vbWidth} ${vbHeight}`).attr("preserveAspectRatio", "xMidYMid slice").attr("width", "100%").attr("height", "100%").attr("aria-hidden", "true").style("display", "block");
-      const defs = svg.append("defs");
-      const horizonLayer = svg.append("g").attr("data-layer", "horizon");
-      const hazeGradient = defs.append("radialGradient").attr("id", "horizonHaze").attr("cx", "50%").attr("cy", `${horizonY / vbHeight * 100}%`).attr("r", "70%");
-      hazeGradient.append("stop").attr("offset", "0%").attr("stop-color", "#00dcff").attr("stop-opacity", 0.12);
-      hazeGradient.append("stop").attr("offset", "70%").attr("stop-color", "#000213").attr("stop-opacity", 0);
-      const horizonGradient = defs.append("linearGradient").attr("id", "horizonLine").attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
-      horizonGradient.append("stop").attr("offset", "0%").attr("stop-color", "#00dcff").attr("stop-opacity", 0);
-      horizonGradient.append("stop").attr("offset", "50%").attr("stop-color", "#00dcff").attr("stop-opacity", 0.9);
-      horizonGradient.append("stop").attr("offset", "100%").attr("stop-color", "#00dcff").attr("stop-opacity", 0);
-      svg.append("rect").attr("x", 0).attr("y", 0).attr("width", vbWidth).attr("height", vbHeight).attr("fill", "#00000b");
-      horizonLayer.append("ellipse").attr("cx", vbWidth / 2).attr("cy", horizonY).attr("rx", vbWidth * 0.6).attr("ry", vbHeight * 0.28).attr("fill", "url(#horizonHaze)");
-      horizonLayer.append("line").attr("x1", vbWidth * 0.08).attr("x2", vbWidth * 0.92).attr("y1", horizonY).attr("y2", horizonY).attr("stroke", "url(#horizonLine)").attr("stroke-width", 2).attr("vector-effect", "non-scaling-stroke").attr("opacity", 0.45);
-    };
-    let scheduled = 0;
-    const scheduleRender = () => {
-      if (scheduled) return;
-      scheduled = requestAnimationFrame(() => {
-        scheduled = 0;
-        render();
-      });
-    };
-    render();
-    if (typeof ResizeObserver !== "undefined") {
-      const observer = new ResizeObserver(() => scheduleRender());
-      observer.observe(container);
-    } else {
-      window.addEventListener("resize", scheduleRender, { passive: true });
-    }
-    if (prefersReducedMotion()) return;
-  }
-
-  // src/features/jokes.ts
-  function initJokes() {
-    const jokeElement = byId(IDS.protocolJoke);
-    if (!jokeElement) return;
-    const jokes = getJokes();
-    if (!Array.isArray(jokes) || jokes.length === 0) return;
-    const setRandomJoke = () => {
-      var _a;
-      const randomIndex = Math.floor(Math.random() * jokes.length);
-      jokeElement.textContent = (_a = jokes[randomIndex]) != null ? _a : "";
-    };
-    setRandomJoke();
-    jokeElement.addEventListener("click", setRandomJoke);
-  }
-
   // src/features/parallax.ts
-  function initParallax() {
-    const horizon = byId(IDS.horizonBg);
-    const stars = qs(PARALLAX.layers[0].selector);
-    const nebula = qs(PARALLAX.layers[1].selector);
-    const grid = qs(PARALLAX.layers[2].selector);
-    if (!stars || !nebula || !grid || !horizon) return;
-    if (prefersReducedMotion()) return;
-    const layers = [
-      { element: stars, speed: PARALLAX.layers[0].speed, scale: PARALLAX.layers[0].scale },
-      { element: nebula, speed: PARALLAX.layers[1].speed, scale: PARALLAX.layers[1].scale },
-      { element: grid, speed: PARALLAX.layers[2].speed, scale: PARALLAX.layers[2].scale },
-      { element: horizon, speed: PARALLAX.layers[3].speed, scale: PARALLAX.layers[3].scale }
-    ];
-    let scheduled = 0;
-    const update = () => {
-      scheduled = 0;
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      layers.forEach(({ element, speed, scale }) => {
-        const startOffset = Math.min(
-          PARALLAX.maxOffsetPx,
-          viewportHeight * speed * PARALLAX.startOffsetFactor
+  var createJitterForce = (strength) => {
+    let nodes = [];
+    const force = (alpha) => {
+      var _a, _b;
+      const scaled = strength * alpha;
+      for (const node of nodes) {
+        node.vx = ((_a = node.vx) != null ? _a : 0) + (Math.random() - 0.5) * scaled;
+        node.vy = ((_b = node.vy) != null ? _b : 0) + (Math.random() - 0.5) * scaled;
+      }
+    };
+    force.initialize = (newNodes) => {
+      nodes = newNodes;
+    };
+    return force;
+  };
+  var randomBetween = (min2, max2) => min2 + Math.random() * (max2 - min2);
+  var createColorSampler = () => {
+    const gray = rgb_default("rgb(10, 10, 10)", "rgb(170, 170, 170)");
+    const red = rgb_default("rgb(40, 12, 12)", "rgb(210, 50, 50)");
+    return () => {
+      const roll = Math.random();
+      if (roll < 0.55) {
+        return gray(Math.random());
+      }
+      if (roll < 0.85) {
+        return red(Math.random());
+      }
+      const mix = rgb_default(gray(Math.random()), red(Math.random()));
+      return mix(Math.random());
+    };
+  };
+  var buildLayer = (layer) => {
+    var _a, _b, _c, _d;
+    const width = Math.max(1, window.innerWidth);
+    const height = Math.max(1, window.innerHeight);
+    const count = Number.parseInt((_a = layer.dataset.count) != null ? _a : "60", 10);
+    const sizeMin = Number.parseFloat((_b = layer.dataset.sizeMin) != null ? _b : "1");
+    const sizeMax = Number.parseFloat((_c = layer.dataset.sizeMax) != null ? _c : "3");
+    const jitter = Number.parseFloat((_d = layer.dataset.jitter) != null ? _d : "0.35");
+    const svg = select_default2(layer).selectAll("svg").data([null]).join("svg").attr("class", "parallax-svg").attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "none");
+    const colorSampler = createColorSampler();
+    const nodes = range(count).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: randomBetween(sizeMin, sizeMax),
+      color: colorSampler(),
+      opacity: randomBetween(0.35, 0.9)
+    }));
+    const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity);
+    const padding = 12;
+    const simulation = simulation_default(nodes).force("x", x_default(width / 2).strength(2e-3)).force("y", y_default(height / 2).strength(2e-3)).force("jitter", createJitterForce(jitter)).velocityDecay(0.35).alpha(0.9).alphaDecay(4e-3).on("tick", () => {
+      for (const node of nodes) {
+        if (node.x < -padding) node.x = width + padding;
+        if (node.x > width + padding) node.x = -padding;
+        if (node.y < -padding) node.y = height + padding;
+        if (node.y > height + padding) node.y = -padding;
+      }
+      circles.attr("cx", (node) => node.x).attr("cy", (node) => node.y);
+    });
+    return { layer, simulation };
+  };
+  var initParallax = () => {
+    const container = document.querySelector(".parallax");
+    if (!container) return;
+    const prefersReducedMotion2 = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const layers = Array.from(container.querySelectorAll(".parallax-layer"));
+    if (layers.length === 0) return;
+    const states = /* @__PURE__ */ new Map();
+    const rebuild = () => {
+      for (const state of states.values()) {
+        state.simulation.stop();
+      }
+      states.clear();
+      for (const layer of layers) {
+        const svg = layer.querySelector("svg");
+        if (svg) {
+          svg.remove();
+        }
+        const state = buildLayer(layer);
+        if (prefersReducedMotion2.matches) {
+          state.simulation.stop();
+        }
+        states.set(layer, state);
+      }
+    };
+    const applyParallax = (() => {
+      let ticking = false;
+      let latestScroll = window.scrollY;
+      const update = () => {
+        var _a, _b;
+        const scrollMax = Math.max(
+          1,
+          document.documentElement.scrollHeight - window.innerHeight
         );
-        const raw = -startOffset + scrollY * speed;
-        const offset = Math.max(-PARALLAX.maxOffsetPx, Math.min(0, raw));
-        element.style.transform = `translate3d(0, ${offset}px, 0) scale(${scale})`;
-      });
-    };
-    const schedule = () => {
-      if (scheduled) return;
-      scheduled = requestAnimationFrame(update);
-    };
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-    update();
-  }
+        const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax));
+        const maxShrink = 0.08;
+        for (const layer of layers) {
+          const speed = Number.parseFloat((_a = layer.dataset.speed) != null ? _a : "0.1");
+          const shrink = Number.parseFloat((_b = layer.dataset.shrink) != null ? _b : "0");
+          const scale = 1 - scrollRatio * maxShrink * shrink;
+          layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
+        }
+        ticking = false;
+      };
+      return () => {
+        latestScroll = window.scrollY;
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      };
+    })();
+    const handleResize = /* @__PURE__ */ (() => {
+      let raf = 0;
+      return () => {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          rebuild();
+        });
+      };
+    })();
+    rebuild();
+    applyParallax();
+    window.addEventListener("scroll", applyParallax, { passive: true });
+    window.addEventListener("resize", handleResize);
+    prefersReducedMotion2.addEventListener("change", rebuild);
+  };
 
   // src/features/redButton.ts
   function initRedButton() {
@@ -2937,14 +3331,13 @@
 
   // src/app.ts
   var init2 = () => {
-    initHorizonBg();
-    initParallax();
     initTextGlitch();
     initHeaderNav();
     initStoreVisibility();
     initJokes();
     initBottomBlock();
     initRedButton();
+    initParallax();
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init2, { once: true });

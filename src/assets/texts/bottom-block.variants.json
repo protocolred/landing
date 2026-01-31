@@ -70,5 +70,173 @@
             "The interface stays clean. The narration stays clinical. The implications do not.",
             "Join the sequence. Track your stats. Learn what the Protocol thinks you are — without asking it to be polite."
         ]
+    },
+    "9": {
+        "hero": "Audit Trail",
+        "paragraphs": [
+            "Nothing here is “personal”. It’s behavioral. The Protocol prefers verbs over adjectives.",
+            "Every input becomes a timestamped receipt. Not because we don’t trust you — because we trust drift.",
+            "If you want to disappear, try being perfectly consistent."
+        ]
+    },
+    "10": {
+        "hero": "Latency",
+        "paragraphs": [
+            "Delay is not a bug. It’s a mirror with a timer.",
+            "When the system slows down, you reveal what you were doing for — outcome, certainty, or control.",
+            "We record the pause. We record what you do to end it."
+        ]
+    },
+    "11": {
+        "hero": "Bias",
+        "paragraphs": [
+            "The Protocol does not ask what you believe. It watches what you bet on.",
+            "Bias is not a moral flaw. It’s compression — a shortcut that costs you in edge cases.",
+            "If you insist you’re unbiased, we will politely offer you more edge cases."
+        ]
+    },
+    "12": {
+        "hero": "Attention Budget",
+        "paragraphs": [
+            "You spend attention the way you spend money: on purpose, by habit, or by accident.",
+            "Short trials, long implications. We measure where the budget leaks.",
+            "When you run out, the Protocol learns what you call “enough”."
+        ]
+    },
+    "13": {
+        "hero": "Controls",
+        "paragraphs": [
+            "The interface has few controls because the subject already has many.",
+            "When the options shrink, style becomes visible: patience, impulse, ritual, improvisation.",
+            "Minimal input. Maximum inference."
+        ]
+    },
+    "14": {
+        "hero": "Friction",
+        "paragraphs": [
+            "Friction is introduced to keep “yes” from meaning nothing.",
+            "If you push harder, the Protocol learns persistence. If you stop, it learns boundaries.",
+            "Either way, the measurement completes."
+        ]
+    },
+    "15": {
+        "hero": "Entropy",
+        "paragraphs": [
+            "Order is expensive. You pay for it with time, attention, and restraint.",
+            "We vary the noise and watch which strategy survives the weather.",
+            "When the world gets messy, do you get sharper — or louder?"
+        ]
+    },
+    "16": {
+        "hero": "Compliance",
+        "paragraphs": [
+            "Compliance is not obedience. It’s coordination under uncertainty.",
+            "Some trials are easy on purpose. The question is what you do with “easy”.",
+            "If you treat every prompt like a threat, the Protocol will notice."
+        ]
+    },
+    "17": {
+        "hero": "Escalation",
+        "paragraphs": [
+            "When you don’t get what you want, what do you do next?",
+            "Repeat, renegotiate, circumvent, or quit — each is a signature.",
+            "Escalation is a behavior. The Protocol doesn’t argue with behaviors."
+        ]
+    },
+    "18": {
+        "hero": "Cold Start",
+        "paragraphs": [
+            "At the beginning, the model knows almost nothing. That’s the point.",
+            "The first few trials are not tests. They are calibration for the calibration.",
+            "We begin with ignorance and watch how you treat it."
+        ]
+    },
+    "19": {
+        "hero": "Noise Floor",
+        "paragraphs": [
+            "Every instrument has a noise floor. Every person does too.",
+            "We run small tasks to find the minimum signal you can produce on command.",
+            "If you think you’re “always the same”, you haven’t met your noise floor yet."
+        ]
+    },
+    "20": {
+        "hero": "Edge Cases",
+        "paragraphs": [
+            "Most systems look smart in the average case. Most people look calm too.",
+            "The Protocol quietly prefers the edge: low information, weird constraints, inconvenient outcomes.",
+            "If you want to impress it, be stable when it would be reasonable not to be."
+        ]
+    },
+    "21": {
+        "hero": "Memory",
+        "paragraphs": [
+            "We don’t measure what you can recall. We measure what you choose to carry forward.",
+            "Some information is sticky. Some is useful. Some is poison.",
+            "Your profile is the residue of what you keep."
+        ]
+    },
+    "22": {
+        "hero": "Apology",
+        "paragraphs": [
+            "The Protocol does not need an apology. It needs data.",
+            "If you make a mistake, you can correct it. If you hesitate, we time it.",
+            "If you explain yourself, we learn what you think a mistake is."
+        ]
+    },
+    "23": {
+        "hero": "Negotiation",
+        "paragraphs": [
+            "Some subjects try to negotiate with the instructions. This is common.",
+            "Negotiation reveals preferences: fairness, dominance, clarity, loopholes, companionship.",
+            "The Protocol will not negotiate back. It will only remember."
+        ]
+    },
+    "24": {
+        "hero": "Witness",
+        "paragraphs": [
+            "A system that observes you changes you. That effect is part of the measurement.",
+            "You may perform. You may hide. You may rebel. You may forget you are being watched.",
+            "All four are informative."
+        ]
+    },
+    "25": {
+        "hero": "Human Factors",
+        "paragraphs": [
+            "Comfort, pride, boredom, irritation — these are not distractions. They are control variables.",
+            "When the trial feels “beneath you”, what happens to your care?",
+            "The Protocol is interested in your floor, not your peak."
+        ]
+    },
+    "26": {
+        "hero": "Break Glass",
+        "paragraphs": [
+            "Safety features exist for the moment a clean experiment becomes a messy life.",
+            "If you ever need to stop, stopping is allowed. The Protocol treats exits as data, not betrayal.",
+            "You can end a trial. You cannot undo that you wanted to."
+        ]
+    },
+    "27": {
+        "hero": "Spoilers",
+        "paragraphs": [
+            "You can try to predict the next trial. Most subjects do.",
+            "When you seek spoilers, we learn what you fear: surprise, failure, or wasted effort.",
+            "The Protocol can be patient. It has more trials than you have predictions."
+        ]
+    },
+    "28": {
+        "hero": "Versioning",
+        "paragraphs": [
+            "Models evolve. Rules get patched. Your behavior drifts anyway.",
+            "We tag changes, compare before/after, and call it “progress” when it aligns.",
+            "If you miss the old Protocol, that is a type of attachment."
+        ]
+    },
+    "29": {
+        "hero": "Exit",
+        "paragraphs": [
+            "There is always an exit. The question is what it costs you to use it.",
+            "Leaving early is not failure. Staying too long is not virtue.",
+            "Choose the ending you can defend when nobody is clapping."
+        ]
     }
 }

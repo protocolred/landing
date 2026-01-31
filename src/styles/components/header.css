@@ -36,10 +36,6 @@
     border-top: var(--size-5px) solid var(--color-white-solid);
 }
 
-.desktop .header .logo.active {
-    border-top-color: var(--color-red);
-}
-
 .desktop .header .logo {
     margin-right: auto;
     padding-top: var(--size-20px);

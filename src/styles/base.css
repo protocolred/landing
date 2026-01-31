@@ -33,23 +33,6 @@ body {
     align-items: center;
     justify-content: center;
     margin: var(--size-0);
-    background:
-        radial-gradient(
-            var(--size-900px) var(--size-560px) at var(--size-50pct) var(--size-18pct),
-            var(--color-cyan-11) var(--size-0pct),
-            var(--color-black-0) var(--size-74pct)
-        ),
-        radial-gradient(
-            var(--size-760px) var(--size-520px) at var(--size-20pct) var(--size-40pct),
-            var(--color-red-075) var(--size-0pct),
-            var(--color-black-0) var(--size-77pct)
-        ),
-        linear-gradient(
-            180deg,
-            var(--bg-top) var(--size-0pct),
-            var(--bg-mid) var(--size-52pct),
-            var(--bg-bottom) var(--size-full)
-        );
     background-color: var(--color-black);
     color: var(--color-white-solid);
     font-size: var(--font-normal);
@@ -76,11 +59,6 @@ body.legal-body.legal-body--mono {
     --color-black-light: var(--color-white-70);
     --color-red: var(--color-white-92);
     --color-red-light: var(--color-white-92);
-}
-
-body.legal-body.legal-body--mono .page-bg,
-body.legal-body.legal-body--mono .horizon-bg {
-    display: none !important;
 }
 
 a {
