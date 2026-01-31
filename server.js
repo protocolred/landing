@@ -2,16 +2,7 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 
-const ROOT_DIR = (() => {
-    const distDir = path.resolve(__dirname, 'dist')
-    try {
-        const stat = fs.statSync(distDir)
-        if (stat.isDirectory()) return distDir
-    } catch {
-        // ignore
-    }
-    return path.resolve(__dirname)
-})()
+const ROOT_DIR = path.resolve(__dirname)
 const PORT = Number.parseInt(process.env.PORT || '', 10) || 3000
 const HOST = process.env.HOST || 'localhost'
 

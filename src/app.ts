@@ -240,9 +240,7 @@ const initTextGlitch = () => {
 }
 
 const initHeaderNav = () => {
-    const headerLinks = Array.from(
-        document.querySelectorAll<HTMLAnchorElement>('.header a[data-target]')
-    )
+    const headerLinks = Array.from(document.querySelectorAll<HTMLElement>('.header [data-target]'))
     const sections = headerLinks
         .map((link) => document.getElementById(link.getAttribute('data-target') || ''))
         .filter((section): section is HTMLElement => Boolean(section))
@@ -268,19 +266,7 @@ const initHeaderNav = () => {
     sections.forEach((section) => observer.observe(section))
 
     const initActive = () => {
-        const hashId = window.location.hash?.replace('#', '')
-        if (hashId === 'block-main') {
-            history.replaceState(null, '', window.location.pathname + window.location.search)
-            setActive('block-main')
-            return
-        }
-        if (hashId) {
-            setActive(hashId)
-            return
-        }
-        if (sections[0]) {
-            setActive(sections[0].id)
-        }
+        if (sections[0]) setActive(sections[0].id)
     }
 
     requestAnimationFrame(initActive)
@@ -288,16 +274,21 @@ const initHeaderNav = () => {
 
     headerLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
-            if (event.defaultPrevented) return
-            if (event.button !== 0) return
-            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+            const mouseEvent = event instanceof MouseEvent ? event : null
+            if (mouseEvent) {
+                if (mouseEvent.defaultPrevented) return
+                if (mouseEvent.button !== 0) return
+                if (
+                    mouseEvent.metaKey ||
+                    mouseEvent.ctrlKey ||
+                    mouseEvent.shiftKey ||
+                    mouseEvent.altKey
+                )
+                    return
+            }
 
             const targetId = link.getAttribute('data-target')
             if (!targetId) return
-            if (targetId !== 'block-main') return
-
-            event.preventDefault()
-            history.replaceState(null, '', window.location.pathname + window.location.search)
             const element = document.getElementById(targetId)
             if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
             setActive(targetId)
@@ -327,7 +318,8 @@ const initJokes = () => {
 
     const loadJokes = async () => {
         try {
-            const response = await fetch('/texts/jokes.json', { cache: 'no-store' })
+            const url = new URL('src/texts/jokes.json', document.baseURI)
+            const response = await fetch(url, { cache: 'no-store' })
             if (!response.ok) throw new Error(`Failed to load jokes: ${response.status}`)
             const jokes = (await response.json()) as string[]
             setRandomJoke(jokes)
@@ -464,7 +456,8 @@ const initBottomBlock = () => {
     let bottomCopiesLoading: Promise<BottomBlockCopy[]> | null = null
 
     const fetchBottomCopies = async () => {
-        const response = await fetch('/texts/bottom-block.variants.json', { cache: 'no-store' })
+        const url = new URL('src/texts/bottom-block.variants.json', document.baseURI)
+        const response = await fetch(url, { cache: 'no-store' })
         if (!response.ok) throw new Error(`Failed to load bottom variants: ${response.status}`)
         const variants = (await response.json()) as Record<string, BottomBlockCopy>
         return Object.values(variants).filter((v) => v && typeof v === 'object')

@@ -3,15 +3,40 @@ const path = require('path')
 
 const timestamp = Date.now()
 const root = path.resolve(__dirname, '..')
-const targets = ['index.html', 'docs/privacy.html', 'dist/index.html', 'dist/docs/privacy.html']
+const targets = ['index.html', 'docs/privacy.html']
+
+function shouldTouchUrl(url) {
+    if (!url) return false
+    if (url.startsWith('#')) return false
+    if (url.startsWith('mailto:')) return false
+    if (url.startsWith('tel:')) return false
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) return false
+    return (
+        url.startsWith('dist/') ||
+        url.startsWith('src/') ||
+        url.startsWith('../dist/') ||
+        url.startsWith('../src/')
+    )
+}
+
+function withCacheBust(url) {
+    const [withoutHash, hash = ''] = url.split('#')
+    const [pathname, query = ''] = withoutHash.split('?')
+    const params = new URLSearchParams(query)
+    params.set('v', String(timestamp))
+    const nextQuery = params.toString()
+    return `${pathname}?${nextQuery}${hash ? `#${hash}` : ''}`
+}
 
 const updateFile = (filePath) => {
     const content = fs.readFileSync(filePath, 'utf8')
-    const next = content
-        .replace(/dist\/styles\.css\?v=[^"']+/g, `dist/styles.css?v=${timestamp}`)
-        .replace(/dist\/app\.js\?v=[^"']+/g, `dist/app.js?v=${timestamp}`)
-        .replace(/styles\.css\?v=[^"']+/g, `styles.css?v=${timestamp}`)
-        .replace(/app\.js\?v=[^"']+/g, `app.js?v=${timestamp}`)
+    const next = content.replace(
+        /\b(href|src)=(["'])([^"']+)\2/g,
+        (match, attr, quote, url) => {
+            if (!shouldTouchUrl(url)) return match
+            return `${attr}=${quote}${withCacheBust(url)}${quote}`
+        }
+    )
 
     if (next !== content) {
         fs.writeFileSync(filePath, next)

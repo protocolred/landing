@@ -15,7 +15,7 @@
     letter-spacing: var(--size-3px);
 }
 
-.desktop .header > a {
+.desktop .header > [data-target] {
     margin-right: var(--size-60px);
     border-top: var(--size-0) solid var(--color-transparent);
     color: inherit;
@@ -24,15 +24,15 @@
     transition: 0.5s all;
 }
 
-.desktop .header > a:last-child {
+.desktop .header > [data-target]:last-child {
     margin-right: var(--size-0);
 }
 
-.desktop .header > a:hover {
+.desktop .header > [data-target]:hover {
     border-top: var(--size-2px) solid var(--color-white-solid);
 }
 
-.desktop .header > a.active {
+.desktop .header > [data-target].active {
     border-top: var(--size-5px) solid var(--color-white-solid);
 }
 
