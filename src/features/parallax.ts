@@ -80,9 +80,9 @@ const buildLayer = (layer: HTMLElement) => {
         .selectAll('circle')
         .data(nodes)
         .join('circle')
-        .attr('r', (node) => node.r)
-        .attr('fill', (node) => node.color)
-        .attr('opacity', (node) => node.opacity)
+        .attr('r', (node: DotNode) => node.r)
+        .attr('fill', (node: DotNode) => node.color)
+        .attr('opacity', (node: DotNode) => node.opacity)
 
     const padding = 12
     const simulation = d3
@@ -101,7 +101,7 @@ const buildLayer = (layer: HTMLElement) => {
                 if (node.y > height + padding) node.y = -padding
             }
 
-            circles.attr('cx', (node) => node.x).attr('cy', (node) => node.y)
+            circles.attr('cx', (node: DotNode) => node.x).attr('cy', (node: DotNode) => node.y)
         })
 
     return { layer, simulation }
@@ -146,10 +146,12 @@ export const initParallax = () => {
             )
             const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax))
             const maxShrink = 0.08
+            const frontLayer = layers[layers.length - 1]
             for (const layer of layers) {
                 const speed = Number.parseFloat(layer.dataset.speed ?? '0.1')
                 const shrink = Number.parseFloat(layer.dataset.shrink ?? '0')
-                const scale = 1 - scrollRatio * maxShrink * shrink
+                const effectiveShrink = layer === frontLayer ? 0 : shrink
+                const scale = 1 - scrollRatio * maxShrink * effectiveShrink
                 layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`
             }
             ticking = false
