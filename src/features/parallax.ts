@@ -49,8 +49,8 @@ const createColorSampler = () => {
 }
 
 const buildLayer = (layer: HTMLElement) => {
-    const width = Math.max(1, window.innerWidth)
-    const height = Math.max(1, window.innerHeight)
+    const width = Math.max(1, layer.clientWidth)
+    const height = Math.max(1, layer.clientHeight)
     const count = Number.parseInt(layer.dataset.count ?? '60', 10)
     const sizeMin = Number.parseFloat(layer.dataset.sizeMin ?? '1')
     const sizeMax = Number.parseFloat(layer.dataset.sizeMax ?? '3')

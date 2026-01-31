@@ -1,8 +1,14 @@
 .parallax {
     z-index: 0;
     position: fixed;
-    inset: var(--size-0);
+    left: 50%;
+
+    --parallax-size: min(100vw, max(0px, calc(100dvh - 200px)));
+
+    width: var(--parallax-size);
+    height: var(--parallax-size);
     overflow: hidden;
+    transform: translateX(-50%);
     pointer-events: none;
 }
 
