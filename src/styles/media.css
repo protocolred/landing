@@ -1,0 +1,218 @@
+@media (prefers-reduced-motion: reduce) {
+    .page-bg__layer,
+    .page-bg__grain {
+        transform: none !important;
+    }
+}
+
+@media only screen and (width <= 900px) {
+    .legal-header {
+        padding: var(--size-14px) var(--size-14px)
+            calc(var(--size-14px) + env(safe-area-inset-top, var(--size-0)));
+    }
+
+    .legal-container {
+        padding-right: calc(var(--size-16px) + env(safe-area-inset-right, var(--size-0)));
+        padding-bottom: calc(var(--size-90px) + env(safe-area-inset-bottom, var(--size-0)));
+        padding-left: calc(var(--size-16px) + env(safe-area-inset-left, var(--size-0)));
+    }
+
+    .legal-container h1 {
+        font-size: clamp(var(--size-34px), var(--size-8-5vw), var(--size-48px));
+    }
+
+    .legal-container h2 {
+        font-size: clamp(var(--size-24px), var(--size-6-5vw), var(--size-34px));
+    }
+
+    :root {
+        --logo-pop-dir: 1;
+    }
+
+    body {
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .desktop > #list > .block {
+        height: auto;
+        min-height: var(--size-100dvh);
+        padding: var(--size-120px) var(--size-0)
+            calc(var(--size-140px) + env(safe-area-inset-bottom, var(--size-0)));
+    }
+
+    .desktop > #list > #app {
+        min-width: 0;
+    }
+
+    .desktop > #list > #app {
+        padding-top: var(--size-120px);
+        padding-bottom: var(--size-140px);
+    }
+
+    .desktop > #list > #app .store.store-bottom {
+        position: relative;
+        bottom: auto;
+        margin-top: auto;
+    }
+
+    #app .app-sub {
+        align-items: stretch;
+        width: var(--size-full);
+        padding-right: calc(var(--size-16px) + env(safe-area-inset-right, var(--size-0)));
+        padding-left: calc(var(--size-16px) + env(safe-area-inset-left, var(--size-0)));
+        text-align: left;
+    }
+
+    #app .app-sub p {
+        width: var(--size-full);
+        min-width: var(--size-0);
+    }
+
+    #app .app-sub p:nth-child(1),
+    #app .app-sub p:nth-child(2),
+    #app .app-sub p:nth-child(3) {
+        min-width: var(--size-0);
+    }
+
+    .main-text {
+        top: var(--size-80px);
+        right: var(--size-0);
+        left: var(--size-0);
+        transform: none;
+        font-size: var(--font-giant);
+        line-height: var(--size-120pct);
+        text-align: center;
+    }
+
+    .main-text-row {
+        justify-content: center;
+    }
+
+    .main-text-row div {
+        width: var(--size-40px);
+    }
+
+    .store {
+        position: absolute;
+        flex-wrap: wrap;
+        height: auto;
+
+        /* bottom: 0px; */
+        margin-top: var(--size-0);
+        padding: var(--size-0) var(--size-12px);
+        gap: var(--size-12px);
+    }
+
+    .store img {
+        height: var(--size-60px);
+    }
+
+    #ios-store img {
+        padding: var(--size-10px);
+    }
+
+    #store-main {
+        position: fixed;
+        right: var(--size-0);
+        bottom: var(--size-200px);
+        left: var(--size-0);
+    }
+
+    .desktop .header {
+        top: auto;
+        bottom: var(--size-0);
+        justify-content: center;
+        height: calc(var(--size-69px) + env(safe-area-inset-bottom, var(--size-0)));
+        padding: var(--size-0) var(--size-18px) env(safe-area-inset-bottom, var(--size-0));
+        gap: var(--size-21px);
+        background: var(--color-black-6);
+        font-size: var(--size-14px);
+        line-height: var(--size-70px);
+        letter-spacing: var(--size-1-5px);
+    }
+
+    .desktop .header .logo {
+        padding-top: var(--size-0);
+        padding-bottom: var(--size-20px);
+        border-top: var(--size-0);
+        border-bottom: var(--size-20px) solid var(--color-red);
+    }
+
+    .desktop .header .logo.logo-button {
+        padding-top: var(--size-0);
+        padding-bottom: var(--size-2px);
+        border-top: var(--size-0);
+        border-bottom: var(--size-5px) solid var(--color-red);
+    }
+
+    .desktop .header > a {
+        margin-right: var(--size-0);
+        white-space: nowrap;
+    }
+
+    .desktop .header > a:hover {
+        border-top: var(--size-0);
+        border-bottom: var(--size-2px) solid var(--color-white-solid);
+    }
+
+    .desktop .header > a.active {
+        border-top: var(--size-0);
+        border-bottom: var(--size-5px) solid var(--color-white-solid);
+    }
+
+    .social {
+        display: none;
+    }
+
+    .block-create {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .block-create-slogan {
+        align-items: center;
+        margin: var(--size-10px) var(--size-0);
+    }
+
+    .block-create-slogan div {
+        margin: var(--size-16px) var(--size-0);
+    }
+
+    .block-create .phone {
+        margin: var(--size-20px) var(--size-0);
+    }
+
+    .parallax {
+        width: var(--size-full);
+    }
+
+    .parallax img {
+        height: var(--size-80dvh);
+    }
+}
+
+@media only screen and (width <= 390px) {
+    .desktop .header {
+        gap: var(--size-16px);
+        font-size: var(--size-12px);
+        line-height: var(--size-64px);
+    }
+
+    .main-text {
+        top: var(--size-64px);
+        font-size: clamp(var(--size-36px), var(--size-14vw), var(--size-48px));
+    }
+
+    .main-text-row div {
+        width: var(--size-34px);
+    }
+
+    .store img {
+        height: var(--size-52px);
+    }
+
+    #ios-store img {
+        padding: var(--size-8px);
+    }
+}

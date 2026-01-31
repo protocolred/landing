@@ -1,0 +1,110 @@
+@font-face {
+    font-style: normal;
+    font-weight: 200;
+    src: url('../fonts/Titillium/TitilliumWeb-ExtraLight.ttf') format('truetype');
+    font-family: 'Titillium Web';
+    font-display: swap;
+}
+
+@font-face {
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Titillium/TitilliumWeb-SemiBold.ttf') format('truetype');
+    font-family: 'Titillium Web';
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html,
+body {
+    height: var(--size-full);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: var(--size-0);
+    background:
+        radial-gradient(
+            var(--size-900px) var(--size-560px) at var(--size-50pct) var(--size-18pct),
+            var(--color-cyan-11) var(--size-0pct),
+            var(--color-black-0) var(--size-74pct)
+        ),
+        radial-gradient(
+            var(--size-760px) var(--size-520px) at var(--size-20pct) var(--size-40pct),
+            var(--color-red-075) var(--size-0pct),
+            var(--color-black-0) var(--size-77pct)
+        ),
+        linear-gradient(
+            180deg,
+            var(--bg-top) var(--size-0pct),
+            var(--bg-mid) var(--size-52pct),
+            var(--bg-bottom) var(--size-full)
+        );
+    background-color: var(--color-black);
+    color: var(--color-white-solid);
+    font-size: var(--font-normal);
+    font-family: var(--font);
+    letter-spacing: var(--size-1px);
+    user-select: none;
+    -webkit-tap-highlight-color: var(--color-black-0);
+    overscroll-behavior: none;
+}
+
+body.legal-body {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    overflow: hidden auto;
+    user-select: text;
+}
+
+/* Legal pages: monochrome variant (used by privacy.html) */
+body.legal-body.legal-body--mono {
+    background: var(--color-black-solid);
+
+    --color-black: var(--color-black-solid);
+    --color-black-light: var(--color-white-70);
+    --color-red: var(--color-white-92);
+    --color-red-light: var(--color-white-92);
+}
+
+body.legal-body.legal-body--mono .page-bg,
+body.legal-body.legal-body--mono .horizon-bg {
+    display: none !important;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    -webkit-user-drag: none;
+}
+
+::-webkit-scrollbar {
+    width: var(--size-0);
+}
+
+body.legal-body::-webkit-scrollbar {
+    width: var(--size-8px);
+}
+
+body.legal-body::-webkit-scrollbar-thumb {
+    border-radius: var(--size-8px);
+    background: var(--color-white-22);
+}
+
+body.legal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-white-32);
+}

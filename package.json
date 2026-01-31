@@ -1,16 +1,39 @@
 {
-  "name": "landing",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "dev": "node server.js",
-    "start": "node server.js"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^5.5.3"
-  },
-  "private": true
+    "name": "landing",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "node scripts/prepare-dist.js && npm run build:css && npm run build:js && node scripts/update-cache-bust.js",
+        "build:css": "esbuild src/styles/styles.css --bundle --minify --outfile=dist/styles.css --loader:.ttf=file",
+        "build:js": "esbuild src/app.ts --bundle --minify --outfile=dist/app.js --platform=browser --target=es2018",
+        "watch": "npm run watch:css & npm run watch:js",
+        "watch:css": "esbuild src/styles/styles.css --bundle --outfile=dist/styles.css --loader:.ttf=file --watch",
+        "watch:js": "esbuild src/app.ts --bundle --outfile=dist/app.js --platform=browser --target=es2018 --watch",
+        "start": "node server.js",
+        "typecheck": "tsc --noEmit",
+        "lint": "npm run lint:format && npm run lint:js && npm run lint:css",
+        "lint:format": "prettier --config config/.prettierrc --write . --ignore-path config/.prettierignore",
+        "lint:js": "eslint --config config/eslint.config.mjs src --fix",
+        "lint:css": "npx stylelint \"src/styles/**/*.css\" --fix --config config/stylelint.config.cjs --ignore-path config/.stylelintignore",
+        "check": "npm run typecheck && npm run lint && npm run build"
+    },
+    "dependencies": {
+        "d3": "^7.9.0"
+    },
+    "devDependencies": {
+        "eslint": "^9.39.2",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-unicorn": "^62.0.0",
+        "globals": "^17.0.0",
+        "prettier": "^3.8.0",
+        "prettier-plugin-css-order": "^2.2.0",
+        "stylelint": "^17.0.0",
+        "stylelint-config-standard": "^40.0.0",
+        "typescript": "^5.5.3",
+        "typescript-eslint": "^8.53.1"
+    },
+    "private": true
 }

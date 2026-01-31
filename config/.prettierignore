@@ -1,0 +1,21 @@
+# Build artifacts
+dist/
+dist-server/
+
+# Mobile builds
+android/
+ios/
+
+# Dependencies
+node_modules/
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn.lock
