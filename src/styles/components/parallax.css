@@ -1,0 +1,22 @@
+.parallax {
+    z-index: 0;
+    position: fixed;
+    inset: var(--size-0);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.parallax-layer {
+    position: absolute;
+    width: var(--size-full);
+    height: var(--size-full);
+    inset: var(--size-0);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+}
+
+.parallax-svg {
+    display: block;
+    width: var(--size-full);
+    height: var(--size-full);
+}

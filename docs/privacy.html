@@ -6,23 +6,109 @@
         <meta name="theme-color" content="#000" />
         <link
             rel="icon"
-            href="../src/assets/images/icons/favicon.png?v=1769889017381"
+            href="../src/assets/images/icons/favicon.png?v=1769893364275"
             type="image/png"
             sizes="32x32"
         />
         <title>Protocol — Privacy Policy</title>
-        <link rel="stylesheet" href="../src/styles/styles.css?v=1769889017381" />
+        <style>
+            :root {
+                color-scheme: dark;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                background: #000;
+                color: #fff;
+            }
+
+            body {
+                font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                letter-spacing: 0.01em;
+            }
+
+            main {
+                max-width: 880px;
+                margin: 0 auto;
+                padding: 48px 20px 64px;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: underline;
+                text-underline-offset: 0.16em;
+            }
+
+            header {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+
+            header a {
+                text-decoration: none;
+            }
+
+            header a:hover {
+                text-decoration: underline;
+            }
+
+            nav {
+                margin: 20px 0 28px;
+            }
+
+            ol,
+            ul {
+                padding-left: 1.25em;
+            }
+
+            hr {
+                border: 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.22);
+                margin: 28px 0;
+            }
+
+            h1,
+            h2,
+            h3 {
+                line-height: 1.25;
+            }
+
+            h1 {
+                margin: 0 0 6px;
+            }
+
+            h2 {
+                margin: 28px 0 10px;
+            }
+
+            h3 {
+                margin: 18px 0 8px;
+            }
+
+            p {
+                margin: 0 0 12px;
+            }
+
+            .meta {
+                opacity: 0.8;
+                margin: 0 0 18px;
+            }
+        </style>
     </head>
-    <body class="legal-body legal-body--mono">
-        <main class="legal-page">
-            <header class="legal-header">
-                <a class="legal-header__brand" href="../" aria-label="Protocol home">RED</a>
-                <button class="legal-button" type="button" id="back-btn">BACK</button>
+    <body>
+        <main>
+            <header>
+                <a href="../" aria-label="Back to home">← Back</a>
             </header>
 
-            <article class="legal-container">
+            <article>
                 <h1>Privacy Policy</h1>
-                <p class="legal-meta">Last updated: January 30, 2026</p>
+                <p class="meta">Last updated: January 30, 2026</p>
 
                 <p>
                     This Privacy Policy explains how Protocol (“we”, “us”, “our”) handles
@@ -30,7 +116,7 @@
                     “Services”).
                 </p>
 
-                <nav class="legal-toc" aria-label="Table of contents">
+                <nav aria-label="Table of contents">
                     <strong>Contents</strong>
                     <ol>
                         <li><a href="#summary">Summary</a></li>
@@ -46,7 +132,7 @@
                     </ol>
                 </nav>
 
-                <hr class="legal-hr" />
+                <hr />
 
                 <h2 id="summary">Summary</h2>
                 <ul>
@@ -177,23 +263,9 @@
                 <h2 id="contact">Contact</h2>
                 <p>
                     Questions? Contact us at
-                    <a href="mailto:mpakunderscore@gmail.com">mpakunderscore@gmail.com</a>.
+                    <a href="mailto:contact@protocol.red">contact@protocol.red</a>.
                 </p>
             </article>
         </main>
-
-        <script>
-            ;(function () {
-                const backBtn = document.getElementById('back-btn')
-                if (!backBtn) return
-                backBtn.addEventListener('click', () => {
-                    if (window.history.length > 1) {
-                        window.history.back()
-                        return
-                    }
-                    window.location.href = '/'
-                })
-            })()
-        </script>
     </body>
 </html>
