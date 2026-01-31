@@ -1,0 +1,108 @@
+.desktop .header {
+    display: flex;
+    z-index: 5;
+    position: fixed;
+    top: var(--size-0);
+    right: var(--size-0);
+    left: var(--size-0);
+    flex-direction: row;
+    justify-content: right;
+    width: var(--size-full);
+    height: var(--size-100px);
+    padding: var(--size-0) var(--size-40px);
+    color: var(--color-white-solid);
+    line-height: var(--size-100px);
+    letter-spacing: var(--size-3px);
+}
+
+.desktop .header > [data-target] {
+    margin-right: var(--size-60px);
+    border-top: var(--size-0) solid var(--color-transparent);
+    color: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s all;
+}
+
+.desktop .header > [data-target]:last-child {
+    margin-right: var(--size-0);
+}
+
+.desktop .header > [data-target]:hover {
+    border-top: var(--size-2px) solid var(--color-white-solid);
+}
+
+.desktop .header > [data-target].active {
+    border-top: var(--size-5px) solid var(--color-white-solid);
+}
+
+.desktop .header .logo.active {
+    border-top-color: var(--color-red);
+}
+
+.desktop .header .logo {
+    margin-right: auto;
+    padding-top: var(--size-20px);
+    border-top: var(--size-20px) solid var(--color-red);
+    color: var(--color-red);
+    font-weight: 700;
+}
+
+.desktop .header .logo-button {
+    display: inline-block;
+    appearance: none;
+    margin-top: calc(var(--size-10px) * -1);
+    padding: var(--size-0);
+    border: none;
+    background: var(--color-transparent);
+    font: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease-out;
+}
+
+.desktop .header .logo.logo-button {
+    padding-top: var(--size-2px);
+    border-top: var(--size-5px) solid var(--color-red);
+}
+
+.desktop .header .logo-button.is-expanded {
+    transform: translateY(
+        clamp(
+            calc(-1 * var(--logo-pop-max)),
+            calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
+            var(--logo-pop-max)
+        )
+    );
+}
+
+.desktop .header .logo-button.is-expanded:hover {
+    transform: translateY(
+        clamp(
+            calc(-1 * var(--logo-pop-max)),
+            calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
+            var(--logo-pop-max)
+        )
+    );
+}
+
+.desktop .header .logo-button.is-collapsing,
+.desktop .header .logo-button.is-collapsing:hover {
+    transform: translateY(var(--size-0));
+}
+
+.desktop .header .logo-button:active {
+    transform: translateY(
+        clamp(
+            calc(-1 * var(--logo-pop-max)),
+            calc(var(--logo-pop-dir) * var(--logo-pop-press)),
+            var(--logo-pop-max)
+        )
+    );
+}
+
+.desktop .header .logo-button:focus-visible {
+    outline: var(--size-2px) solid var(--color-red-light);
+    outline-offset: var(--size-6px);
+}

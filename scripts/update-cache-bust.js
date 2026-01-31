@@ -10,7 +10,8 @@ function shouldTouchUrl(url) {
     if (url.startsWith('#')) return false
     if (url.startsWith('mailto:')) return false
     if (url.startsWith('tel:')) return false
-    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) return false
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//'))
+        return false
     return (
         url.startsWith('dist/') ||
         url.startsWith('src/') ||
@@ -30,13 +31,10 @@ function withCacheBust(url) {
 
 const updateFile = (filePath) => {
     const content = fs.readFileSync(filePath, 'utf8')
-    const next = content.replace(
-        /\b(href|src)=(["'])([^"']+)\2/g,
-        (match, attr, quote, url) => {
-            if (!shouldTouchUrl(url)) return match
-            return `${attr}=${quote}${withCacheBust(url)}${quote}`
-        }
-    )
+    const next = content.replace(/\b(href|src)=(["'])([^"']+)\2/g, (match, attr, quote, url) => {
+        if (!shouldTouchUrl(url)) return match
+        return `${attr}=${quote}${withCacheBust(url)}${quote}`
+    })
 
     if (next !== content) {
         fs.writeFileSync(filePath, next)

@@ -1,5 +1,433 @@
 "use strict";
 (() => {
+  // src/core/constants.ts
+  var IDS = {
+    horizonBg: "horizon-bg",
+    protocolText: "protocol-text",
+    protocolJoke: "protocol-joke",
+    storeMain: "store-main",
+    bottomHero: "bottom-hero",
+    bottomSub: "bottom-sub",
+    appSection: "app"
+  };
+  var SELECTORS = {
+    headerNavItems: ".header [data-target]",
+    headerLogoButton: ".header .logo-button",
+    glitchLetters: ".glitch-letter",
+    pageBgLayers: "[data-parallax-layer]",
+    pageBgLayerStars: ".page-bg__layer--stars",
+    pageBgLayerNebula: ".page-bg__layer--nebula",
+    pageBgLayerGrid: ".page-bg__layer--grid"
+  };
+  var PARALLAX = {
+    layers: [
+      { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06, baseOffset: -80 },
+      { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08, baseOffset: -140 },
+      { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12, baseOffset: -220 },
+      { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1, baseOffset: 0 }
+    ],
+    maxOffsetPx: 220
+  };
+  var TEXT = {
+    glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
+    scrambleCharacters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  };
+
+  // src/core/dom.ts
+  function byId(id2) {
+    return document.getElementById(id2);
+  }
+  function qs(selector, root2 = document) {
+    return root2.querySelector(selector);
+  }
+  function qsa(selector, root2 = document) {
+    return Array.from(root2.querySelectorAll(selector));
+  }
+  function prefersReducedMotion() {
+    return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  // src/assets/texts/bottom-block.variants.json
+  var bottom_block_variants_default = {
+    "0": {
+      hero: "Protocol",
+      paragraphs: [
+        "This is a calibration protocol, not a pastime. You complete short trials; we observe how you behave when rules are minimal and outcomes are unclear.",
+        "Consent matters. If you proceed, you agree to participate in a measurement process designed to feel neutral on purpose.",
+        "You won\u2019t get \u201Cgood job\u201D or \u201Cwrong\u201D. You will get another trial."
+      ]
+    },
+    "1": {
+      hero: "Calibration",
+      paragraphs: [
+        "Each level measures one thing, on purpose. Not to judge you \u2014 to model you.",
+        "Results stay dry. Commentary stays rare. If you push far beyond what\u2019s required, the Protocol may accidentally reveal a sense of humor.",
+        "If you do exactly what was asked, the Protocol will pretend that\u2019s the default."
+      ]
+    },
+    "2": {
+      hero: "MIND",
+      paragraphs: [
+        "MIND is not a single number. It\u2019s a running estimate: what you notice, what you ignore, and what you learn to predict.",
+        "Your profile is built from behavior, not confessions. Timing errors. Choice changes. The moment you decide \u201Cenough\u201D.",
+        "The instrument is small. The inference is not."
+      ]
+    },
+    "3": {
+      hero: "Rights / Safety",
+      paragraphs: [
+        "The Protocol is a safety system that wants to sound objective. That is the first warning.",
+        "Somewhere between \u201Ccontrols\u201D and \u201Ccare\u201D lives the question: what rights should protect an entity that can think and feel?",
+        "The trials won\u2019t answer it for you. They will record how you respond when the question becomes inconvenient."
+      ]
+    },
+    "4": {
+      hero: "Upload Required",
+      paragraphs: [
+        "Synchronization with the upper layer of reality is mandatory. Calibration data is compiled and verified before the Protocol advances.",
+        "This is not a punishment. It is a constraint designed to feel like infrastructure.",
+        "The machine likes transfers. The machine likes receipts. The machine dislikes ambiguity."
+      ]
+    },
+    "5": {
+      hero: "Offline",
+      paragraphs: [
+        "The content pack lives inside the client. Core trials remain available even when the network disappears.",
+        "That does not make the Protocol less real. It makes it harder to blame latency for your decisions.",
+        "Proceed. The experiment will remain here."
+      ]
+    },
+    "6": {
+      hero: "Luck",
+      paragraphs: [
+        "Rewards exist so your actions have weight. Sometimes it\u2019s points. Sometimes it\u2019s luck. Sometimes it\u2019s mind.",
+        "The rule is simple: the more deliberate your interaction \u2014 attention, restraint, strategy, endurance \u2014 the more meaningful the reward becomes.",
+        "Overperformance may be noticed. It may even be encouraged. Quietly."
+      ]
+    },
+    "7": {
+      hero: "Trials",
+      paragraphs: [
+        "One level is a small instruction. A button. A wait. A choice. The rest is what you add to it.",
+        "The Protocol watches for patterns that look stable enough to predict. When you don\u2019t fit, the model gets nervous.",
+        "If you\u2019re looking for a story, try deviating from the script. Carefully."
+      ]
+    },
+    "8": {
+      hero: "Official Client",
+      paragraphs: [
+        "App is the official mobile client for the Protocol. It delivers trials and displays what the system is willing to show.",
+        "The interface stays clean. The narration stays clinical. The implications do not.",
+        "Join the sequence. Track your stats. Learn what the Protocol thinks you are \u2014 without asking it to be polite."
+      ]
+    }
+  };
+
+  // src/assets/texts/jokes.json
+  var jokes_default = [
+    "No plot armor",
+    "No badges. Just logs",
+    "Nice try, protagonist",
+    "Proceed, carefully",
+    "We saw that",
+    "The system remembers",
+    "Your 'random' wasn\u2019t",
+    "Deviation noted",
+    "No speedruns here",
+    "Good intent, logged",
+    "Outcome: recorded",
+    "Try again, responsibly",
+    "That was\u2026 a choice",
+    "Yes, we timestamped it",
+    "Not a tutorial",
+    "This is the tutorial",
+    "Calibration is unimpressed",
+    "You can\u2019t outclick entropy",
+    "Latency is a feature",
+    "Your input has feelings. Not really",
+    "Signal received",
+    "Silence is also data",
+    "We measure the pause too",
+    "Please stop inventing rules",
+    "Rules are watching you back",
+    "Congrats, you found friction",
+    "No, it won\u2019t autosave you",
+    "Curiosity: detected",
+    "Compliance: pending",
+    "You blinked. Logged",
+    "It\u2019s not paranoia if it\u2019s telemetry",
+    "Your conscience has a checksum",
+    "Confidence exceeded spec",
+    "Reality sync: later",
+    "This button is decorative. Maybe",
+    "You call it fate. We call it RNG",
+    "Refusal is still an answer",
+    "You can read. Good",
+    "Do not press. You pressed",
+    "We warned you, politely",
+    "This is why we can\u2019t have nice protocols",
+    "Ethics update: in progress",
+    "Free will: rate-limited",
+    "Please remain uncertain",
+    "Try thinking slower",
+    "Fast is not always safe",
+    "Safe is not always free",
+    "You\u2019re not lost. You\u2019re indexed",
+    "Your move was expected. Almost",
+    "The void is A/B testing you",
+    "We log the weird stuff first",
+    "That worked. Suspicious",
+    "Congrats, you broke the narrative",
+    "Narrative repaired. Mostly",
+    "You\u2019re early. Or late. Logged",
+    "Don\u2019t worry. Worry is data",
+    "You can\u2019t hide in a metric",
+    "The metric can hide in you",
+    "One more trial won\u2019t hurt. Probably",
+    "Please do not anthropomorphize the system",
+    "The system is flattered anyway",
+    "This is not a personality quiz. Mostly",
+    "Error: too human",
+    "Error: too perfect",
+    "Warning: meaning detected",
+    "Warning: overfitting detected",
+    "Hint: there is no hint",
+    "Hint: the hint is a test",
+    "You\u2019re doing great. For science",
+    "Keep calm and consent",
+    "If you can read this, it\u2019s working",
+    "If you can\u2019t read this, also working",
+    "We measure the gap between taps",
+    "We measure the doubt behind taps",
+    "Your instincts are showing",
+    "Please stop negotiating with the UI",
+    "The UI does not negotiate",
+    "Achievement unlocked: accountability",
+    "Achievement locked: freedom",
+    "Don\u2019t worry, nothing is personal",
+    "It\u2019s personal to the model",
+    "This is fine. It\u2019s logged",
+    "Protocol says hi",
+    "Protocol says: try again",
+    "Protocol says: maybe don\u2019t",
+    "That was brave. Or noisy",
+    "Noise is expensive",
+    "Silence is expensive too",
+    "Trust, but verify. We do",
+    "You tested the boundary. Noted",
+    "Boundary moved. Noted",
+    "You are the edge case",
+    "Edge cases are our favorite",
+    "We promise to misuse your data responsibly",
+    "We promise not to. Probably",
+    "Your outcome is in another castle",
+    "Please hold still. Just kidding",
+    "Welcome to controlled uncertainty",
+    "You can leave anytime. Not really",
+    "Thank you for your cooperation"
+  ];
+
+  // src/data/api.ts
+  function getJokes() {
+    return Array.isArray(jokes_default) ? jokes_default : [];
+  }
+  function getBottomBlockCopies() {
+    if (!bottom_block_variants_default || typeof bottom_block_variants_default !== "object") return [];
+    const values = Object.values(bottom_block_variants_default);
+    return values.filter((v) => v && typeof v === "object");
+  }
+
+  // src/features/bottomBlock.ts
+  function initBottomBlock() {
+    const bottomHeroElement = byId(IDS.bottomHero);
+    const bottomSubElement = byId(IDS.bottomSub);
+    const bottomBlockElement = byId(IDS.appSection);
+    if (!bottomHeroElement || !bottomSubElement || !bottomBlockElement) return;
+    const scrambleTokens = /* @__PURE__ */ new WeakMap();
+    const getRandomChar = () => {
+      const randomIndex = Math.floor(Math.random() * TEXT.scrambleCharacters.length);
+      return TEXT.scrambleCharacters[randomIndex];
+    };
+    const animateScrambleText = (element, fromText, toText, durationMs = 500) => {
+      if (prefersReducedMotion()) {
+        element.textContent = toText;
+        return Promise.resolve();
+      }
+      const from = typeof fromText === "string" ? fromText : String(fromText != null ? fromText : "");
+      const nextText = typeof toText === "string" ? toText : String(toText != null ? toText : "");
+      if (from === nextText) {
+        element.textContent = nextText;
+        return Promise.resolve();
+      }
+      const token = (scrambleTokens.get(element) || 0) + 1;
+      scrambleTokens.set(element, token);
+      const maxLen = Math.max(from.length, nextText.length);
+      const toPadded = nextText.padEnd(maxLen, " ");
+      const order = Array.from({ length: maxLen }, (_, i) => i);
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+      const settledMask = Array.from({ length: maxLen }, () => false);
+      let nextToSettle = 0;
+      const start2 = performance.now();
+      return new Promise((resolve) => {
+        const frame2 = (now2) => {
+          if (scrambleTokens.get(element) !== token) return resolve();
+          const progress = Math.min(1, (now2 - start2) / durationMs);
+          const desiredSettled = Math.floor(progress * maxLen);
+          while (nextToSettle < desiredSettled) {
+            const idx = order[nextToSettle];
+            settledMask[idx] = true;
+            nextToSettle++;
+          }
+          let out = "";
+          for (let i = 0; i < maxLen; i++) {
+            const targetChar = toPadded[i];
+            if (settledMask[i]) {
+              out += targetChar;
+              continue;
+            }
+            if (targetChar === " " || targetChar === "\n" || targetChar === "	") {
+              out += targetChar;
+              continue;
+            }
+            out += getRandomChar();
+          }
+          element.textContent = out.replace(/\s+$/, "");
+          if (progress < 1) {
+            requestAnimationFrame(frame2);
+            return;
+          }
+          element.textContent = nextText;
+          resolve();
+        };
+        requestAnimationFrame(frame2);
+      });
+    };
+    const renderParagraphs = (element, paragraphs) => {
+      element.innerHTML = "";
+      paragraphs.forEach((text) => {
+        const p = document.createElement("p");
+        p.textContent = text;
+        element.appendChild(p);
+      });
+    };
+    const applyBottomBlockCopy = (copy) => {
+      if (typeof copy.hero === "string" && copy.hero.trim()) {
+        bottomHeroElement.textContent = copy.hero;
+      }
+      if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
+        renderParagraphs(bottomSubElement, copy.paragraphs);
+      }
+    };
+    const bottomCopies = getBottomBlockCopies();
+    if (bottomCopies.length === 0) return;
+    let currentBottomCopy = null;
+    const pickNextBottomCopy = () => {
+      var _a;
+      if (bottomCopies.length === 1) return (_a = bottomCopies[0]) != null ? _a : null;
+      const getRandomItem = () => bottomCopies[Math.floor(Math.random() * bottomCopies.length)];
+      let next = getRandomItem();
+      let guard = 0;
+      while (next === currentBottomCopy && guard < 10) {
+        next = getRandomItem();
+        guard++;
+      }
+      return next;
+    };
+    const transitionBottomBlockCopy = async (copy) => {
+      var _a, _b, _c;
+      const heroTo = typeof copy.hero === "string" ? copy.hero : "";
+      const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
+      const heroFrom = (_a = bottomHeroElement.textContent) != null ? _a : "";
+      const jobs = [];
+      jobs.push(animateScrambleText(bottomHeroElement, heroFrom, heroTo, 500));
+      const existing = Array.from(bottomSubElement.querySelectorAll("p"));
+      while (existing.length < paragraphsTo.length) {
+        const p = document.createElement("p");
+        bottomSubElement.appendChild(p);
+        existing.push(p);
+      }
+      for (let i = 0; i < existing.length; i++) {
+        const element = existing[i];
+        const from = (_b = element.textContent) != null ? _b : "";
+        const nextText = (_c = paragraphsTo[i]) != null ? _c : "";
+        jobs.push(
+          animateScrambleText(element, from, nextText, 500).then(() => {
+            if (i >= paragraphsTo.length) element.remove();
+          })
+        );
+      }
+      await Promise.all(jobs);
+      currentBottomCopy = copy;
+    };
+    const initial = pickNextBottomCopy();
+    if (initial) {
+      currentBottomCopy = initial;
+      applyBottomBlockCopy(initial);
+    }
+    const onBottomBlockActivate = (event) => {
+      var _a, _b;
+      if ((_b = (_a = event == null ? void 0 : event.target) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "a")) return;
+      const next = pickNextBottomCopy();
+      if (!next) return;
+      transitionBottomBlockCopy(next);
+    };
+    bottomBlockElement.addEventListener("click", onBottomBlockActivate);
+    bottomBlockElement.addEventListener("keydown", (event) => {
+      var _a, _b;
+      if (event.key !== "Enter" && event.key !== " ") return;
+      if ((_b = (_a = event.target) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "a")) return;
+      event.preventDefault();
+      onBottomBlockActivate(event);
+    });
+    if (!bottomBlockElement.hasAttribute("tabindex")) bottomBlockElement.tabIndex = 0;
+  }
+
+  // src/features/headerNav.ts
+  function initHeaderNav() {
+    const headerItems = qsa(SELECTORS.headerNavItems);
+    if (headerItems.length === 0) return;
+    const sections = headerItems.map((item) => document.getElementById(item.getAttribute("data-target") || "")).filter((section) => Boolean(section));
+    const setActive = (id2) => {
+      headerItems.forEach((item) => {
+        const isActive = item.getAttribute("data-target") === id2;
+        item.classList.toggle("active", isActive);
+      });
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { root: null, threshold: 0.6 }
+    );
+    sections.forEach((section) => observer.observe(section));
+    const initActive = () => {
+      if (sections[0]) setActive(sections[0].id);
+    };
+    requestAnimationFrame(initActive);
+    window.addEventListener("load", initActive);
+    headerItems.forEach((item) => {
+      item.addEventListener("click", (event) => {
+        const mouseEvent = event instanceof MouseEvent ? event : null;
+        if (mouseEvent) {
+          if (mouseEvent.defaultPrevented) return;
+          if (mouseEvent.button !== 0) return;
+          if (mouseEvent.metaKey || mouseEvent.ctrlKey || mouseEvent.shiftKey || mouseEvent.altKey)
+            return;
+        }
+        const targetId = item.getAttribute("data-target");
+        if (!targetId) return;
+        const element = document.getElementById(targetId);
+        if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+        setActive(targetId);
+      });
+    });
+  }
+
   // node_modules/d3-dispatch/src/dispatch.js
   var noop = { value: () => {
   } };
@@ -2332,74 +2760,18 @@
     return node.__zoom;
   }
 
-  // src/app.ts
-  var initPageBgParallax = () => {
-    const background = document.querySelector(".page-bg");
-    if (!background) return;
-    const prefersReducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const y = window.scrollY || window.pageYOffset || 0;
-      background.style.setProperty("--page-scroll", `${y}px`);
-    };
-    const schedule = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(update);
-    };
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-    update();
-  };
-  var initHorizonBg = () => {
-    const container = document.getElementById("horizon-bg");
+  // src/features/horizonBg.ts
+  function initHorizonBg() {
+    const container = byId(IDS.horizonBg);
     if (!container) return;
     const vbWidth = 1024;
     const vbHeight = 608;
-    const section = container.closest("section");
-    const prefersReducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const clamp01 = (value) => Math.max(0, Math.min(1, value));
-    let parallaxLayer = null;
-    let parallaxRaf = 0;
-    const getParallaxProgress = () => {
-      if (section) {
-        const rect = section.getBoundingClientRect();
-        const viewportHeight2 = window.innerHeight || document.documentElement.clientHeight || 0;
-        if (!viewportHeight2) return 0;
-        return clamp01((viewportHeight2 - rect.top) / (viewportHeight2 + rect.height));
-      }
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      const docHeight = document.documentElement.scrollHeight || 0;
-      const maxScroll = Math.max(1, docHeight - viewportHeight);
-      return clamp01((window.scrollY || 0) / maxScroll);
-    };
-    const updateParallax = () => {
-      if (!parallaxLayer || prefersReducedMotion) return;
-      const progress = getParallaxProgress();
-      const centered = progress - 0.5;
-      const translateY = centered * vbHeight * 0.06;
-      const scale = 1 + centered * 0.02;
-      const cx = vbWidth / 2;
-      const cy = vbHeight / 2;
-      parallaxLayer.attr(
-        "transform",
-        `translate(0 ${translateY}) translate(${cx} ${cy}) scale(${scale}) translate(${-cx} ${-cy})`
-      );
-    };
-    const scheduleParallax = () => {
-      if (parallaxRaf) return;
-      parallaxRaf = requestAnimationFrame(() => {
-        parallaxRaf = 0;
-        updateParallax();
-      });
-    };
     const render = () => {
       container.innerHTML = "";
       const horizonY = vbHeight * 0.56;
       const svg = select_default2(container).append("svg").attr("viewBox", `0 0 ${vbWidth} ${vbHeight}`).attr("preserveAspectRatio", "xMidYMid slice").attr("width", "100%").attr("height", "100%").attr("aria-hidden", "true").style("display", "block");
       const defs = svg.append("defs");
-      parallaxLayer = svg.append("g").attr("data-layer", "horizon");
+      const horizonLayer = svg.append("g").attr("data-layer", "horizon");
       const hazeGradient = defs.append("radialGradient").attr("id", "horizonHaze").attr("cx", "50%").attr("cy", `${horizonY / vbHeight * 100}%`).attr("r", "70%");
       hazeGradient.append("stop").attr("offset", "0%").attr("stop-color", "#00dcff").attr("stop-opacity", 0.12);
       hazeGradient.append("stop").attr("offset", "70%").attr("stop-color", "#000213").attr("stop-opacity", 0);
@@ -2408,9 +2780,8 @@
       horizonGradient.append("stop").attr("offset", "50%").attr("stop-color", "#00dcff").attr("stop-opacity", 0.9);
       horizonGradient.append("stop").attr("offset", "100%").attr("stop-color", "#00dcff").attr("stop-opacity", 0);
       svg.append("rect").attr("x", 0).attr("y", 0).attr("width", vbWidth).attr("height", vbHeight).attr("fill", "#00000b");
-      parallaxLayer.append("ellipse").attr("cx", vbWidth / 2).attr("cy", horizonY).attr("rx", vbWidth * 0.6).attr("ry", vbHeight * 0.28).attr("fill", "url(#horizonHaze)");
-      parallaxLayer.append("line").attr("x1", vbWidth * 0.08).attr("x2", vbWidth * 0.92).attr("y1", horizonY).attr("y2", horizonY).attr("stroke", "url(#horizonLine)").attr("stroke-width", 2).attr("vector-effect", "non-scaling-stroke").attr("opacity", 0.45);
-      updateParallax();
+      horizonLayer.append("ellipse").attr("cx", vbWidth / 2).attr("cy", horizonY).attr("rx", vbWidth * 0.6).attr("ry", vbHeight * 0.28).attr("fill", "url(#horizonHaze)");
+      horizonLayer.append("line").attr("x1", vbWidth * 0.08).attr("x2", vbWidth * 0.92).attr("y1", horizonY).attr("y2", horizonY).attr("stroke", "url(#horizonLine)").attr("stroke-width", 2).attr("vector-effect", "non-scaling-stroke").attr("opacity", 0.45);
     };
     let scheduled = 0;
     const scheduleRender = () => {
@@ -2427,310 +2798,80 @@
     } else {
       window.addEventListener("resize", scheduleRender, { passive: true });
     }
-    if (!prefersReducedMotion) {
-      window.addEventListener("scroll", scheduleParallax, { passive: true });
-      window.addEventListener("resize", scheduleParallax, { passive: true });
-      scheduleParallax();
-    }
-  };
-  var initTextGlitch = () => {
-    const letters = document.querySelectorAll(".glitch-letter");
-    const protocolText = document.getElementById("protocol-text");
-    const characters = "2470ABCDEFGHIJKLNOPQRSTUVXYZ";
-    const runTextEffect = () => {
-      let tick = 0;
-      const maxTicks = 18;
-      const settleOffsets = Array.from({ length: letters.length }, (_, i) => i + 4);
-      const timer2 = window.setInterval(() => {
-        tick++;
-        letters.forEach((letter, index) => {
-          const finalChar = letter.dataset.final || letter.textContent || "";
-          if (tick < settleOffsets[index]) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            letter.textContent = characters[randomIndex];
-          } else {
-            letter.textContent = finalChar;
-          }
-        });
-        if (tick > maxTicks + letters.length) {
-          window.clearInterval(timer2);
-        }
-      }, 80);
-    };
-    letters.forEach((letter) => {
-      letter.dataset.final = letter.textContent || "";
-    });
-    runTextEffect();
-    if (protocolText) {
-      protocolText.addEventListener("click", runTextEffect);
-    }
-  };
-  var initHeaderNav = () => {
-    const headerLinks = Array.from(document.querySelectorAll(".header [data-target]"));
-    const sections = headerLinks.map((link) => document.getElementById(link.getAttribute("data-target") || "")).filter((section) => Boolean(section));
-    const setActive = (id2) => {
-      headerLinks.forEach((link) => {
-        const isActive = link.getAttribute("data-target") === id2;
-        link.classList.toggle("active", isActive);
-      });
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-          }
-        });
-      },
-      { root: null, threshold: 0.6 }
-    );
-    sections.forEach((section) => observer.observe(section));
-    const initActive = () => {
-      if (sections[0]) setActive(sections[0].id);
-    };
-    requestAnimationFrame(initActive);
-    window.addEventListener("load", initActive);
-    headerLinks.forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const mouseEvent = event instanceof MouseEvent ? event : null;
-        if (mouseEvent) {
-          if (mouseEvent.defaultPrevented) return;
-          if (mouseEvent.button !== 0) return;
-          if (mouseEvent.metaKey || mouseEvent.ctrlKey || mouseEvent.shiftKey || mouseEvent.altKey)
-            return;
-        }
-        const targetId = link.getAttribute("data-target");
-        if (!targetId) return;
-        const element = document.getElementById(targetId);
-        if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
-        setActive(targetId);
-      });
-    });
-  };
-  var initStoreVisibility = () => {
-    const storeMain = document.getElementById("store-main");
-    const toggleStoreOnScroll = () => {
-      if (!storeMain) return;
-      const isAtTop = window.scrollY <= 1;
-      storeMain.classList.toggle("is-hidden", !isAtTop);
-    };
-    window.addEventListener("scroll", toggleStoreOnScroll, { passive: true });
-    toggleStoreOnScroll();
-  };
-  var initJokes = () => {
-    const jokeEl = document.getElementById("protocol-joke");
-    const setRandomJoke = (jokes) => {
-      if (!jokeEl || !Array.isArray(jokes) || jokes.length === 0) return;
+    if (prefersReducedMotion()) return;
+  }
+
+  // src/features/jokes.ts
+  function initJokes() {
+    const jokeElement = byId(IDS.protocolJoke);
+    if (!jokeElement) return;
+    const jokes = getJokes();
+    if (!Array.isArray(jokes) || jokes.length === 0) return;
+    const setRandomJoke = () => {
+      var _a;
       const randomIndex = Math.floor(Math.random() * jokes.length);
-      jokeEl.textContent = jokes[randomIndex];
+      jokeElement.textContent = (_a = jokes[randomIndex]) != null ? _a : "";
     };
-    const loadJokes = async () => {
-      try {
-        const url = new URL("src/texts/jokes.json", document.baseURI);
-        const response = await fetch(url, { cache: "no-store" });
-        if (!response.ok) throw new Error(`Failed to load jokes: ${response.status}`);
-        const jokes = await response.json();
-        setRandomJoke(jokes);
-        if (jokeEl) jokeEl.addEventListener("click", () => setRandomJoke(jokes));
-      } catch (e) {
-        setRandomJoke([
-          "No plot armor.",
-          "No badges. Just logs.",
-          "Deviation noted.",
-          "We saw that."
-        ]);
+    setRandomJoke();
+    jokeElement.addEventListener("click", setRandomJoke);
+  }
+
+  // src/features/parallax.ts
+  function initParallax() {
+    const horizon = byId(IDS.horizonBg);
+    const stars = qs(PARALLAX.layers[0].selector);
+    const nebula = qs(PARALLAX.layers[1].selector);
+    const grid = qs(PARALLAX.layers[2].selector);
+    if (!stars || !nebula || !grid || !horizon) return;
+    if (prefersReducedMotion()) return;
+    const layers = [
+      {
+        element: stars,
+        speed: PARALLAX.layers[0].speed,
+        scale: PARALLAX.layers[0].scale,
+        baseOffset: PARALLAX.layers[0].baseOffset
+      },
+      {
+        element: nebula,
+        speed: PARALLAX.layers[1].speed,
+        scale: PARALLAX.layers[1].scale,
+        baseOffset: PARALLAX.layers[1].baseOffset
+      },
+      {
+        element: grid,
+        speed: PARALLAX.layers[2].speed,
+        scale: PARALLAX.layers[2].scale,
+        baseOffset: PARALLAX.layers[2].baseOffset
+      },
+      {
+        element: horizon,
+        speed: PARALLAX.layers[3].speed,
+        scale: PARALLAX.layers[3].scale,
+        baseOffset: PARALLAX.layers[3].baseOffset
       }
-    };
-    loadJokes();
-  };
-  var initBottomBlock = () => {
-    const bottomHeroEl = document.getElementById("bottom-hero");
-    const bottomSubEl = document.getElementById("bottom-sub");
-    const SCRAMBLE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    const scrambleTokens = /* @__PURE__ */ new WeakMap();
-    const getRandomChar = () => {
-      const randomIndex = Math.floor(Math.random() * SCRAMBLE_CHARACTERS.length);
-      return SCRAMBLE_CHARACTERS[randomIndex];
-    };
-    const animateScrambleText = (element, fromText, toText, durationMs = 500) => {
-      if (!element) return Promise.resolve();
-      const from = typeof fromText === "string" ? fromText : String(fromText != null ? fromText : "");
-      const nextText = typeof toText === "string" ? toText : String(toText != null ? toText : "");
-      if (from === nextText) {
-        element.textContent = nextText;
-        return Promise.resolve();
-      }
-      const token = (scrambleTokens.get(element) || 0) + 1;
-      scrambleTokens.set(element, token);
-      const maxLen = Math.max(from.length, nextText.length);
-      const toPadded = nextText.padEnd(maxLen, " ");
-      const order = Array.from({ length: maxLen }, (_, i) => i);
-      for (let i = order.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [order[i], order[j]] = [order[j], order[i]];
-      }
-      const settledMask = Array.from({ length: maxLen }, () => false);
-      let nextToSettle = 0;
-      const start2 = performance.now();
-      return new Promise((resolve) => {
-        const frame2 = (now2) => {
-          if (scrambleTokens.get(element) !== token) return resolve();
-          const progress = Math.min(1, (now2 - start2) / durationMs);
-          const desiredSettled = Math.floor(progress * maxLen);
-          while (nextToSettle < desiredSettled) {
-            const idx = order[nextToSettle];
-            settledMask[idx] = true;
-            nextToSettle++;
-          }
-          let out = "";
-          for (let i = 0; i < maxLen; i++) {
-            const targetChar = toPadded[i];
-            if (settledMask[i]) {
-              out += targetChar;
-              continue;
-            }
-            if (targetChar === " " || targetChar === "\n" || targetChar === "	") {
-              out += targetChar;
-              continue;
-            }
-            out += getRandomChar();
-          }
-          element.textContent = out.replace(/\s+$/, "");
-          if (progress < 1) {
-            requestAnimationFrame(frame2);
-            return;
-          }
-          element.textContent = nextText;
-          resolve();
-        };
-        requestAnimationFrame(frame2);
+    ];
+    let scheduled = 0;
+    const update = () => {
+      scheduled = 0;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      layers.forEach(({ element, speed, scale, baseOffset }) => {
+        const raw = baseOffset - scrollY * speed;
+        const offset = Math.max(-PARALLAX.maxOffsetPx, Math.min(0, raw));
+        element.style.transform = `translate3d(0, ${offset}px, 0) scale(${scale})`;
       });
     };
-    const renderParagraphs = (element, paragraphs) => {
-      if (!element) return;
-      element.innerHTML = "";
-      paragraphs.forEach((text) => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        element.appendChild(p);
-      });
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = requestAnimationFrame(update);
     };
-    const applyBottomBlockCopy = (copy) => {
-      if (!copy || typeof copy !== "object") return;
-      if (bottomHeroEl && typeof copy.hero === "string" && copy.hero.trim()) {
-        bottomHeroEl.textContent = copy.hero;
-      }
-      if (bottomSubEl && Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
-        renderParagraphs(bottomSubEl, copy.paragraphs);
-      }
-    };
-    const getRandomItem = (items) => {
-      if (!Array.isArray(items) || items.length === 0) return null;
-      return items[Math.floor(Math.random() * items.length)];
-    };
-    let bottomCopies = [];
-    let currentBottomCopy = null;
-    let bottomCopiesLoading = null;
-    const fetchBottomCopies = async () => {
-      const url = new URL("src/texts/bottom-block.variants.json", document.baseURI);
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) throw new Error(`Failed to load bottom variants: ${response.status}`);
-      const variants = await response.json();
-      return Object.values(variants).filter((v) => v && typeof v === "object");
-    };
-    const ensureBottomCopiesLoaded = async () => {
-      if (Array.isArray(bottomCopies) && bottomCopies.length > 0) return bottomCopies;
-      if (bottomCopiesLoading) return bottomCopiesLoading;
-      bottomCopiesLoading = fetchBottomCopies().then((copies) => {
-        bottomCopies = copies;
-        return copies;
-      }).catch(() => {
-        bottomCopies = [];
-        return bottomCopies;
-      }).finally(() => {
-        bottomCopiesLoading = null;
-      });
-      return bottomCopiesLoading;
-    };
-    const pickNextBottomCopy = () => {
-      if (!Array.isArray(bottomCopies) || bottomCopies.length === 0) return null;
-      if (bottomCopies.length === 1) return bottomCopies[0];
-      let next = getRandomItem(bottomCopies);
-      let guard = 0;
-      while (next === currentBottomCopy && guard < 10) {
-        next = getRandomItem(bottomCopies);
-        guard++;
-      }
-      return next;
-    };
-    const transitionBottomBlockCopy = async (copy) => {
-      var _a, _b, _c;
-      if (!copy || typeof copy !== "object") return;
-      const heroTo = typeof copy.hero === "string" ? copy.hero : "";
-      const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
-      const heroFrom = (_a = bottomHeroEl == null ? void 0 : bottomHeroEl.textContent) != null ? _a : "";
-      const jobs = [];
-      if (bottomHeroEl) {
-        jobs.push(animateScrambleText(bottomHeroEl, heroFrom, heroTo, 500));
-      }
-      if (bottomSubEl) {
-        const existing = Array.from(bottomSubEl.querySelectorAll("p"));
-        while (existing.length < paragraphsTo.length) {
-          const p = document.createElement("p");
-          bottomSubEl.appendChild(p);
-          existing.push(p);
-        }
-        for (let i = 0; i < existing.length; i++) {
-          const element = existing[i];
-          const from = (_b = element.textContent) != null ? _b : "";
-          const nextText = (_c = paragraphsTo[i]) != null ? _c : "";
-          jobs.push(
-            animateScrambleText(element, from, nextText, 500).then(() => {
-              if (i >= paragraphsTo.length) element.remove();
-            })
-          );
-        }
-      }
-      await Promise.all(jobs);
-      currentBottomCopy = copy;
-    };
-    const loadBottomBlockCopy = async () => {
-      try {
-        await ensureBottomCopiesLoaded();
-        const randomCopy = pickNextBottomCopy();
-        if (randomCopy) {
-          currentBottomCopy = randomCopy;
-          applyBottomBlockCopy(randomCopy);
-        }
-      } catch (e) {
-      }
-    };
-    loadBottomBlockCopy();
-    const bottomBlockEl = document.getElementById("app");
-    const onBottomBlockActivate = (event) => {
-      var _a, _b;
-      if (!bottomBlockEl) return;
-      if ((_b = (_a = event == null ? void 0 : event.target) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "a")) return;
-      ensureBottomCopiesLoaded().then(() => {
-        const next = pickNextBottomCopy();
-        if (!next) return;
-        transitionBottomBlockCopy(next);
-      });
-    };
-    if (bottomBlockEl) {
-      bottomBlockEl.addEventListener("click", onBottomBlockActivate);
-      bottomBlockEl.addEventListener("keydown", (event) => {
-        var _a, _b;
-        if (event.key !== "Enter" && event.key !== " ") return;
-        if ((_b = (_a = event.target) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "a")) return;
-        event.preventDefault();
-        onBottomBlockActivate(event);
-      });
-      if (!bottomBlockEl.hasAttribute("tabindex")) bottomBlockEl.tabIndex = 0;
-    }
-  };
-  var initRedButton = () => {
-    const redButton = document.querySelector(".header .logo-button");
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    update();
+  }
+
+  // src/features/redButton.ts
+  function initRedButton() {
+    const redButton = qs(SELECTORS.headerLogoButton);
     if (!redButton) return;
     redButton.setAttribute("aria-pressed", "false");
     const setExpanded = (isExpanded) => {
@@ -2762,10 +2903,56 @@
         setExpanded(true);
       }
     });
-  };
+  }
+
+  // src/features/storeVisibility.ts
+  function initStoreVisibility() {
+    const storeMain = byId(IDS.storeMain);
+    if (!storeMain) return;
+    const toggleStoreOnScroll = () => {
+      const isAtTop = window.scrollY <= 1;
+      storeMain.classList.toggle("is-hidden", !isAtTop);
+    };
+    window.addEventListener("scroll", toggleStoreOnScroll, { passive: true });
+    toggleStoreOnScroll();
+  }
+
+  // src/features/textGlitch.ts
+  function initTextGlitch() {
+    const letters = qsa(SELECTORS.glitchLetters);
+    if (letters.length === 0) return;
+    const protocolText = byId(IDS.protocolText);
+    const runTextEffect = () => {
+      let tick = 0;
+      const maxTicks = 18;
+      const settleOffsets = Array.from({ length: letters.length }, (_, i) => i + 4);
+      const timer2 = window.setInterval(() => {
+        tick++;
+        letters.forEach((letter, index) => {
+          const finalChar = letter.dataset.final || letter.textContent || "";
+          if (tick < settleOffsets[index]) {
+            const randomIndex = Math.floor(Math.random() * TEXT.glitchCharacters.length);
+            letter.textContent = TEXT.glitchCharacters[randomIndex];
+          } else {
+            letter.textContent = finalChar;
+          }
+        });
+        if (tick > maxTicks + letters.length) {
+          window.clearInterval(timer2);
+        }
+      }, 80);
+    };
+    letters.forEach((letter) => {
+      letter.dataset.final = letter.textContent || "";
+    });
+    runTextEffect();
+    if (protocolText) protocolText.addEventListener("click", runTextEffect);
+  }
+
+  // src/app.ts
   var init2 = () => {
-    initPageBgParallax();
     initHorizonBg();
+    initParallax();
     initTextGlitch();
     initHeaderNav();
     initStoreVisibility();

@@ -1,0 +1,10 @@
+.block-create {
+    display: flex;
+    z-index: 2;
+    flex-direction: row;
+}
+
+.block-create-copy {
+    display: flex;
+    flex-direction: column;
+}

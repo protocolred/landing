@@ -4,5 +4,10 @@
 @import url('legal.css');
 @import url('backgrounds.css');
 @import url('layout.css');
-@import url('components.css');
+@import url('components/header.css');
+@import url('components/hero.css');
+@import url('components/social.css');
+@import url('components/store.css');
+@import url('components/blocks.css');
+@import url('components/app.css');
 @import url('media.css');

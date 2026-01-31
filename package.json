@@ -4,9 +4,8 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "build": "node scripts/prepare-dist.js && npm run build:js && node scripts/update-cache-bust.js",
-        "build:js": "esbuild src/app.ts --bundle --minify --outfile=dist/app.js --platform=browser --target=es2018",
-        "watch": "esbuild src/app.ts --bundle --outfile=dist/app.js --platform=browser --target=es2018 --watch",
+        "build": "rm -rf dist && esbuild src/app.ts --bundle --minify --outfile=dist/app.js --platform=browser --target=es2018 --loader:.json=json --alias:@=src && node scripts/update-cache-bust.js",
+        "watch": "rm -rf dist && esbuild src/app.ts --bundle --outfile=dist/app.js --platform=browser --target=es2018 --watch --loader:.json=json --alias:@=src",
         "start": "node server.js",
         "typecheck": "tsc --noEmit",
         "lint": "npm run lint:format && npm run lint:js && npm run lint:css",

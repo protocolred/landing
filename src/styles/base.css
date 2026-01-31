@@ -1,7 +1,7 @@
 @font-face {
     font-style: normal;
     font-weight: 200;
-    src: url('../fonts/Titillium/TitilliumWeb-ExtraLight.ttf') format('truetype');
+    src: url('../assets/fonts/Titillium/TitilliumWeb-ExtraLight.ttf') format('truetype');
     font-family: 'Titillium Web';
     font-display: swap;
 }
@@ -9,7 +9,7 @@
 @font-face {
     font-style: normal;
     font-weight: 600;
-    src: url('../fonts/Titillium/TitilliumWeb-SemiBold.ttf') format('truetype');
+    src: url('../assets/fonts/Titillium/TitilliumWeb-SemiBold.ttf') format('truetype');
     font-family: 'Titillium Web';
     font-display: swap;
 }

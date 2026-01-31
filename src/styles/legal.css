@@ -27,9 +27,9 @@
 }
 
 .legal-button {
-    /* Match landing header links (.desktop .header > a) */
     appearance: none;
     margin: var(--size-0);
+    margin-right: var(--size-60px);
     padding: var(--size-0);
     border: none;
     border-top: var(--size-0) solid var(--color-transparent);
@@ -43,11 +43,11 @@
 }
 
 .legal-button:hover {
-    border-top: var(--size-2px) solid currentcolor;
+    border-top: var(--size-2px) solid var(--color-white-solid);
 }
 
-.legal-button:active {
-    /* keep consistent with header links (no press shift) */
+.legal-button.active {
+    border-top: var(--size-5px) solid var(--color-white-solid);
 }
 
 .legal-button:focus-visible {
