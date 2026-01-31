@@ -21,12 +21,13 @@
   };
   var PARALLAX = {
     layers: [
-      { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06, baseOffset: -80 },
-      { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08, baseOffset: -140 },
-      { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12, baseOffset: -220 },
-      { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1, baseOffset: 0 }
+      { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06 },
+      { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08 },
+      { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12 },
+      { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1 }
     ],
-    maxOffsetPx: 220
+    maxOffsetPx: 300,
+    startOffsetFactor: 4
   };
   var TEXT = {
     glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
@@ -2825,37 +2826,22 @@
     if (!stars || !nebula || !grid || !horizon) return;
     if (prefersReducedMotion()) return;
     const layers = [
-      {
-        element: stars,
-        speed: PARALLAX.layers[0].speed,
-        scale: PARALLAX.layers[0].scale,
-        baseOffset: PARALLAX.layers[0].baseOffset
-      },
-      {
-        element: nebula,
-        speed: PARALLAX.layers[1].speed,
-        scale: PARALLAX.layers[1].scale,
-        baseOffset: PARALLAX.layers[1].baseOffset
-      },
-      {
-        element: grid,
-        speed: PARALLAX.layers[2].speed,
-        scale: PARALLAX.layers[2].scale,
-        baseOffset: PARALLAX.layers[2].baseOffset
-      },
-      {
-        element: horizon,
-        speed: PARALLAX.layers[3].speed,
-        scale: PARALLAX.layers[3].scale,
-        baseOffset: PARALLAX.layers[3].baseOffset
-      }
+      { element: stars, speed: PARALLAX.layers[0].speed, scale: PARALLAX.layers[0].scale },
+      { element: nebula, speed: PARALLAX.layers[1].speed, scale: PARALLAX.layers[1].scale },
+      { element: grid, speed: PARALLAX.layers[2].speed, scale: PARALLAX.layers[2].scale },
+      { element: horizon, speed: PARALLAX.layers[3].speed, scale: PARALLAX.layers[3].scale }
     ];
     let scheduled = 0;
     const update = () => {
       scheduled = 0;
       const scrollY = window.scrollY || window.pageYOffset || 0;
-      layers.forEach(({ element, speed, scale, baseOffset }) => {
-        const raw = baseOffset - scrollY * speed;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      layers.forEach(({ element, speed, scale }) => {
+        const startOffset = Math.min(
+          PARALLAX.maxOffsetPx,
+          viewportHeight * speed * PARALLAX.startOffsetFactor
+        );
+        const raw = -startOffset + scrollY * speed;
         const offset = Math.max(-PARALLAX.maxOffsetPx, Math.min(0, raw));
         element.style.transform = `translate3d(0, ${offset}px, 0) scale(${scale})`;
       });

@@ -20,12 +20,13 @@ export const SELECTORS = {
 
 export const PARALLAX = {
     layers: [
-        { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06, baseOffset: -80 },
-        { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08, baseOffset: -140 },
-        { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12, baseOffset: -220 },
-        { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1.0, baseOffset: 0 },
+        { selector: SELECTORS.pageBgLayerStars, speed: 0.02, scale: 1.06 },
+        { selector: SELECTORS.pageBgLayerNebula, speed: 0.04, scale: 1.08 },
+        { selector: SELECTORS.pageBgLayerGrid, speed: 0.08, scale: 1.12 },
+        { selector: `#${IDS.horizonBg}`, speed: 0.06, scale: 1.0 },
     ],
-    maxOffsetPx: 220,
+    maxOffsetPx: 300,
+    startOffsetFactor: 4,
 } as const
 
 export const TEXT = {
