@@ -1,5 +1,7 @@
 import * as d3 from 'd3'
 
+import { PARALLAX_CONFIG } from '@/data/parallax'
+
 interface DotNode extends d3.SimulationNodeDatum {
     x: number
     y: number
@@ -33,14 +35,20 @@ const createJitterForce = (strength: number) => {
 const randomBetween = (min: number, max: number) => min + Math.random() * (max - min)
 
 const createColorSampler = () => {
-    const gray = d3.interpolateRgb('rgb(10, 10, 10)', 'rgb(170, 170, 170)')
-    const red = d3.interpolateRgb('rgb(40, 12, 12)', 'rgb(210, 50, 50)')
+    const gray = d3.interpolateRgb(
+        PARALLAX_CONFIG.colorSampler.grayStart,
+        PARALLAX_CONFIG.colorSampler.grayEnd
+    )
+    const red = d3.interpolateRgb(
+        PARALLAX_CONFIG.colorSampler.redStart,
+        PARALLAX_CONFIG.colorSampler.redEnd
+    )
     return () => {
         const roll = Math.random()
-        if (roll < 0.55) {
+        if (roll < PARALLAX_CONFIG.colorSampler.grayChance) {
             return gray(Math.random())
         }
-        if (roll < 0.85) {
+        if (roll < PARALLAX_CONFIG.colorSampler.redChance) {
             return red(Math.random())
         }
         const mix = d3.interpolateRgb(gray(Math.random()), red(Math.random()))
@@ -51,17 +59,26 @@ const createColorSampler = () => {
 const buildLayer = (layer: HTMLElement) => {
     const width = Math.max(1, layer.clientWidth)
     const height = Math.max(1, layer.clientHeight)
-    const count = Number.parseInt(layer.dataset.count ?? '60', 10)
-    const sizeMin = Number.parseFloat(layer.dataset.sizeMin ?? '1')
-    const sizeMax = Number.parseFloat(layer.dataset.sizeMax ?? '3')
-    const jitter = Number.parseFloat(layer.dataset.jitter ?? '0.35')
+    const count = Number.parseInt(
+        layer.dataset.count ?? String(PARALLAX_CONFIG.defaultLayer.count),
+        10
+    )
+    const sizeMin = Number.parseFloat(
+        layer.dataset.sizeMin ?? String(PARALLAX_CONFIG.defaultLayer.sizeMin)
+    )
+    const sizeMax = Number.parseFloat(
+        layer.dataset.sizeMax ?? String(PARALLAX_CONFIG.defaultLayer.sizeMax)
+    )
+    const jitter = Number.parseFloat(
+        layer.dataset.jitter ?? String(PARALLAX_CONFIG.defaultLayer.jitter)
+    )
 
     const svg = d3
         .select(layer)
         .selectAll('svg')
         .data([null])
         .join('svg')
-        .attr('class', 'parallax-svg')
+        .attr('class', PARALLAX_CONFIG.svgClassName)
         .attr('width', width)
         .attr('height', height)
         .attr('viewBox', `0 0 ${width} ${height}`)
@@ -73,7 +90,10 @@ const buildLayer = (layer: HTMLElement) => {
         y: Math.random() * height,
         r: randomBetween(sizeMin, sizeMax),
         color: colorSampler(),
-        opacity: randomBetween(0.35, 0.9),
+        opacity: randomBetween(
+            PARALLAX_CONFIG.defaults.opacityMin,
+            PARALLAX_CONFIG.defaults.opacityMax
+        ),
     }))
 
     const circles = svg
@@ -84,15 +104,15 @@ const buildLayer = (layer: HTMLElement) => {
         .attr('fill', (node: DotNode) => node.color)
         .attr('opacity', (node: DotNode) => node.opacity)
 
-    const padding = 12
+    const padding = PARALLAX_CONFIG.padding
     const simulation = d3
         .forceSimulation(nodes)
-        .force('x', d3.forceX(width / 2).strength(0.002))
-        .force('y', d3.forceY(height / 2).strength(0.002))
+        .force('x', d3.forceX(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength))
+        .force('y', d3.forceY(height / 2).strength(PARALLAX_CONFIG.simulation.forceStrength))
         .force('jitter', createJitterForce(jitter))
-        .velocityDecay(0.35)
-        .alpha(0.9)
-        .alphaDecay(0.004)
+        .velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay)
+        .alpha(PARALLAX_CONFIG.simulation.alpha)
+        .alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay)
         .on('tick', () => {
             for (const node of nodes) {
                 if (node.x < -padding) node.x = width + padding
@@ -108,11 +128,13 @@ const buildLayer = (layer: HTMLElement) => {
 }
 
 export const initParallax = () => {
-    const container = document.querySelector<HTMLElement>('.parallax')
+    const container = document.querySelector<HTMLElement>(PARALLAX_CONFIG.containerSelector)
     if (!container) return
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const layers = Array.from(container.querySelectorAll<HTMLElement>('.parallax-layer'))
+    const layers = Array.from(
+        container.querySelectorAll<HTMLElement>(PARALLAX_CONFIG.layerSelector)
+    )
     if (layers.length === 0) return
 
     const states = new Map<HTMLElement, LayerState>()
@@ -145,11 +167,15 @@ export const initParallax = () => {
                 document.documentElement.scrollHeight - window.innerHeight
             )
             const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax))
-            const maxShrink = 0.08
+            const maxShrink = PARALLAX_CONFIG.motion.maxShrink
             const frontLayer = layers[layers.length - 1]
             for (const layer of layers) {
-                const speed = Number.parseFloat(layer.dataset.speed ?? '0.1')
-                const shrink = Number.parseFloat(layer.dataset.shrink ?? '0')
+                const speed = Number.parseFloat(
+                    layer.dataset.speed ?? String(PARALLAX_CONFIG.motion.defaultSpeed)
+                )
+                const shrink = Number.parseFloat(
+                    layer.dataset.shrink ?? String(PARALLAX_CONFIG.motion.defaultShrink)
+                )
                 const effectiveShrink = layer === frontLayer ? 0 : shrink
                 const scale = 1 - scrollRatio * maxShrink * effectiveShrink
                 layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`

@@ -3120,6 +3120,42 @@
     return node.__zoom;
   }
 
+  // src/data/parallax.ts
+  var PARALLAX_CONFIG = {
+    containerSelector: ".parallax",
+    layerSelector: ".parallax-layer",
+    svgClassName: "parallax-svg",
+    defaultLayer: {
+      count: 10,
+      sizeMin: 1,
+      sizeMax: 3,
+      jitter: 0.35
+    },
+    motion: {
+      maxShrink: 0.9,
+      defaultSpeed: 0.1,
+      defaultShrink: 0
+    },
+    simulation: {
+      forceStrength: 2e-3,
+      velocityDecay: 0.35,
+      alpha: 0.9,
+      alphaDecay: 4e-3
+    },
+    colorSampler: {
+      grayStart: "rgb(110, 10, 10)",
+      grayEnd: "rgb(110, 10, 10)",
+      redStart: "rgb(40, 12, 12)",
+      redEnd: "rgb(210, 50, 50)",
+      grayChance: 0.55,
+      redChance: 0.85
+    },
+    defaults: {
+      opacityMin: 0.35,
+      opacityMax: 0.9
+    }
+  };
+
   // src/features/parallax.ts
   var createJitterForce = (strength) => {
     let nodes = [];
@@ -3138,14 +3174,20 @@
   };
   var randomBetween = (min2, max2) => min2 + Math.random() * (max2 - min2);
   var createColorSampler = () => {
-    const gray = rgb_default("rgb(10, 10, 10)", "rgb(170, 170, 170)");
-    const red = rgb_default("rgb(40, 12, 12)", "rgb(210, 50, 50)");
+    const gray = rgb_default(
+      PARALLAX_CONFIG.colorSampler.grayStart,
+      PARALLAX_CONFIG.colorSampler.grayEnd
+    );
+    const red = rgb_default(
+      PARALLAX_CONFIG.colorSampler.redStart,
+      PARALLAX_CONFIG.colorSampler.redEnd
+    );
     return () => {
       const roll = Math.random();
-      if (roll < 0.55) {
+      if (roll < PARALLAX_CONFIG.colorSampler.grayChance) {
         return gray(Math.random());
       }
-      if (roll < 0.85) {
+      if (roll < PARALLAX_CONFIG.colorSampler.redChance) {
         return red(Math.random());
       }
       const mix = rgb_default(gray(Math.random()), red(Math.random()));
@@ -3156,22 +3198,34 @@
     var _a, _b, _c, _d;
     const width = Math.max(1, layer.clientWidth);
     const height = Math.max(1, layer.clientHeight);
-    const count = Number.parseInt((_a = layer.dataset.count) != null ? _a : "60", 10);
-    const sizeMin = Number.parseFloat((_b = layer.dataset.sizeMin) != null ? _b : "1");
-    const sizeMax = Number.parseFloat((_c = layer.dataset.sizeMax) != null ? _c : "3");
-    const jitter = Number.parseFloat((_d = layer.dataset.jitter) != null ? _d : "0.35");
-    const svg = select_default2(layer).selectAll("svg").data([null]).join("svg").attr("class", "parallax-svg").attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "none");
+    const count = Number.parseInt(
+      (_a = layer.dataset.count) != null ? _a : String(PARALLAX_CONFIG.defaultLayer.count),
+      10
+    );
+    const sizeMin = Number.parseFloat(
+      (_b = layer.dataset.sizeMin) != null ? _b : String(PARALLAX_CONFIG.defaultLayer.sizeMin)
+    );
+    const sizeMax = Number.parseFloat(
+      (_c = layer.dataset.sizeMax) != null ? _c : String(PARALLAX_CONFIG.defaultLayer.sizeMax)
+    );
+    const jitter = Number.parseFloat(
+      (_d = layer.dataset.jitter) != null ? _d : String(PARALLAX_CONFIG.defaultLayer.jitter)
+    );
+    const svg = select_default2(layer).selectAll("svg").data([null]).join("svg").attr("class", PARALLAX_CONFIG.svgClassName).attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "none");
     const colorSampler = createColorSampler();
     const nodes = range(count).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
       r: randomBetween(sizeMin, sizeMax),
       color: colorSampler(),
-      opacity: randomBetween(0.35, 0.9)
+      opacity: randomBetween(
+        PARALLAX_CONFIG.defaults.opacityMin,
+        PARALLAX_CONFIG.defaults.opacityMax
+      )
     }));
     const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity);
-    const padding = 12;
-    const simulation = simulation_default(nodes).force("x", x_default(width / 2).strength(2e-3)).force("y", y_default(height / 2).strength(2e-3)).force("jitter", createJitterForce(jitter)).velocityDecay(0.35).alpha(0.9).alphaDecay(4e-3).on("tick", () => {
+    const padding = PARALLAX_CONFIG.padding;
+    const simulation = simulation_default(nodes).force("x", x_default(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("y", y_default(height / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("jitter", createJitterForce(jitter)).velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay).alpha(PARALLAX_CONFIG.simulation.alpha).alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay).on("tick", () => {
       for (const node of nodes) {
         if (node.x < -padding) node.x = width + padding;
         if (node.x > width + padding) node.x = -padding;
@@ -3183,10 +3237,12 @@
     return { layer, simulation };
   };
   var initParallax = () => {
-    const container = document.querySelector(".parallax");
+    const container = document.querySelector(PARALLAX_CONFIG.containerSelector);
     if (!container) return;
     const prefersReducedMotion2 = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const layers = Array.from(container.querySelectorAll(".parallax-layer"));
+    const layers = Array.from(
+      container.querySelectorAll(PARALLAX_CONFIG.layerSelector)
+    );
     if (layers.length === 0) return;
     const states = /* @__PURE__ */ new Map();
     const rebuild = () => {
@@ -3216,11 +3272,15 @@
           document.documentElement.scrollHeight - window.innerHeight
         );
         const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax));
-        const maxShrink = 0.08;
+        const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
         const frontLayer = layers[layers.length - 1];
         for (const layer of layers) {
-          const speed = Number.parseFloat((_a = layer.dataset.speed) != null ? _a : "0.1");
-          const shrink = Number.parseFloat((_b = layer.dataset.shrink) != null ? _b : "0");
+          const speed = Number.parseFloat(
+            (_a = layer.dataset.speed) != null ? _a : String(PARALLAX_CONFIG.motion.defaultSpeed)
+          );
+          const shrink = Number.parseFloat(
+            (_b = layer.dataset.shrink) != null ? _b : String(PARALLAX_CONFIG.motion.defaultShrink)
+          );
           const effectiveShrink = layer === frontLayer ? 0 : shrink;
           const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
           layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
