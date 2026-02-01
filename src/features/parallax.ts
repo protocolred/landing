@@ -17,6 +17,13 @@ interface LayerState {
     simulation: d3.Simulation<DotNode, undefined>
 }
 
+type SizeUnit = 'px' | 'dvh' | 'dwh' | 'dvw' | 'vh' | 'vw' | '%'
+
+interface SizeValue {
+    value: number
+    unit: SizeUnit
+}
+
 const createJitterForce = (strength: number) => {
     let nodes: DotNode[] = []
     const force = (alpha: number) => {
@@ -33,6 +40,40 @@ const createJitterForce = (strength: number) => {
 }
 
 const randomBetween = (min: number, max: number) => min + Math.random() * (max - min)
+
+const parseSizeValue = (value: string): SizeValue | null => {
+    const trimmed = value.trim()
+    const match = trimmed.match(/^(-?\d*\.?\d+)(px|dvh|dwh|dvw|vh|vw|%)?$/)
+    if (!match) return null
+    const numeric = Number(match[1])
+    if (!Number.isFinite(numeric)) return null
+    return {
+        value: numeric,
+        unit: (match[2] ?? 'px') as SizeUnit,
+    }
+}
+
+const resolveSizePx = (value: string): number | null => {
+    const parsed = parseSizeValue(value)
+    if (!parsed) return null
+    switch (parsed.unit) {
+        case 'px':
+            return parsed.value
+        case 'dvh':
+        case 'dwh':
+        case 'vh':
+            return (window.innerHeight * parsed.value) / 100
+        case 'dvw':
+        case 'vw':
+            return (window.innerWidth * parsed.value) / 100
+        case '%': {
+            const basis = Math.min(window.innerWidth, window.innerHeight)
+            return (basis * parsed.value) / 100
+        }
+        default:
+            return null
+    }
+}
 
 const createColorSampler = () => {
     const gray = d3.interpolateRgb(
@@ -139,7 +180,21 @@ export const initParallax = () => {
 
     const states = new Map<HTMLElement, LayerState>()
 
+    const getScrollRatio = () => {
+        const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
+        return Math.min(1, Math.max(0, window.scrollY / scrollMax))
+    }
+
+    const setContainerSize = (scrollRatio: number) => {
+        const startSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.start)
+        const endSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.end)
+        if (startSizePx === null || endSizePx === null) return
+        const sizePx = startSizePx + (endSizePx - startSizePx) * scrollRatio
+        container.style.setProperty('--parallax-size', `${Math.max(0, sizePx)}px`)
+    }
+
     const rebuild = () => {
+        setContainerSize(getScrollRatio())
         for (const state of states.values()) {
             state.simulation.stop()
         }
@@ -162,11 +217,8 @@ export const initParallax = () => {
         let ticking = false
         let latestScroll = window.scrollY
         const update = () => {
-            const scrollMax = Math.max(
-                1,
-                document.documentElement.scrollHeight - window.innerHeight
-            )
-            const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax))
+            const scrollRatio = getScrollRatio()
+            setContainerSize(scrollRatio)
             const maxShrink = PARALLAX_CONFIG.motion.maxShrink
             const frontLayer = layers[layers.length - 1]
             for (const layer of layers) {
@@ -197,6 +249,7 @@ export const initParallax = () => {
             if (raf) cancelAnimationFrame(raf)
             raf = requestAnimationFrame(() => {
                 rebuild()
+                applyParallax()
             })
         }
     })()

@@ -2,6 +2,11 @@ export const PARALLAX_CONFIG = {
     containerSelector: '.parallax',
     layerSelector: '.parallax-layer',
     svgClassName: 'parallax-svg',
+    containerSize: {
+        start: '100dvw',
+        end: '100dvw',
+    },
+    padding: 12,
     defaultLayer: {
         count: 10,
         sizeMin: 1,

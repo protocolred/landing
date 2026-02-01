@@ -3125,6 +3125,11 @@
     containerSelector: ".parallax",
     layerSelector: ".parallax-layer",
     svgClassName: "parallax-svg",
+    containerSize: {
+      start: "100dvw",
+      end: "100dvw"
+    },
+    padding: 12,
     defaultLayer: {
       count: 10,
       sizeMin: 1,
@@ -3173,6 +3178,39 @@
     return force;
   };
   var randomBetween = (min2, max2) => min2 + Math.random() * (max2 - min2);
+  var parseSizeValue = (value) => {
+    var _a;
+    const trimmed = value.trim();
+    const match = trimmed.match(/^(-?\d*\.?\d+)(px|dvh|dwh|dvw|vh|vw|%)?$/);
+    if (!match) return null;
+    const numeric = Number(match[1]);
+    if (!Number.isFinite(numeric)) return null;
+    return {
+      value: numeric,
+      unit: (_a = match[2]) != null ? _a : "px"
+    };
+  };
+  var resolveSizePx = (value) => {
+    const parsed = parseSizeValue(value);
+    if (!parsed) return null;
+    switch (parsed.unit) {
+      case "px":
+        return parsed.value;
+      case "dvh":
+      case "dwh":
+      case "vh":
+        return window.innerHeight * parsed.value / 100;
+      case "dvw":
+      case "vw":
+        return window.innerWidth * parsed.value / 100;
+      case "%": {
+        const basis2 = Math.min(window.innerWidth, window.innerHeight);
+        return basis2 * parsed.value / 100;
+      }
+      default:
+        return null;
+    }
+  };
   var createColorSampler = () => {
     const gray = rgb_default(
       PARALLAX_CONFIG.colorSampler.grayStart,
@@ -3245,7 +3283,19 @@
     );
     if (layers.length === 0) return;
     const states = /* @__PURE__ */ new Map();
+    const getScrollRatio = () => {
+      const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      return Math.min(1, Math.max(0, window.scrollY / scrollMax));
+    };
+    const setContainerSize = (scrollRatio) => {
+      const startSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.start);
+      const endSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.end);
+      if (startSizePx === null || endSizePx === null) return;
+      const sizePx = startSizePx + (endSizePx - startSizePx) * scrollRatio;
+      container.style.setProperty("--parallax-size", `${Math.max(0, sizePx)}px`);
+    };
     const rebuild = () => {
+      setContainerSize(getScrollRatio());
       for (const state of states.values()) {
         state.simulation.stop();
       }
@@ -3267,11 +3317,8 @@
       let latestScroll = window.scrollY;
       const update = () => {
         var _a, _b;
-        const scrollMax = Math.max(
-          1,
-          document.documentElement.scrollHeight - window.innerHeight
-        );
-        const scrollRatio = Math.min(1, Math.max(0, latestScroll / scrollMax));
+        const scrollRatio = getScrollRatio();
+        setContainerSize(scrollRatio);
         const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
         const frontLayer = layers[layers.length - 1];
         for (const layer of layers) {
@@ -3301,6 +3348,7 @@
         if (raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(() => {
           rebuild();
+          applyParallax();
         });
       };
     })();
