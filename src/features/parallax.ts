@@ -10,6 +10,11 @@ interface DotNode extends d3.SimulationNodeDatum {
     r: number
     color: string
     opacity: number
+    orbitRadiusPx: number
+    orbitSpeedRad: number
+    orbitPhase: number
+    orbitWobbleSpeedRad: number
+    orbitWobblePhase: number
 }
 
 interface LayerState {
@@ -40,6 +45,8 @@ const createJitterForce = (strength: number) => {
 }
 
 const randomBetween = (min: number, max: number) => min + Math.random() * (max - min)
+
+const TAU = Math.PI * 2
 
 const parseSizeValue = (value: string): SizeValue | null => {
     const trimmed = value.trim()
@@ -98,18 +105,27 @@ const createColorSampler = () => {
 }
 
 const buildLayer = (layer: HTMLElement) => {
+    // Layer viewport size (dots are positioned in this coordinate system)
     const width = Math.max(1, layer.clientWidth)
     const height = Math.max(1, layer.clientHeight)
+
+    // How many dots to create in this layer:
+    // - `data-count="..."` on `.parallax-layer` has priority
+    // - otherwise `PARALLAX_CONFIG.defaultLayer.count`
     const count = Number.parseInt(
         layer.dataset.count ?? String(PARALLAX_CONFIG.defaultLayer.count),
         10
     )
+
+    // Dot radius range (px). Can be overridden per-layer via data attributes.
     const sizeMin = Number.parseFloat(
         layer.dataset.sizeMin ?? String(PARALLAX_CONFIG.defaultLayer.sizeMin)
     )
     const sizeMax = Number.parseFloat(
         layer.dataset.sizeMax ?? String(PARALLAX_CONFIG.defaultLayer.sizeMax)
     )
+
+    // Random "noise" force strength for this layer (higher => more chaotic movement)
     const jitter = Number.parseFloat(
         layer.dataset.jitter ?? String(PARALLAX_CONFIG.defaultLayer.jitter)
     )
@@ -135,6 +151,14 @@ const buildLayer = (layer: HTMLElement) => {
             PARALLAX_CONFIG.defaults.opacityMin,
             PARALLAX_CONFIG.defaults.opacityMax
         ),
+        orbitRadiusPx: randomBetween(PARALLAX_CONFIG.orbit.radiusPxMin, PARALLAX_CONFIG.orbit.radiusPxMax),
+        orbitSpeedRad: randomBetween(PARALLAX_CONFIG.orbit.speedRadMin, PARALLAX_CONFIG.orbit.speedRadMax),
+        orbitPhase: Math.random() * TAU,
+        orbitWobbleSpeedRad: randomBetween(
+            PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
+            PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
+        ),
+        orbitWobblePhase: Math.random() * TAU,
     }))
 
     const circles = svg
@@ -155,6 +179,7 @@ const buildLayer = (layer: HTMLElement) => {
         .alpha(PARALLAX_CONFIG.simulation.alpha)
         .alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay)
         .on('tick', () => {
+            const t = performance.now() / 1000
             for (const node of nodes) {
                 if (node.x < -padding) node.x = width + padding
                 if (node.x > width + padding) node.x = -padding
@@ -162,7 +187,19 @@ const buildLayer = (layer: HTMLElement) => {
                 if (node.y > height + padding) node.y = -padding
             }
 
-            circles.attr('cx', (node: DotNode) => node.x).attr('cy', (node: DotNode) => node.y)
+            circles
+                .attr('cx', (node: DotNode) => {
+                    const angle = node.orbitPhase + node.orbitSpeedRad * t
+                    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
+                    const r = node.orbitRadiusPx * wobble
+                    return node.x + Math.cos(angle) * r
+                })
+                .attr('cy', (node: DotNode) => {
+                    const angle = node.orbitPhase + node.orbitSpeedRad * t
+                    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
+                    const r = node.orbitRadiusPx * wobble
+                    return node.y + Math.sin(angle) * r
+                })
         })
 
     return { layer, simulation }
@@ -181,11 +218,13 @@ export const initParallax = () => {
     const states = new Map<HTMLElement, LayerState>()
 
     const getScrollRatio = () => {
+        // 0..1 value used for container size + layer scaling
         const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
         return Math.min(1, Math.max(0, window.scrollY / scrollMax))
     }
 
     const setContainerSize = (scrollRatio: number) => {
+        // Writes CSS var `--parallax-size` so CSS can react to scroll
         const startSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.start)
         const endSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.end)
         if (startSizePx === null || endSizePx === null) return
@@ -222,6 +261,7 @@ export const initParallax = () => {
             const maxShrink = PARALLAX_CONFIG.motion.maxShrink
             const frontLayer = layers[layers.length - 1]
             for (const layer of layers) {
+                // Per-layer motion overrides
                 const speed = Number.parseFloat(
                     layer.dataset.speed ?? String(PARALLAX_CONFIG.motion.defaultSpeed)
                 )
@@ -230,6 +270,7 @@ export const initParallax = () => {
                 )
                 const effectiveShrink = layer === frontLayer ? 0 : shrink
                 const scale = 1 - scrollRatio * maxShrink * effectiveShrink
+                // Translate on scroll + optional scale to create depth
                 layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`
             }
             ticking = false
