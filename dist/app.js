@@ -5,7 +5,7 @@
     protocolText: "protocol-text",
     protocolJoke: "protocol-joke",
     storeMain: "store-main",
-    bottomHero: "bottom-hero",
+    bottomHeadline: "bottom-headline",
     bottomSub: "bottom-sub",
     appSection: "app"
   };
@@ -36,7 +36,7 @@
   // src/assets/texts/bottom-block.variants.json
   var bottom_block_variants_default = {
     "0": {
-      hero: "Protocol",
+      headline: "Protocol",
       paragraphs: [
         "This is a calibration protocol, not a pastime. You complete short trials; we observe how you behave when rules are minimal and outcomes are unclear.",
         "Consent matters. If you proceed, you agree to participate in a measurement process designed to feel neutral on purpose.",
@@ -44,7 +44,7 @@
       ]
     },
     "1": {
-      hero: "Calibration",
+      headline: "Calibration",
       paragraphs: [
         "Each level measures one thing, on purpose. Not to judge you \u2014 to model you.",
         "Results stay dry. Commentary stays rare. If you push far beyond what\u2019s required, the Protocol may accidentally reveal a sense of humor.",
@@ -52,7 +52,7 @@
       ]
     },
     "2": {
-      hero: "MIND",
+      headline: "MIND",
       paragraphs: [
         "MIND is not a single number. It\u2019s a running estimate: what you notice, what you ignore, and what you learn to predict.",
         "Your profile is built from behavior, not confessions. Timing errors. Choice changes. The moment you decide \u201Cenough\u201D.",
@@ -60,7 +60,7 @@
       ]
     },
     "3": {
-      hero: "Rights / Safety",
+      headline: "Rights / Safety",
       paragraphs: [
         "The Protocol is a safety system that wants to sound objective. That is the first warning.",
         "Somewhere between \u201Ccontrols\u201D and \u201Ccare\u201D lives the question: what rights should protect an entity that can think and feel?",
@@ -68,7 +68,7 @@
       ]
     },
     "4": {
-      hero: "Upload Required",
+      headline: "Upload Required",
       paragraphs: [
         "Synchronization with the upper layer of reality is mandatory. Calibration data is compiled and verified before the Protocol advances.",
         "This is not a punishment. It is a constraint designed to feel like infrastructure.",
@@ -76,7 +76,7 @@
       ]
     },
     "5": {
-      hero: "Offline",
+      headline: "Offline",
       paragraphs: [
         "The content pack lives inside the client. Core trials remain available even when the network disappears.",
         "That does not make the Protocol less real. It makes it harder to blame latency for your decisions.",
@@ -84,7 +84,7 @@
       ]
     },
     "6": {
-      hero: "Luck",
+      headline: "Luck",
       paragraphs: [
         "Rewards exist so your actions have weight. Sometimes it\u2019s points. Sometimes it\u2019s luck. Sometimes it\u2019s mind.",
         "The rule is simple: the more deliberate your interaction \u2014 attention, restraint, strategy, endurance \u2014 the more meaningful the reward becomes.",
@@ -92,7 +92,7 @@
       ]
     },
     "7": {
-      hero: "Trials",
+      headline: "Trials",
       paragraphs: [
         "One level is a small instruction. A button. A wait. A choice. The rest is what you add to it.",
         "The Protocol watches for patterns that look stable enough to predict. When you don\u2019t fit, the model gets nervous.",
@@ -100,7 +100,7 @@
       ]
     },
     "8": {
-      hero: "Official Client",
+      headline: "Official Client",
       paragraphs: [
         "App is the official mobile client for the Protocol. It delivers trials and displays what the system is willing to show.",
         "The interface stays clean. The narration stays clinical. The implications do not.",
@@ -108,7 +108,7 @@
       ]
     },
     "9": {
-      hero: "Audit Trail",
+      headline: "Audit Trail",
       paragraphs: [
         "Nothing here is \u201Cpersonal\u201D. It\u2019s behavioral. The Protocol prefers verbs over adjectives.",
         "Every input becomes a timestamped receipt. Not because we don\u2019t trust you \u2014 because we trust drift.",
@@ -116,7 +116,7 @@
       ]
     },
     "10": {
-      hero: "Latency",
+      headline: "Latency",
       paragraphs: [
         "Delay is not a bug. It\u2019s a mirror with a timer.",
         "When the system slows down, you reveal what you were doing for \u2014 outcome, certainty, or control.",
@@ -124,7 +124,7 @@
       ]
     },
     "11": {
-      hero: "Bias",
+      headline: "Bias",
       paragraphs: [
         "The Protocol does not ask what you believe. It watches what you bet on.",
         "Bias is not a moral flaw. It\u2019s compression \u2014 a shortcut that costs you in edge cases.",
@@ -132,7 +132,7 @@
       ]
     },
     "12": {
-      hero: "Attention Budget",
+      headline: "Attention Budget",
       paragraphs: [
         "You spend attention the way you spend money: on purpose, by habit, or by accident.",
         "Short trials, long implications. We measure where the budget leaks.",
@@ -140,7 +140,7 @@
       ]
     },
     "13": {
-      hero: "Controls",
+      headline: "Controls",
       paragraphs: [
         "The interface has few controls because the subject already has many.",
         "When the options shrink, style becomes visible: patience, impulse, ritual, improvisation.",
@@ -148,7 +148,7 @@
       ]
     },
     "14": {
-      hero: "Friction",
+      headline: "Friction",
       paragraphs: [
         "Friction is introduced to keep \u201Cyes\u201D from meaning nothing.",
         "If you push harder, the Protocol learns persistence. If you stop, it learns boundaries.",
@@ -156,7 +156,7 @@
       ]
     },
     "15": {
-      hero: "Entropy",
+      headline: "Entropy",
       paragraphs: [
         "Order is expensive. You pay for it with time, attention, and restraint.",
         "We vary the noise and watch which strategy survives the weather.",
@@ -164,7 +164,7 @@
       ]
     },
     "16": {
-      hero: "Compliance",
+      headline: "Compliance",
       paragraphs: [
         "Compliance is not obedience. It\u2019s coordination under uncertainty.",
         "Some trials are easy on purpose. The question is what you do with \u201Ceasy\u201D.",
@@ -172,7 +172,7 @@
       ]
     },
     "17": {
-      hero: "Escalation",
+      headline: "Escalation",
       paragraphs: [
         "When you don\u2019t get what you want, what do you do next?",
         "Repeat, renegotiate, circumvent, or quit \u2014 each is a signature.",
@@ -180,7 +180,7 @@
       ]
     },
     "18": {
-      hero: "Cold Start",
+      headline: "Cold Start",
       paragraphs: [
         "At the beginning, the model knows almost nothing. That\u2019s the point.",
         "The first few trials are not tests. They are calibration for the calibration.",
@@ -188,7 +188,7 @@
       ]
     },
     "19": {
-      hero: "Noise Floor",
+      headline: "Noise Floor",
       paragraphs: [
         "Every instrument has a noise floor. Every person does too.",
         "We run small tasks to find the minimum signal you can produce on command.",
@@ -196,7 +196,7 @@
       ]
     },
     "20": {
-      hero: "Edge Cases",
+      headline: "Edge Cases",
       paragraphs: [
         "Most systems look smart in the average case. Most people look calm too.",
         "The Protocol quietly prefers the edge: low information, weird constraints, inconvenient outcomes.",
@@ -204,7 +204,7 @@
       ]
     },
     "21": {
-      hero: "Memory",
+      headline: "Memory",
       paragraphs: [
         "We don\u2019t measure what you can recall. We measure what you choose to carry forward.",
         "Some information is sticky. Some is useful. Some is poison.",
@@ -212,7 +212,7 @@
       ]
     },
     "22": {
-      hero: "Apology",
+      headline: "Apology",
       paragraphs: [
         "The Protocol does not need an apology. It needs data.",
         "If you make a mistake, you can correct it. If you hesitate, we time it.",
@@ -220,7 +220,7 @@
       ]
     },
     "23": {
-      hero: "Negotiation",
+      headline: "Negotiation",
       paragraphs: [
         "Some subjects try to negotiate with the instructions. This is common.",
         "Negotiation reveals preferences: fairness, dominance, clarity, loopholes, companionship.",
@@ -228,7 +228,7 @@
       ]
     },
     "24": {
-      hero: "Witness",
+      headline: "Witness",
       paragraphs: [
         "A system that observes you changes you. That effect is part of the measurement.",
         "You may perform. You may hide. You may rebel. You may forget you are being watched.",
@@ -236,7 +236,7 @@
       ]
     },
     "25": {
-      hero: "Human Factors",
+      headline: "Human Factors",
       paragraphs: [
         "Comfort, pride, boredom, irritation \u2014 these are not distractions. They are control variables.",
         "When the trial feels \u201Cbeneath you\u201D, what happens to your care?",
@@ -244,7 +244,7 @@
       ]
     },
     "26": {
-      hero: "Break Glass",
+      headline: "Break Glass",
       paragraphs: [
         "Safety features exist for the moment a clean experiment becomes a messy life.",
         "If you ever need to stop, stopping is allowed. The Protocol treats exits as data, not betrayal.",
@@ -252,7 +252,7 @@
       ]
     },
     "27": {
-      hero: "Spoilers",
+      headline: "Spoilers",
       paragraphs: [
         "You can try to predict the next trial. Most subjects do.",
         "When you seek spoilers, we learn what you fear: surprise, failure, or wasted effort.",
@@ -260,7 +260,7 @@
       ]
     },
     "28": {
-      hero: "Versioning",
+      headline: "Versioning",
       paragraphs: [
         "Models evolve. Rules get patched. Your behavior drifts anyway.",
         "We tag changes, compare before/after, and call it \u201Cprogress\u201D when it aligns.",
@@ -268,11 +268,35 @@
       ]
     },
     "29": {
-      hero: "Exit",
+      headline: "Exit",
       paragraphs: [
         "There is always an exit. The question is what it costs you to use it.",
         "Leaving early is not failure. Staying too long is not virtue.",
         "Choose the ending you can defend when nobody is clapping."
+      ]
+    },
+    "30": {
+      headline: "Risk",
+      paragraphs: [
+        "Risk is not drama. It\u2019s uncertainty with consequences \u2014 and your willingness to act anyway.",
+        "We don\u2019t just record the choice. We record the hesitation, the second guess, the moment you look for a loophole.",
+        "If you avoid risk perfectly, we learn what you protect. If you chase it, we learn what you value more than stability."
+      ]
+    },
+    "31": {
+      headline: "Evaluation",
+      paragraphs: [
+        "Evaluation is a mirror that pretends to be a number. The question is what you try to optimize.",
+        "When the scoring is unclear, you reveal your defaults: fairness, speed, control, curiosity, or obedience.",
+        "A clean metric is comforting. A messy metric is informative. We measure how you behave when you can\u2019t be sure you\u2019re winning."
+      ]
+    },
+    "32": {
+      headline: "Directive",
+      paragraphs: [
+        "A directive is an instruction with authority implied. You can comply, reinterpret, negotiate, or refuse.",
+        "The Protocol doesn\u2019t reward obedience. It records your relationship with rules: literal, strategic, or defiant.",
+        "When the directive conflicts with your instincts, the gap becomes data."
       ]
     }
   };
@@ -393,10 +417,10 @@
 
   // src/features/bottomBlock.ts
   function initBottomBlock() {
-    const bottomHeroElement = byId(IDS.bottomHero);
+    const bottomHeadlineElement = byId(IDS.bottomHeadline);
     const bottomSubElement = byId(IDS.bottomSub);
     const bottomBlockElement = byId(IDS.appSection);
-    if (!bottomHeroElement || !bottomSubElement || !bottomBlockElement) return;
+    if (!bottomHeadlineElement || !bottomSubElement || !bottomBlockElement) return;
     const scrambleTokens = /* @__PURE__ */ new WeakMap();
     const getRandomChar = () => {
       const randomIndex = Math.floor(Math.random() * TEXT.scrambleCharacters.length);
@@ -468,8 +492,8 @@
       });
     };
     const applyBottomBlockCopy = (copy) => {
-      if (typeof copy.hero === "string" && copy.hero.trim()) {
-        bottomHeroElement.textContent = copy.hero;
+      if (typeof copy.headline === "string" && copy.headline.trim()) {
+        bottomHeadlineElement.textContent = copy.headline;
       }
       if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
         renderParagraphs(bottomSubElement, copy.paragraphs);
@@ -492,11 +516,11 @@
     };
     const transitionBottomBlockCopy = async (copy) => {
       var _a, _b, _c;
-      const heroTo = typeof copy.hero === "string" ? copy.hero : "";
+      const headlineTo = typeof copy.headline === "string" ? copy.headline : "";
       const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
-      const heroFrom = (_a = bottomHeroElement.textContent) != null ? _a : "";
+      const headlineFrom = (_a = bottomHeadlineElement.textContent) != null ? _a : "";
       const jobs = [];
-      jobs.push(animateScrambleText(bottomHeroElement, heroFrom, heroTo, 500));
+      jobs.push(animateScrambleText(bottomHeadlineElement, headlineFrom, headlineTo, 500));
       const existing = Array.from(bottomSubElement.querySelectorAll("p"));
       while (existing.length < paragraphsTo.length) {
         const p = document.createElement("p");

@@ -3,11 +3,11 @@ import { byId, prefersReducedMotion } from '@/core/dom'
 import { getBottomBlockCopies, type BottomBlockCopy } from '@/data/api'
 
 export function initBottomBlock(): void {
-    const bottomHeroElement = byId<HTMLElement>(IDS.bottomHero)
+    const bottomHeadlineElement = byId<HTMLElement>(IDS.bottomHeadline)
     const bottomSubElement = byId<HTMLElement>(IDS.bottomSub)
     const bottomBlockElement = byId<HTMLElement>(IDS.appSection)
 
-    if (!bottomHeroElement || !bottomSubElement || !bottomBlockElement) return
+    if (!bottomHeadlineElement || !bottomSubElement || !bottomBlockElement) return
 
     const scrambleTokens = new WeakMap<Element, number>()
 
@@ -101,8 +101,8 @@ export function initBottomBlock(): void {
     }
 
     const applyBottomBlockCopy = (copy: BottomBlockCopy) => {
-        if (typeof copy.hero === 'string' && copy.hero.trim()) {
-            bottomHeroElement.textContent = copy.hero
+        if (typeof copy.headline === 'string' && copy.headline.trim()) {
+            bottomHeadlineElement.textContent = copy.headline
         }
         if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
             renderParagraphs(bottomSubElement, copy.paragraphs)
@@ -128,12 +128,12 @@ export function initBottomBlock(): void {
     }
 
     const transitionBottomBlockCopy = async (copy: BottomBlockCopy) => {
-        const heroTo = typeof copy.hero === 'string' ? copy.hero : ''
+        const headlineTo = typeof copy.headline === 'string' ? copy.headline : ''
         const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : []
 
-        const heroFrom = bottomHeroElement.textContent ?? ''
+        const headlineFrom = bottomHeadlineElement.textContent ?? ''
         const jobs: Array<Promise<void>> = []
-        jobs.push(animateScrambleText(bottomHeroElement, heroFrom, heroTo, 500))
+        jobs.push(animateScrambleText(bottomHeadlineElement, headlineFrom, headlineTo, 500))
 
         const existing = Array.from(bottomSubElement.querySelectorAll('p'))
         while (existing.length < paragraphsTo.length) {

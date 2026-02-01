@@ -2,7 +2,7 @@ export const IDS = {
     protocolText: 'protocol-text',
     protocolJoke: 'protocol-joke',
     storeMain: 'store-main',
-    bottomHero: 'bottom-hero',
+    bottomHeadline: 'bottom-headline',
     bottomSub: 'bottom-sub',
     appSection: 'app',
 } as const

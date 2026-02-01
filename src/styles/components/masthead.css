@@ -22,3 +22,27 @@
     width: var(--size-80px);
     text-align: center;
 }
+
+.main-text-sub {
+    display: flex;
+    justify-content: center;
+    gap: var(--size-18px);
+    margin-top: var(--size-14px);
+    font-weight: 600;
+    font-size: var(--font-normal);
+    line-height: var(--size-120pct);
+    letter-spacing: var(--size-1-5px);
+    text-transform: uppercase;
+    opacity: 0.1;
+}
+
+.main-text-sub-word {
+    display: inline-flex;
+    gap: var(--size-0);
+}
+
+.main-text-sub .glitch-letter {
+    display: inline-block;
+    width: auto;
+    text-align: center;
+}

@@ -31,8 +31,8 @@
     outline: none;
 }
 
-#app .app-hero {
-    min-height: var(--app-hero-min-height, var(--size-0));
+#app .app-headline {
+    min-height: var(--app-headline-min-height, var(--size-0));
     font-weight: 600;
     font-size: var(--font-big);
     letter-spacing: var(--size-3px);

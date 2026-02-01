@@ -2,7 +2,7 @@ import bottomVariantsJson from '@/assets/texts/bottom-block.variants.json'
 import jokesJson from '@/assets/texts/jokes.json'
 
 export type BottomBlockCopy = {
-    hero?: string
+    headline?: string
     paragraphs?: string[]
 }
 
