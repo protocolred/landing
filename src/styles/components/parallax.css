@@ -1,5 +1,5 @@
 .parallax {
-    z-index: 0;
+    z-index: var(--z-parallax);
     position: fixed;
     left: 50%;
 

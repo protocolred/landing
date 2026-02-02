@@ -1,11 +1,11 @@
-import { IDS, SELECTORS, TEXT } from '@/core/constants'
-import { byId, qsa } from '@/core/dom'
+import { SELECTORS, TEXT } from '@/core/constants'
+import { qs, qsa } from '@/core/dom'
 
 export function initTextGlitch(): void {
     const letters = qsa<HTMLElement>(SELECTORS.glitchLetters)
     if (letters.length === 0) return
 
-    const protocolText = byId<HTMLElement>(IDS.protocolText)
+    const protocolText = qs<HTMLElement>(SELECTORS.protocolText)
 
     const runTextEffect = () => {
         let tick = 0

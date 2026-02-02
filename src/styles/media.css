@@ -18,38 +18,25 @@
         font-size: clamp(var(--size-24px), var(--size-6-5vw), var(--size-34px));
     }
 
-    :root {
-        --logo-pop-dir: 1;
-    }
-
     body {
         align-items: stretch;
         justify-content: flex-start;
     }
 
-    .desktop > #list > .block {
+    .desktop > .list > .block {
         height: auto;
         min-height: var(--size-100dvh);
         padding: var(--size-120px) var(--size-0)
             calc(var(--size-140px) + env(safe-area-inset-bottom, var(--size-0)));
     }
 
-    .desktop > #list > #app {
+    .desktop > .list > .app {
         min-width: 0;
-    }
-
-    .desktop > #list > #app {
         padding-top: var(--size-120px);
         padding-bottom: var(--size-140px);
     }
 
-    .desktop > #list > #app .store.store-bottom {
-        position: relative;
-        bottom: auto;
-        margin-top: auto;
-    }
-
-    #app .app-sub {
+    .app .app-sub {
         align-items: stretch;
         width: var(--size-full);
         padding-right: calc(var(--size-16px) + env(safe-area-inset-right, var(--size-0)));
@@ -57,14 +44,14 @@
         text-align: left;
     }
 
-    #app .app-sub p {
+    .app .app-sub p {
         width: var(--size-full);
         min-width: var(--size-0);
     }
 
-    #app .app-sub p:nth-child(1),
-    #app .app-sub p:nth-child(2),
-    #app .app-sub p:nth-child(3) {
+    .app .app-sub p:nth-child(1),
+    .app .app-sub p:nth-child(2),
+    .app .app-sub p:nth-child(3) {
         min-width: var(--size-0);
     }
 
@@ -87,11 +74,8 @@
     }
 
     .store {
-        position: absolute;
         flex-wrap: wrap;
         height: auto;
-
-        /* bottom: 0px; */
         margin-top: var(--size-0);
         padding: var(--size-0) var(--size-12px);
         gap: var(--size-12px);
@@ -101,11 +85,11 @@
         height: var(--size-60px);
     }
 
-    #ios-store img {
+    .ios-store img {
         padding: var(--size-10px);
     }
 
-    #store-main {
+    .store-main {
         position: fixed;
         right: var(--size-0);
         bottom: var(--size-200px);
@@ -188,7 +172,7 @@
         height: var(--size-52px);
     }
 
-    #ios-store img {
+    .ios-store img {
         padding: var(--size-8px);
     }
 }

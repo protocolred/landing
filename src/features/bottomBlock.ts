@@ -1,11 +1,11 @@
-import { IDS, TEXT } from '@/core/constants'
-import { byId, prefersReducedMotion } from '@/core/dom'
+import { SELECTORS, TEXT } from '@/core/constants'
+import { prefersReducedMotion, qs } from '@/core/dom'
 import { getBottomBlockCopies, type BottomBlockCopy } from '@/data/api'
 
 export function initBottomBlock(): void {
-    const bottomHeadlineElement = byId<HTMLElement>(IDS.bottomHeadline)
-    const bottomSubElement = byId<HTMLElement>(IDS.bottomSub)
-    const bottomBlockElement = byId<HTMLElement>(IDS.appSection)
+    const bottomHeadlineElement = qs<HTMLElement>(SELECTORS.bottomHeadline)
+    const bottomSubElement = qs<HTMLElement>(SELECTORS.bottomSub)
+    const bottomBlockElement = qs<HTMLElement>(SELECTORS.appSection)
 
     if (!bottomHeadlineElement || !bottomSubElement || !bottomBlockElement) return
 

@@ -1,5 +1,8 @@
 @import url('tokens/colors.css');
 @import url('tokens/sizes.css');
+@import url('tokens/z-index.css');
+@import url('tokens/opacity.css');
+@import url('tokens/motion.css');
 @import url('base.css');
 @import url('layout.css');
 @import url('components/header.css');

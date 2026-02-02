@@ -1,6 +1,6 @@
 .block-create {
     display: flex;
-    z-index: 2;
+    z-index: var(--z-content);
     flex-direction: row;
 }
 

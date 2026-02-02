@@ -1,6 +1,6 @@
 .desktop .header {
     display: flex;
-    z-index: 5;
+    z-index: var(--z-header);
     position: fixed;
     top: var(--size-0);
     right: var(--size-0);
@@ -21,7 +21,7 @@
     color: inherit;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.5s all;
+    transition: var(--transition-all-slow);
 }
 
 .desktop .header > [data-target]:last-child {
@@ -56,7 +56,7 @@
     line-height: inherit;
     letter-spacing: inherit;
     cursor: pointer;
-    transition: transform 0.2s ease-out, font-weight 0.2s ease-out;
+    transition: var(--transition-logo);
 }
 
 .desktop .header .logo.logo-button {

@@ -2,7 +2,7 @@
     display: flex;
 
     /* gap: 24px; */
-    z-index: 6;
+    z-index: var(--z-store);
     position: absolute;
     right: var(--size-0);
     bottom: var(--size-100px);
@@ -11,10 +11,10 @@
     align-items: center;
     justify-content: center;
     height: var(--size-80px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: var(--transition-store);
 }
 
-#store-main {
+.store-main {
     align-items: center;
     justify-content: center;
 }
@@ -32,10 +32,10 @@
     width: auto;
     height: var(--size-80px);
     cursor: pointer;
-    transition: 0.3s all;
+    transition: var(--transition-all-fast);
 }
 
-#ios-store img {
+.ios-store img {
     padding: var(--size-13px);
 }
 
@@ -45,6 +45,6 @@
 
 .store.is-hidden {
     transform: translateY(var(--size-8px));
-    opacity: 0;
+    opacity: var(--opacity-hidden);
     pointer-events: none;
 }

@@ -1,5 +1,5 @@
 .main-text {
-    z-index: 2;
+    z-index: var(--z-content);
     position: absolute;
     top: var(--size-120px);
     left: var(--size-50pct);
@@ -33,7 +33,7 @@
     line-height: var(--size-120pct);
     letter-spacing: var(--size-1-5px);
     text-transform: uppercase;
-    opacity: 0.1;
+    opacity: var(--opacity-faint);
 }
 
 .main-text-sub-word {

@@ -1,18 +1,16 @@
 "use strict";
 (() => {
   // src/core/constants.ts
-  var IDS = {
-    protocolText: "protocol-text",
-    protocolJoke: "protocol-joke",
-    storeMain: "store-main",
-    bottomHeadline: "bottom-headline",
-    bottomSub: "bottom-sub",
-    appSection: "app"
-  };
   var SELECTORS = {
     headerNavItems: ".header [data-target]",
     headerLogoButton: ".header .logo-button",
-    glitchLetters: ".glitch-letter"
+    glitchLetters: ".glitch-letter",
+    protocolText: ".protocol-text",
+    protocolJoke: ".protocol-joke",
+    storeMain: ".store-main",
+    bottomHeadline: ".bottom-headline",
+    bottomSub: ".bottom-sub",
+    appSection: ".app"
   };
   var TEXT = {
     glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
@@ -20,9 +18,6 @@
   };
 
   // src/core/dom.ts
-  function byId(id2) {
-    return document.getElementById(id2);
-  }
   function qs(selector, root2 = document) {
     return root2.querySelector(selector);
   }
@@ -417,9 +412,9 @@
 
   // src/features/bottomBlock.ts
   function initBottomBlock() {
-    const bottomHeadlineElement = byId(IDS.bottomHeadline);
-    const bottomSubElement = byId(IDS.bottomSub);
-    const bottomBlockElement = byId(IDS.appSection);
+    const bottomHeadlineElement = qs(SELECTORS.bottomHeadline);
+    const bottomSubElement = qs(SELECTORS.bottomSub);
+    const bottomBlockElement = qs(SELECTORS.appSection);
     if (!bottomHeadlineElement || !bottomSubElement || !bottomBlockElement) return;
     const scrambleTokens = /* @__PURE__ */ new WeakMap();
     const getRandomChar = () => {
@@ -567,7 +562,16 @@
   function initHeaderNav() {
     const headerItems = qsa(SELECTORS.headerNavItems);
     if (headerItems.length === 0) return;
-    const sections = headerItems.map((item) => document.getElementById(item.getAttribute("data-target") || "")).filter((section) => Boolean(section));
+    const sections = [];
+    const sectionIds = /* @__PURE__ */ new Map();
+    headerItems.forEach((item) => {
+      const targetClass = item.getAttribute("data-target");
+      if (!targetClass) return;
+      const section = document.querySelector(`.${targetClass}`);
+      if (!section) return;
+      sections.push(section);
+      sectionIds.set(section, targetClass);
+    });
     const setActive = (id2) => {
       headerItems.forEach((item) => {
         const isActive = item.getAttribute("data-target") === id2;
@@ -577,14 +581,19 @@
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (!entry.isIntersecting) return;
+          const targetId = sectionIds.get(entry.target);
+          if (targetId) setActive(targetId);
         });
       },
       { root: null, threshold: 0.6 }
     );
     sections.forEach((section) => observer.observe(section));
     const initActive = () => {
-      if (sections[0]) setActive(sections[0].id);
+      const first = sections[0];
+      if (!first) return;
+      const targetId = sectionIds.get(first);
+      if (targetId) setActive(targetId);
     };
     requestAnimationFrame(initActive);
     window.addEventListener("load", initActive);
@@ -599,7 +608,7 @@
         }
         const targetId = item.getAttribute("data-target");
         if (!targetId) return;
-        const element = document.getElementById(targetId);
+        const element = document.querySelector(`.${targetId}`);
         if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
         setActive(targetId);
       });
@@ -608,7 +617,7 @@
 
   // src/features/jokes.ts
   function initJokes() {
-    const jokeElement = byId(IDS.protocolJoke);
+    const jokeElement = qs(SELECTORS.protocolJoke);
     if (!jokeElement) return;
     const jokes = getJokes();
     if (!Array.isArray(jokes) || jokes.length === 0) return;
@@ -3489,7 +3498,7 @@
 
   // src/features/storeVisibility.ts
   function initStoreVisibility() {
-    const storeMain = byId(IDS.storeMain);
+    const storeMain = qs(SELECTORS.storeMain);
     if (!storeMain) return;
     const toggleStoreOnScroll = () => {
       const isAtTop = window.scrollY <= 1;
@@ -3503,7 +3512,7 @@
   function initTextGlitch() {
     const letters = qsa(SELECTORS.glitchLetters);
     if (letters.length === 0) return;
-    const protocolText = byId(IDS.protocolText);
+    const protocolText = qs(SELECTORS.protocolText);
     const runTextEffect = () => {
       let tick = 0;
       const maxTicks = 18;

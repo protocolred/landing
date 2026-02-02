@@ -1,0 +1,8 @@
+:root {
+    --opacity-hidden: 0;
+    --opacity-faint: 0.1;
+    --opacity-muted: 0.7;
+    --opacity-soft: 0.8;
+    --opacity-strong: 0.85;
+    --opacity-full: 1;
+}

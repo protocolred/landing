@@ -1,0 +1,8 @@
+:root {
+    --z-parallax: 0;
+    --z-base: 1;
+    --z-content: 2;
+    --z-social: 4;
+    --z-header: 5;
+    --z-store: 6;
+}

@@ -1,0 +1,6 @@
+:root {
+    --transition-all-fast: 0.3s all;
+    --transition-all-slow: 0.5s all;
+    --transition-store: opacity 0.3s ease, transform 0.3s ease;
+    --transition-logo: transform 0.2s ease-out, font-weight 0.2s ease-out;
+}

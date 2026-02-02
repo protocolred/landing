@@ -1,9 +1,9 @@
-import { IDS } from '@/core/constants'
-import { byId } from '@/core/dom'
+import { SELECTORS } from '@/core/constants'
+import { qs } from '@/core/dom'
 import { getJokes } from '@/data/api'
 
 export function initJokes(): void {
-    const jokeElement = byId<HTMLElement>(IDS.protocolJoke)
+    const jokeElement = qs<HTMLElement>(SELECTORS.protocolJoke)
     if (!jokeElement) return
 
     const jokes = getJokes()

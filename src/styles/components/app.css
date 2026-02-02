@@ -13,25 +13,27 @@
     font-weight: inherit;
     font-size: inherit;
     cursor: pointer;
-    opacity: 0.85;
+    opacity: var(--opacity-strong);
 }
 
-.desktop > #list > #app {
+.desktop > .list > .app {
     align-items: center;
+    justify-content: flex-start;
     min-width: var(--size-800px);
     max-width: var(--size-full);
-    padding-bottom: var(--size-100px);
+    padding-top: var(--size-160px);
+    padding-bottom: var(--size-160px);
     gap: var(--size-16px);
     text-align: center;
     cursor: pointer;
 }
 
-#app:focus,
-#app:focus-visible {
+.app:focus,
+.app:focus-visible {
     outline: none;
 }
 
-#app .app-headline {
+.app .app-headline {
     min-height: var(--app-headline-min-height, var(--size-0));
     font-weight: 600;
     font-size: var(--font-big);
@@ -39,7 +41,7 @@
     cursor: pointer;
 }
 
-#app .app-sub {
+.app .app-sub {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,40 +49,34 @@
     min-height: var(--app-sub-min-height, var(--size-0));
     line-height: 1.5;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: var(--opacity-soft);
 }
 
-#app .app-sub p {
+.app .app-sub p {
     min-width: var(--size-400px);
     margin: var(--size-0);
 }
 
-#app .app-sub p + p {
+.app .app-sub p + p {
     margin-top: var(--size-10px);
 }
 
-#app .app-sub p:nth-child(1) {
+.app .app-sub p:nth-child(1) {
     min-width: var(--size-800px);
     text-align: left;
 }
 
-#app .app-sub p:nth-child(2) {
+.app .app-sub p:nth-child(2) {
     min-width: var(--size-600px);
     text-align: center;
 }
 
-#app .app-sub p:nth-child(3) {
+.app .app-sub p:nth-child(3) {
     min-width: var(--size-400px);
     text-align: right;
 }
 
-.desktop > #list > #app {
-    justify-content: flex-start;
-    padding-top: var(--size-160px);
-    padding-bottom: var(--size-160px);
-}
-
-.desktop > #list > #app .store.store-bottom {
+.desktop > .list > .app .store.store-bottom {
     position: relative;
     bottom: auto;
     margin-top: auto;

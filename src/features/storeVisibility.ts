@@ -1,8 +1,8 @@
-import { IDS } from '@/core/constants'
-import { byId } from '@/core/dom'
+import { SELECTORS } from '@/core/constants'
+import { qs } from '@/core/dom'
 
 export function initStoreVisibility(): void {
-    const storeMain = byId<HTMLElement>(IDS.storeMain)
+    const storeMain = qs<HTMLElement>(SELECTORS.storeMain)
     if (!storeMain) return
 
     const toggleStoreOnScroll = () => {

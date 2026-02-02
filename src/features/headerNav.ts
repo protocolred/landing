@@ -5,9 +5,16 @@ export function initHeaderNav(): void {
     const headerItems = qsa<HTMLElement>(SELECTORS.headerNavItems)
     if (headerItems.length === 0) return
 
-    const sections = headerItems
-        .map((item) => document.getElementById(item.getAttribute('data-target') || ''))
-        .filter((section): section is HTMLElement => Boolean(section))
+    const sections: HTMLElement[] = []
+    const sectionIds = new Map<HTMLElement, string>()
+    headerItems.forEach((item) => {
+        const targetClass = item.getAttribute('data-target')
+        if (!targetClass) return
+        const section = document.querySelector<HTMLElement>(`.${targetClass}`)
+        if (!section) return
+        sections.push(section)
+        sectionIds.set(section, targetClass)
+    })
 
     const setActive = (id: string) => {
         headerItems.forEach((item) => {
@@ -19,7 +26,9 @@ export function initHeaderNav(): void {
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) setActive(entry.target.id)
+                if (!entry.isIntersecting) return
+                const targetId = sectionIds.get(entry.target as HTMLElement)
+                if (targetId) setActive(targetId)
             })
         },
         { root: null, threshold: 0.6 }
@@ -28,7 +37,10 @@ export function initHeaderNav(): void {
     sections.forEach((section) => observer.observe(section))
 
     const initActive = () => {
-        if (sections[0]) setActive(sections[0].id)
+        const first = sections[0]
+        if (!first) return
+        const targetId = sectionIds.get(first)
+        if (targetId) setActive(targetId)
     }
 
     requestAnimationFrame(initActive)
@@ -51,7 +63,7 @@ export function initHeaderNav(): void {
 
             const targetId = item.getAttribute('data-target')
             if (!targetId) return
-            const element = document.getElementById(targetId)
+            const element = document.querySelector<HTMLElement>(`.${targetId}`)
             if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
             setActive(targetId)
         })
