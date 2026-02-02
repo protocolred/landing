@@ -53,7 +53,10 @@
 }
 
 .app .app-sub p {
-    min-width: var(--size-400);
+    --app-sub-min-width: var(--size-400);
+    --app-sub-align: center;
+    min-width: var(--app-sub-min-width);
+    text-align: var(--app-sub-align);
     margin: var(--size-0);
 }
 
@@ -62,18 +65,18 @@
 }
 
 .app .app-sub p:nth-child(1) {
-    min-width: var(--size-800);
-    text-align: left;
+    --app-sub-min-width: var(--size-800);
+    --app-sub-align: left;
 }
 
 .app .app-sub p:nth-child(2) {
-    min-width: var(--size-600);
-    text-align: center;
+    --app-sub-min-width: var(--size-600);
+    --app-sub-align: center;
 }
 
 .app .app-sub p:nth-child(3) {
-    min-width: var(--size-400);
-    text-align: right;
+    --app-sub-min-width: var(--size-400);
+    --app-sub-align: right;
 }
 
 .desktop > .list > .app .store.store-bottom {

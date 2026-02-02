@@ -1,19 +1,3 @@
-@font-face {
-    font-style: normal;
-    font-weight: 200;
-    src: url('../assets/fonts/Titillium/TitilliumWeb-ExtraLight.ttf') format('truetype');
-    font-family: 'Titillium Web';
-    font-display: swap;
-}
-
-@font-face {
-    font-style: normal;
-    font-weight: 600;
-    src: url('../assets/fonts/Titillium/TitilliumWeb-SemiBold.ttf') format('truetype');
-    font-family: 'Titillium Web';
-    font-display: swap;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -43,24 +27,6 @@ body {
     overscroll-behavior: none;
 }
 
-body.legal-body {
-    display: block;
-    align-items: initial;
-    justify-content: initial;
-    overflow: hidden auto;
-    user-select: text;
-}
-
-/* Legal pages: monochrome variant (used by privacy.html) */
-body.legal-body.legal-body--mono {
-    background: var(--color-black-solid);
-
-    --color-black: var(--color-black-solid);
-    --color-black-light: var(--color-white-70);
-    --color-red: var(--color-white-92);
-    --color-red-light: var(--color-white-92);
-}
-
 a {
     color: inherit;
     text-decoration: none;
@@ -68,21 +34,4 @@ a {
 
 img {
     -webkit-user-drag: none;
-}
-
-::-webkit-scrollbar {
-    width: var(--size-0);
-}
-
-body.legal-body::-webkit-scrollbar {
-    width: var(--size-8);
-}
-
-body.legal-body::-webkit-scrollbar-thumb {
-    border-radius: var(--size-8);
-    background: var(--color-white-22);
-}
-
-body.legal-body::-webkit-scrollbar-thumb:hover {
-    background: var(--color-white-32);
 }

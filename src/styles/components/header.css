@@ -5,19 +5,34 @@
     top: var(--size-0);
     right: var(--size-0);
     left: var(--size-0);
+    --header-height: var(--size-96);
+    --header-line-height: var(--header-height);
+    --header-padding-x: var(--size-40);
+    --nav-border-start: var(--size-2);
+    --nav-border-start-active: var(--size-4);
+    --nav-border-end: var(--size-0);
+    --nav-border-end-active: var(--size-0);
+    --logo-border-start: var(--size-20);
+    --logo-border-start-expanded: var(--size-4);
+    --logo-border-end: var(--size-0);
+    --logo-border-end-expanded: var(--size-0);
+    --logo-padding-start: var(--size-20);
+    --logo-padding-start-expanded: var(--size-2);
+    --logo-pop-translate: var(--size-0);
     flex-direction: row;
     justify-content: right;
     width: var(--size-full);
-    height: var(--size-96);
-    padding: var(--size-0) var(--size-40);
+    height: var(--header-height);
+    padding: var(--size-0) var(--header-padding-x);
     color: var(--color-white-solid);
-    line-height: var(--size-96);
+    line-height: var(--header-line-height);
     letter-spacing: var(--size-4);
 }
 
 .desktop .header > [data-target] {
     margin-right: var(--size-60);
-    border-top: var(--size-0) solid var(--color-transparent);
+    border-block-start: var(--size-0) solid var(--color-transparent);
+    border-block-end: var(--size-0) solid var(--color-transparent);
     color: inherit;
     font-weight: 600;
     cursor: pointer;
@@ -29,17 +44,20 @@
 }
 
 .desktop .header > [data-target]:hover {
-    border-top: var(--size-2) solid var(--color-white-solid);
+    border-block-start: var(--nav-border-start) solid var(--color-white-solid);
+    border-block-end: var(--nav-border-end) solid var(--color-white-solid);
 }
 
 .desktop .header > [data-target].active {
-    border-top: var(--size-4) solid var(--color-white-solid);
+    border-block-start: var(--nav-border-start-active) solid var(--color-white-solid);
+    border-block-end: var(--nav-border-end-active) solid var(--color-white-solid);
 }
 
 .desktop .header .logo {
     margin-right: auto;
-    padding-top: var(--size-20);
-    border-top: var(--size-20) solid var(--color-red);
+    padding-top: var(--logo-padding-start);
+    border-block-start: var(--logo-border-start) solid var(--color-red);
+    border-block-end: var(--logo-border-end) solid var(--color-red);
     color: var(--color-red);
     font-weight: 600;
 }
@@ -57,46 +75,42 @@
     letter-spacing: inherit;
     cursor: pointer;
     transition: var(--transition-logo);
+    transform: translateY(var(--logo-pop-translate));
 }
 
 .desktop .header .logo.logo-button {
-    padding-top: var(--size-2);
-    border-top: var(--size-4) solid var(--color-red);
+    padding-top: var(--logo-padding-start-expanded);
+    border-block-start: var(--logo-border-start-expanded) solid var(--color-red);
+    border-block-end: var(--logo-border-end-expanded) solid var(--color-red);
 }
 
 .desktop .header .logo-button.is-expanded {
-    transform: translateY(
-        clamp(
-            calc(-1 * var(--logo-pop-max)),
-            calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
-            var(--logo-pop-max)
-        )
+    --logo-pop-translate: clamp(
+        calc(-1 * var(--logo-pop-max)),
+        calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
+        var(--logo-pop-max)
     );
     font-weight: 700;
 }
 
 .desktop .header .logo-button.is-expanded:hover {
-    transform: translateY(
-        clamp(
-            calc(-1 * var(--logo-pop-max)),
-            calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
-            var(--logo-pop-max)
-        )
+    --logo-pop-translate: clamp(
+        calc(-1 * var(--logo-pop-max)),
+        calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
+        var(--logo-pop-max)
     );
 }
 
 .desktop .header .logo-button.is-collapsing,
 .desktop .header .logo-button.is-collapsing:hover {
-    transform: translateY(var(--size-0));
+    --logo-pop-translate: var(--size-0);
 }
 
 .desktop .header .logo-button:active {
-    transform: translateY(
-        clamp(
-            calc(-1 * var(--logo-pop-max)),
-            calc(var(--logo-pop-dir) * var(--logo-pop-press)),
-            var(--logo-pop-max)
-        )
+    --logo-pop-translate: clamp(
+        calc(-1 * var(--logo-pop-max)),
+        calc(var(--logo-pop-dir) * var(--logo-pop-press)),
+        var(--logo-pop-max)
     );
     font-weight: 700;
 }

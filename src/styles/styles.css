@@ -4,6 +4,7 @@
 @import url('tokens/z-index.css');
 @import url('tokens/opacity.css');
 @import url('tokens/motion.css');
+@import url('fonts.css');
 @import url('base.css');
 @import url('layout.css');
 @import url('components/header.css');

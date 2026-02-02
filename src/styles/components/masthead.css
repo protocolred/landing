@@ -1,12 +1,16 @@
 .main-text {
     z-index: var(--z-content);
     position: absolute;
-    top: var(--size-120);
+    --main-text-top: var(--size-120);
+    --main-text-size: var(--type-display-large);
+    --main-text-line: var(--size-90pct);
+    --main-text-row-width: var(--size-80);
+    top: var(--main-text-top);
     left: var(--size-50pct);
     transform: translateX(calc(var(--size-50pct) * -1));
     font-weight: 700;
-    font-size: var(--type-display-large);
-    line-height: var(--size-90pct);
+    font-size: var(--main-text-size);
+    line-height: var(--main-text-line);
     text-align: center;
     text-shadow: var(--size-2) var(--size-2) var(--size-4) var(--color-black-3);
 }
@@ -19,7 +23,7 @@
 }
 
 .main-text-row div {
-    width: var(--size-80);
+    width: var(--main-text-row-width);
     text-align: center;
 }
 

@@ -1,16 +1,17 @@
 .store {
     display: flex;
-
-    /* gap: 24px; */
     z-index: var(--z-store);
     position: absolute;
     right: var(--size-0);
     bottom: var(--size-96);
     left: var(--size-0);
+    --store-height: var(--size-80);
+    --store-img-height: var(--size-80);
+    --store-img-padding: var(--size-12);
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    height: var(--size-80);
+    height: var(--store-height);
     transition: var(--transition-store);
 }
 
@@ -30,13 +31,13 @@
 .store img {
     display: block;
     width: auto;
-    height: var(--size-80);
+    height: var(--store-img-height);
     cursor: pointer;
     transition: var(--transition-all-fast);
 }
 
 .ios-store img {
-    padding: var(--size-12);
+    padding: var(--store-img-padding);
 }
 
 .store img:hover {
