@@ -718,10 +718,11 @@
     headerItems.forEach((item) => {
       const targetClass = item.getAttribute("data-target");
       if (!targetClass) return;
-      const section = qs(`.${targetClass}`);
-      if (!section) return;
-      sections.push(section);
-      sectionIds.set(section, targetClass);
+      const matches = qsa(`.${targetClass}`);
+      matches.forEach((section) => {
+        sections.push(section);
+        sectionIds.set(section, targetClass);
+      });
     });
     const setActive = (id2) => {
       headerItems.forEach((item) => {

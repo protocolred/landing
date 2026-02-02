@@ -129,6 +129,30 @@
     .parallax {
         height: 100%;
     }
+
+    .phones {
+        flex-direction: column;
+        gap: var(--size-20);
+    }
+
+    .phones .phone:nth-child(2) {
+        display: none;
+    }
+
+    .phone {
+        --phone-width: clamp(150px, 62vw, 240px);
+    }
+
+    .how-layout {
+        grid-template-columns: 1fr;
+        gap: var(--size-20);
+    }
+
+    .how-card.how-brief,
+    .how-card.how-detail {
+        justify-self: stretch;
+        transform: none;
+    }
 }
 
 @media only screen and (width <= 390px) {

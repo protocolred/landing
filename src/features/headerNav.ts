@@ -11,10 +11,11 @@ export const initHeaderNav: FeatureInit = () => {
     headerItems.forEach((item) => {
         const targetClass = item.getAttribute('data-target')
         if (!targetClass) return
-        const section = qs<HTMLElement>(`.${targetClass}`)
-        if (!section) return
-        sections.push(section)
-        sectionIds.set(section, targetClass)
+        const matches = qsa<HTMLElement>(`.${targetClass}`)
+        matches.forEach((section) => {
+            sections.push(section)
+            sectionIds.set(section, targetClass)
+        })
     })
 
     const setActive = (id: string) => {
