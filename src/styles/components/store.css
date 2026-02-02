@@ -5,9 +5,11 @@
     right: var(--size-0);
     bottom: var(--size-96);
     left: var(--size-0);
+
     --store-height: var(--size-80);
     --store-img-height: var(--size-80);
     --store-img-padding: var(--size-12);
+
     flex-direction: row;
     align-items: center;
     justify-content: center;

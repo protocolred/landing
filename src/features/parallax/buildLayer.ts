@@ -1,7 +1,8 @@
 import * as d3 from 'd3'
 
 import { PARALLAX_CONFIG } from '@/data/parallax'
-import type { DotNode } from './types'
+
+import type { DotNode, SimulationWithRestart } from './types'
 import {
     createColorSampler,
     createJitterForce,
@@ -38,8 +39,14 @@ export const buildLayer = (layer: HTMLElement) => {
             PARALLAX_CONFIG.defaults.opacityMin,
             PARALLAX_CONFIG.defaults.opacityMax
         ),
-        orbitRadiusPx: randomBetween(PARALLAX_CONFIG.orbit.radiusPxMin, PARALLAX_CONFIG.orbit.radiusPxMax),
-        orbitSpeedRad: randomBetween(PARALLAX_CONFIG.orbit.speedRadMin, PARALLAX_CONFIG.orbit.speedRadMax),
+        orbitRadiusPx: randomBetween(
+            PARALLAX_CONFIG.orbit.radiusPxMin,
+            PARALLAX_CONFIG.orbit.radiusPxMax
+        ),
+        orbitSpeedRad: randomBetween(
+            PARALLAX_CONFIG.orbit.speedRadMin,
+            PARALLAX_CONFIG.orbit.speedRadMax
+        ),
         orbitPhase: getOrbitPhase(),
         orbitWobbleSpeedRad: randomBetween(
             PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
@@ -74,9 +81,7 @@ export const buildLayer = (layer: HTMLElement) => {
         circles.attr('transform', (node: DotNode) => {
             const angle = node.orbitPhase + node.orbitSpeedRad * t
             const wobble =
-                0.75 +
-                0.25 *
-                    Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
+                0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
             const r = node.orbitRadiusPx * wobble
             const dx = Math.cos(angle) * r
             const dy = Math.sin(angle) * r
@@ -108,5 +113,5 @@ export const buildLayer = (layer: HTMLElement) => {
         }
     }
 
-    return { layer, simulation, destroy }
+    return { layer, simulation: simulation as SimulationWithRestart, destroy }
 }

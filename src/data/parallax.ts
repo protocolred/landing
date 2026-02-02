@@ -20,7 +20,7 @@ export const PARALLAX_CONFIG = {
         // How many dots to spawn in the layer (can be overridden by `data-count`)
         count: 10,
         // Dot radius range in px (overridden by `data-size-min` / `data-size-max`)
-        sizeMin: .1,
+        sizeMin: 0.1,
         sizeMax: 4,
         // Random velocity "noise" strength (overridden by `data-jitter`)
         jitter: 0.35,

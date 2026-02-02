@@ -15,9 +15,13 @@ export interface DotNode extends d3.SimulationNodeDatum {
     orbitWobblePhase: number
 }
 
+export type SimulationWithRestart = d3.Simulation<DotNode, undefined> & {
+    restart: () => d3.Simulation<DotNode, undefined>
+}
+
 export interface LayerState {
     layer: HTMLElement
-    simulation: d3.Simulation<DotNode, undefined>
+    simulation: SimulationWithRestart
     isVisible: boolean
     running: boolean
     destroy: () => void

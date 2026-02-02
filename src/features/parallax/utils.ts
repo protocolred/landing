@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 
 import { PARALLAX_CONFIG } from '@/data/parallax'
+
 import type { DotNode, LayerConfig, SizeUnit, SizeValue } from './types'
 
 const TAU = Math.PI * 2
@@ -20,8 +21,7 @@ export const createJitterForce = (strength: number) => {
     return force as d3.Force<DotNode, undefined>
 }
 
-export const randomBetween = (min: number, max: number) =>
-    min + Math.random() * (max - min)
+export const randomBetween = (min: number, max: number) => min + Math.random() * (max - min)
 
 const parseNumber = (value: string | undefined, fallback: number) => {
     if (!value) return fallback
@@ -102,8 +102,7 @@ export const getLayerConfig = (layer: HTMLElement): LayerConfig => ({
 
 export const getOrbitOffset = (node: DotNode, t: number) => {
     const angle = node.orbitPhase + node.orbitSpeedRad * t
-    const wobble =
-        0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
+    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
     const r = node.orbitRadiusPx * wobble
     return {
         dx: Math.cos(angle) * r,

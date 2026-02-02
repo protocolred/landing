@@ -55,9 +55,10 @@
 .app .app-sub p {
     --app-sub-min-width: var(--size-400);
     --app-sub-align: center;
+
     min-width: var(--app-sub-min-width);
-    text-align: var(--app-sub-align);
     margin: var(--size-0);
+    text-align: var(--app-sub-align);
 }
 
 .app .app-sub p + p {

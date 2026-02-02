@@ -3,7 +3,7 @@
     position: fixed;
     left: 50%;
 
-    /*--parallax-x-size: min(100vw, max(0px, calc(100dvh - 200px)));*/
+    /* --parallax-x-size: min(100vw, max(0px, calc(100dvh - 200px))); */
     --parallax-x-size: 100dvw;
     --parallax-y-size: 100dvh;
 

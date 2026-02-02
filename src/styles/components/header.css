@@ -5,6 +5,7 @@
     top: var(--size-0);
     right: var(--size-0);
     left: var(--size-0);
+
     --header-height: var(--size-96);
     --header-line-height: var(--header-height);
     --header-padding-x: var(--size-40);
@@ -19,6 +20,7 @@
     --logo-padding-start: var(--size-20);
     --logo-padding-start-expanded: var(--size-2);
     --logo-pop-translate: var(--size-0);
+
     flex-direction: row;
     justify-content: right;
     width: var(--size-full);
@@ -67,6 +69,7 @@
     appearance: none;
     margin-top: calc(var(--size-8) * -1);
     padding: var(--size-0);
+    transform: translateY(var(--logo-pop-translate));
     border: none;
     background: var(--color-transparent);
     font: inherit;
@@ -75,7 +78,6 @@
     letter-spacing: inherit;
     cursor: pointer;
     transition: var(--transition-logo);
-    transform: translateY(var(--logo-pop-translate));
 }
 
 .desktop .header .logo.logo-button {
@@ -90,6 +92,7 @@
         calc(var(--logo-pop-dir) * var(--logo-pop-expanded)),
         var(--logo-pop-max)
     );
+
     font-weight: 700;
 }
 
@@ -112,6 +115,7 @@
         calc(var(--logo-pop-dir) * var(--logo-pop-press)),
         var(--logo-pop-max)
     );
+
     font-weight: 700;
 }
 

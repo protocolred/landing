@@ -1,3 +1,4 @@
+import { createDisposer } from '@/core/dispose'
 import { initBottomBlock } from '@/features/bottomBlock'
 import { initHeaderNav } from '@/features/headerNav'
 import { initJokes } from '@/features/jokes'
@@ -7,13 +8,17 @@ import { initStoreVisibility } from '@/features/storeVisibility'
 import { initTextGlitch } from '@/features/textGlitch'
 
 const init = () => {
-    initTextGlitch()
-    initHeaderNav()
-    initStoreVisibility()
-    initJokes()
-    initBottomBlock()
-    initRedButton()
-    initParallax()
+    const disposer = createDisposer()
+
+    disposer.add(initTextGlitch())
+    disposer.add(initHeaderNav())
+    disposer.add(initStoreVisibility())
+    disposer.add(initJokes())
+    disposer.add(initBottomBlock())
+    disposer.add(initRedButton())
+    disposer.add(initParallax())
+
+    window.addEventListener('pagehide', disposer.disposeAll, { once: true })
 }
 
 if (document.readyState === 'loading') {

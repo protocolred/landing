@@ -1,7 +1,8 @@
 import { SELECTORS } from '@/core/constants'
-import { qsa } from '@/core/dom'
+import { qs, qsa } from '@/core/dom'
+import type { FeatureInit } from '@/core/feature'
 
-export function initHeaderNav(): void {
+export const initHeaderNav: FeatureInit = () => {
     const headerItems = qsa<HTMLElement>(SELECTORS.headerNavItems)
     if (headerItems.length === 0) return
 
@@ -10,7 +11,7 @@ export function initHeaderNav(): void {
     headerItems.forEach((item) => {
         const targetClass = item.getAttribute('data-target')
         if (!targetClass) return
-        const section = document.querySelector<HTMLElement>(`.${targetClass}`)
+        const section = qs<HTMLElement>(`.${targetClass}`)
         if (!section) return
         sections.push(section)
         sectionIds.set(section, targetClass)
@@ -46,8 +47,10 @@ export function initHeaderNav(): void {
     requestAnimationFrame(initActive)
     window.addEventListener('load', initActive)
 
+    const itemHandlers = new Map<HTMLElement, (event: Event) => void>()
+
     headerItems.forEach((item) => {
-        item.addEventListener('click', (event) => {
+        const onItemClick = (event: Event) => {
             const mouseEvent = event instanceof MouseEvent ? event : null
             if (mouseEvent) {
                 if (mouseEvent.defaultPrevented) return
@@ -63,9 +66,20 @@ export function initHeaderNav(): void {
 
             const targetId = item.getAttribute('data-target')
             if (!targetId) return
-            const element = document.querySelector<HTMLElement>(`.${targetId}`)
+            const element = qs<HTMLElement>(`.${targetId}`)
             if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
             setActive(targetId)
-        })
+        }
+        itemHandlers.set(item, onItemClick)
+        item.addEventListener('click', onItemClick)
     })
+
+    return () => {
+        observer.disconnect()
+        window.removeEventListener('load', initActive)
+        headerItems.forEach((item) => {
+            const handler = itemHandlers.get(item)
+            if (handler) item.removeEventListener('click', handler)
+        })
+    }
 }

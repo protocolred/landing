@@ -1,23 +1,26 @@
+import { SELECTORS } from '@/core/constants'
+import { prefersReducedMotion, qs, qsa } from '@/core/dom'
+import type { FeatureInit } from '@/core/feature'
 import { PARALLAX_CONFIG } from '@/data/parallax'
-import type { LayerState } from './types'
-import { buildLayer } from './buildLayer'
-import { getLayerConfig, resolveSizePx } from './utils'
 
-export const initParallax = () => {
-    const container = document.querySelector<HTMLElement>(PARALLAX_CONFIG.containerSelector)
+import { buildLayer } from './buildLayer'
+import { createLayerObserver } from './observer'
+import { createParallaxScroller } from './scroll'
+import type { LayerState } from './types'
+import { resolveSizePx } from './utils'
+
+export const initParallax: FeatureInit = () => {
+    const container = qs<HTMLElement>(PARALLAX_CONFIG.containerSelector)
     if (!container) return
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const layers = Array.from(
-        container.querySelectorAll<HTMLElement>(PARALLAX_CONFIG.layerSelector)
-    )
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const layers = qsa<HTMLElement>(PARALLAX_CONFIG.layerSelector, container)
     if (layers.length === 0) return
 
     const states = new Map<HTMLElement, LayerState>()
-    let observer: IntersectionObserver | null = null
 
     const startSimulation = (state: LayerState) => {
-        if (prefersReducedMotion.matches) return
+        if (prefersReducedMotion()) return
         if (state.running) return
         state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart()
         state.running = true
@@ -53,6 +56,18 @@ export const initParallax = () => {
         container.style.setProperty('--parallax-size', `${Math.max(0, sizePx)}px`)
     }
 
+    const observerControls = createLayerObserver({
+        layers,
+        states,
+        onVisibilityChange: (state, isVisible) => {
+            if (isVisible) {
+                startSimulation(state)
+            } else {
+                stopSimulation(state)
+            }
+        },
+    })
+
     const rebuild = () => {
         refreshContainerSizeBounds()
         setContainerSize(getScrollRatio())
@@ -63,12 +78,12 @@ export const initParallax = () => {
         states.clear()
 
         for (const layer of layers) {
-            const svg = layer.querySelector('svg')
+            const svg = layer.querySelector(SELECTORS.parallaxLayerSvg)
             if (svg) {
                 svg.remove()
             }
             const state = buildLayer(layer)
-            const running = !prefersReducedMotion.matches
+            const running = !prefersReducedMotion()
             if (!running) {
                 state.simulation.stop()
             }
@@ -78,62 +93,14 @@ export const initParallax = () => {
                 running,
             })
         }
-        setupObserver()
+        observerControls.observeAll()
     }
 
-    const setupObserver = () => {
-        if (observer) observer.disconnect()
-        observer = new IntersectionObserver(
-            (entries) => {
-                for (const entry of entries) {
-                    const target = entry.target as HTMLElement
-                    const state = states.get(target)
-                    if (!state) continue
-                    state.isVisible = entry.isIntersecting
-                    if (entry.isIntersecting) {
-                        startSimulation(state)
-                    } else {
-                        stopSimulation(state)
-                    }
-                }
-            },
-            {
-                root: null,
-                rootMargin: '200px',
-                threshold: 0.01,
-            }
-        )
-        for (const layer of layers) {
-            observer.observe(layer)
-        }
-    }
-
-    const applyParallax = (() => {
-        let ticking = false
-        let latestScroll = window.scrollY
-        const update = () => {
-            const scrollRatio = getScrollRatio()
-            setContainerSize(scrollRatio)
-            const maxShrink = PARALLAX_CONFIG.motion.maxShrink
-            const frontLayer = layers[layers.length - 1]
-            for (const layer of layers) {
-                // Per-layer motion overrides
-                const { speed, shrink } = getLayerConfig(layer)
-                const effectiveShrink = layer === frontLayer ? 0 : shrink
-                const scale = 1 - scrollRatio * maxShrink * effectiveShrink
-                // Translate on scroll + optional scale to create depth
-                layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`
-            }
-            ticking = false
-        }
-        return () => {
-            latestScroll = window.scrollY
-            if (!ticking) {
-                ticking = true
-                requestAnimationFrame(update)
-            }
-        }
-    })()
+    const applyParallax = createParallaxScroller({
+        layers,
+        getScrollRatio,
+        setContainerSize,
+    })
 
     const handleResize = (() => {
         let raf = 0
@@ -151,5 +118,17 @@ export const initParallax = () => {
 
     window.addEventListener('scroll', applyParallax, { passive: true })
     window.addEventListener('resize', handleResize)
-    prefersReducedMotion.addEventListener('change', rebuild)
+    motionQuery.addEventListener('change', rebuild)
+
+    return () => {
+        window.removeEventListener('scroll', applyParallax)
+        window.removeEventListener('resize', handleResize)
+        motionQuery.removeEventListener('change', rebuild)
+        observerControls.disconnect()
+        for (const state of states.values()) {
+            stopSimulation(state)
+            state.destroy()
+        }
+        states.clear()
+    }
 }

@@ -1,8 +1,10 @@
 import { SELECTORS } from '@/core/constants'
 import { qs } from '@/core/dom'
+import type { FeatureInit } from '@/core/feature'
+import { pickRandom } from '@/core/random'
 import { getJokes } from '@/data/api'
 
-export function initJokes(): void {
+export const initJokes: FeatureInit = () => {
     const jokeElement = qs<HTMLElement>(SELECTORS.protocolJoke)
     if (!jokeElement) return
 
@@ -10,10 +12,13 @@ export function initJokes(): void {
     if (!Array.isArray(jokes) || jokes.length === 0) return
 
     const setRandomJoke = () => {
-        const randomIndex = Math.floor(Math.random() * jokes.length)
-        jokeElement.textContent = jokes[randomIndex] ?? ''
+        jokeElement.textContent = pickRandom(jokes) ?? ''
     }
 
     setRandomJoke()
     jokeElement.addEventListener('click', setRandomJoke)
+
+    return () => {
+        jokeElement.removeEventListener('click', setRandomJoke)
+    }
 }

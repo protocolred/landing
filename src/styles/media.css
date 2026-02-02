@@ -27,6 +27,7 @@
 
     .app .app-sub p {
         width: var(--size-full);
+
         --app-sub-min-width: var(--size-0);
     }
 
@@ -40,6 +41,7 @@
         --main-text-top: var(--size-80);
         --main-text-size: var(--type-display-large);
         --main-text-line: var(--size-120pct);
+
         right: var(--size-0);
         left: var(--size-0);
         transform: none;
@@ -56,9 +58,11 @@
 
     .store {
         flex-wrap: wrap;
+
         --store-height: auto;
         --store-img-height: var(--size-60);
         --store-img-padding: var(--size-8);
+
         margin-top: var(--size-0);
         padding: var(--size-0) var(--size-12);
         gap: var(--size-12);
@@ -85,6 +89,7 @@
         --logo-border-end-expanded: var(--size-4);
         --logo-padding-start: var(--size-0);
         --logo-padding-start-expanded: var(--size-0);
+
         top: auto;
         bottom: var(--size-0);
         justify-content: center;
@@ -97,7 +102,8 @@
 
     .desktop .header > [data-target] {
         margin-right: 0 var(--size-12);
-        /*padding: var(--size-0);*/
+
+        /* padding: var(--size-0); */
     }
 
     .desktop .header .logo {
@@ -126,12 +132,17 @@
     .desktop .header {
         gap: var(--size-16);
         font-size: var(--type-label-medium);
+
         --header-line-height: var(--size-64);
     }
 
     .main-text {
         --main-text-top: var(--size-64);
-        --main-text-size: clamp(var(--type-display-small), var(--size-14vw), var(--type-display-medium));
+        --main-text-size: clamp(
+            var(--type-display-small),
+            var(--size-14vw),
+            var(--type-display-medium)
+        );
     }
 
     .main-text-row div {

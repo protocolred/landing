@@ -1,7 +1,8 @@
 import { SELECTORS } from '@/core/constants'
 import { qs } from '@/core/dom'
+import type { FeatureInit } from '@/core/feature'
 
-export function initRedButton(): void {
+export const initRedButton: FeatureInit = () => {
     const redButton = qs<HTMLButtonElement>(SELECTORS.headerLogoButton)
     if (!redButton) return
 
@@ -32,7 +33,7 @@ export function initRedButton(): void {
         window.setTimeout(cleanup, 260)
     }
 
-    redButton.addEventListener('click', () => {
+    const onClick = () => {
         const isExpanded = redButton.classList.contains('is-expanded')
         if (isExpanded) {
             collapseViaZero()
@@ -40,5 +41,11 @@ export function initRedButton(): void {
             redButton.classList.remove('is-collapsing')
             setExpanded(true)
         }
-    })
+    }
+
+    redButton.addEventListener('click', onClick)
+
+    return () => {
+        redButton.removeEventListener('click', onClick)
+    }
 }
