@@ -1,8 +1,10 @@
-import { SELECTORS, TEXT } from '@/core/constants'
-import { prefersReducedMotion, qs } from '@/core/dom'
+import { SELECTORS, TEXT, TIMINGS } from '@/core/constants'
+import { qs, shouldAnimate } from '@/core/dom'
 import type { FeatureInit } from '@/core/feature'
-import { pickRandomAvoid, pickRandomChar } from '@/core/random'
+import { pickRandomChar } from '@/core/random'
 import { getBottomBlockCopies, type BottomBlockCopy } from '@/data/api'
+import { applyBottomBlockCopy, ensureParagraphElements } from '@/features/bottomBlock/render'
+import { createBottomBlockPicker } from '@/features/bottomBlock/selection'
 import { createTextScrambler } from '@/features/textScramble'
 
 export const initBottomBlock: FeatureInit = () => {
@@ -14,37 +16,16 @@ export const initBottomBlock: FeatureInit = () => {
 
     const getRandomChar = () => pickRandomChar(TEXT.scrambleCharacters)
     const animateScrambleText = createTextScrambler({
-        prefersReducedMotion,
+        shouldAnimate,
         randomChar: getRandomChar,
     })
-
-    const renderParagraphs = (element: HTMLElement, paragraphs: string[]) => {
-        element.innerHTML = ''
-        paragraphs.forEach((text) => {
-            const p = document.createElement('p')
-            p.textContent = text
-            element.appendChild(p)
-        })
-    }
-
-    const applyBottomBlockCopy = (copy: BottomBlockCopy) => {
-        if (typeof copy.headline === 'string' && copy.headline.trim()) {
-            bottomHeadlineElement.textContent = copy.headline
-        }
-        if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
-            renderParagraphs(bottomSubElement, copy.paragraphs)
-        }
-    }
 
     const bottomCopies = getBottomBlockCopies()
     if (bottomCopies.length === 0) return
 
     let currentBottomCopy: BottomBlockCopy | null = null
 
-    const pickNextBottomCopy = () => {
-        if (bottomCopies.length === 1) return bottomCopies[0] ?? null
-        return pickRandomAvoid(bottomCopies, currentBottomCopy, 10) ?? null
-    }
+    const pickNextBottomCopy = createBottomBlockPicker(bottomCopies)
 
     const transitionBottomBlockCopy = async (copy: BottomBlockCopy) => {
         const headlineTo = typeof copy.headline === 'string' ? copy.headline : ''
@@ -52,23 +33,28 @@ export const initBottomBlock: FeatureInit = () => {
 
         const headlineFrom = bottomHeadlineElement.textContent ?? ''
         const jobs: Array<Promise<void>> = []
-        jobs.push(animateScrambleText(bottomHeadlineElement, headlineFrom, headlineTo, 500))
-
-        const existing = Array.from(
-            bottomSubElement.querySelectorAll(SELECTORS.bottomSubParagraphs)
+        jobs.push(
+            animateScrambleText(
+                bottomHeadlineElement,
+                headlineFrom,
+                headlineTo,
+                TIMINGS.bottomBlock.scrambleDurationMs
+            )
         )
-        while (existing.length < paragraphsTo.length) {
-            const p = document.createElement('p')
-            bottomSubElement.appendChild(p)
-            existing.push(p)
-        }
+
+        const existing = ensureParagraphElements(bottomSubElement, paragraphsTo.length)
 
         for (let i = 0; i < existing.length; i++) {
             const element = existing[i]!
             const from = element.textContent ?? ''
             const nextText = paragraphsTo[i] ?? ''
             jobs.push(
-                animateScrambleText(element, from, nextText, 500).then(() => {
+                animateScrambleText(
+                    element,
+                    from,
+                    nextText,
+                    TIMINGS.bottomBlock.scrambleDurationMs
+                ).then(() => {
                     if (i >= paragraphsTo.length) element.remove()
                 })
             )
@@ -78,15 +64,21 @@ export const initBottomBlock: FeatureInit = () => {
         currentBottomCopy = copy
     }
 
-    const initial = pickNextBottomCopy()
+    const initial = pickNextBottomCopy(currentBottomCopy)
     if (initial) {
         currentBottomCopy = initial
-        applyBottomBlockCopy(initial)
+        applyBottomBlockCopy(
+            {
+                headline: bottomHeadlineElement,
+                sub: bottomSubElement,
+            },
+            initial
+        )
     }
 
     const onBottomBlockActivate = (event?: Event) => {
         if ((event?.target as HTMLElement | null)?.closest?.('a')) return
-        const next = pickNextBottomCopy()
+        const next = pickNextBottomCopy(currentBottomCopy)
         if (!next) return
         transitionBottomBlockCopy(next)
     }

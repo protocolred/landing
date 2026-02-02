@@ -75,6 +75,13 @@
         left: var(--size-0);
     }
 
+    .store.store-bottom {
+        position: fixed;
+        right: var(--size-0);
+        bottom: 150px;
+        left: var(--size-0);
+    }
+
     .desktop .header {
         --header-height: calc(var(--size-72) + env(safe-area-inset-bottom, var(--size-0)));
         --header-line-height: var(--size-72);

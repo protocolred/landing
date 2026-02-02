@@ -1,12 +1,11 @@
-import { SELECTORS } from '@/core/constants'
-import { prefersReducedMotion, qs, qsa } from '@/core/dom'
+import { createDisposer } from '@/core/dispose'
+import { qs, qsa } from '@/core/dom'
 import type { FeatureInit } from '@/core/feature'
 import { PARALLAX_CONFIG } from '@/data/parallax'
 
-import { buildLayer } from './buildLayer'
 import { createLayerObserver } from './observer'
 import { createParallaxScroller } from './scroll'
-import type { LayerState } from './types'
+import { createParallaxStateManager } from './state'
 import { resolveSizePx } from './utils'
 
 export const initParallax: FeatureInit = () => {
@@ -14,23 +13,9 @@ export const initParallax: FeatureInit = () => {
     if (!container) return
 
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const disposer = createDisposer()
     const layers = qsa<HTMLElement>(PARALLAX_CONFIG.layerSelector, container)
     if (layers.length === 0) return
-
-    const states = new Map<HTMLElement, LayerState>()
-
-    const startSimulation = (state: LayerState) => {
-        if (prefersReducedMotion()) return
-        if (state.running) return
-        state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart()
-        state.running = true
-    }
-
-    const stopSimulation = (state: LayerState) => {
-        if (!state.running) return
-        state.simulation.stop()
-        state.running = false
-    }
 
     const getScrollRatio = () => {
         // 0..1 value used for container size + layer scaling
@@ -56,43 +41,27 @@ export const initParallax: FeatureInit = () => {
         container.style.setProperty('--parallax-size', `${Math.max(0, sizePx)}px`)
     }
 
+    const stateManager = createParallaxStateManager({
+        layers,
+        getScrollRatio,
+        setContainerSize,
+        refreshContainerSizeBounds,
+    })
+
     const observerControls = createLayerObserver({
         layers,
-        states,
+        states: stateManager.states,
         onVisibilityChange: (state, isVisible) => {
             if (isVisible) {
-                startSimulation(state)
+                stateManager.startSimulation(state)
             } else {
-                stopSimulation(state)
+                stateManager.stopSimulation(state)
             }
         },
     })
 
     const rebuild = () => {
-        refreshContainerSizeBounds()
-        setContainerSize(getScrollRatio())
-        for (const state of states.values()) {
-            stopSimulation(state)
-            state.destroy()
-        }
-        states.clear()
-
-        for (const layer of layers) {
-            const svg = layer.querySelector(SELECTORS.parallaxLayerSvg)
-            if (svg) {
-                svg.remove()
-            }
-            const state = buildLayer(layer)
-            const running = !prefersReducedMotion()
-            if (!running) {
-                state.simulation.stop()
-            }
-            states.set(layer, {
-                ...state,
-                isVisible: true,
-                running,
-            })
-        }
+        stateManager.rebuild()
         observerControls.observeAll()
     }
 
@@ -102,33 +71,29 @@ export const initParallax: FeatureInit = () => {
         setContainerSize,
     })
 
-    const handleResize = (() => {
-        let raf = 0
-        return () => {
-            if (raf) cancelAnimationFrame(raf)
-            raf = requestAnimationFrame(() => {
-                rebuild()
-                applyParallax()
-            })
-        }
-    })()
+    let resizeRaf = 0
+    const handleResize = () => {
+        if (resizeRaf) cancelAnimationFrame(resizeRaf)
+        resizeRaf = requestAnimationFrame(() => {
+            rebuild()
+            applyParallax()
+        })
+    }
 
     rebuild()
     applyParallax()
 
-    window.addEventListener('scroll', applyParallax, { passive: true })
-    window.addEventListener('resize', handleResize)
-    motionQuery.addEventListener('change', rebuild)
+    disposer.addListener(window, 'scroll', applyParallax, { passive: true })
+    disposer.addListener(window, 'resize', handleResize)
+    disposer.addListener(motionQuery, 'change', rebuild)
 
     return () => {
-        window.removeEventListener('scroll', applyParallax)
-        window.removeEventListener('resize', handleResize)
-        motionQuery.removeEventListener('change', rebuild)
-        observerControls.disconnect()
-        for (const state of states.values()) {
-            stopSimulation(state)
-            state.destroy()
+        if (resizeRaf) {
+            cancelAnimationFrame(resizeRaf)
+            resizeRaf = 0
         }
-        states.clear()
+        disposer.disposeAll()
+        observerControls.disconnect()
+        stateManager.destroy()
     }
 }

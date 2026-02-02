@@ -3,6 +3,13 @@
   // src/core/dispose.ts
   var createDisposer = () => {
     const disposers = [];
+    const addDisposer = (dispose) => {
+      disposers.push(dispose);
+      return () => {
+        const index = disposers.indexOf(dispose);
+        if (index >= 0) disposers.splice(index, 1);
+      };
+    };
     const add = (maybeDisposer) => {
       if (typeof maybeDisposer === "function") disposers.push(maybeDisposer);
     };
@@ -12,11 +19,34 @@
       disposers.push(dispose);
       return dispose;
     };
+    const addTimeout = (handler, timeoutMs) => {
+      let timeoutId = 0;
+      const remove2 = addDisposer(() => window.clearTimeout(timeoutId));
+      timeoutId = window.setTimeout(() => {
+        remove2();
+        handler();
+      }, timeoutMs);
+      return timeoutId;
+    };
+    const addInterval = (handler, intervalMs) => {
+      const intervalId = window.setInterval(handler, intervalMs);
+      addDisposer(() => window.clearInterval(intervalId));
+      return intervalId;
+    };
+    const addRaf = (handler) => {
+      let rafId = 0;
+      const remove2 = addDisposer(() => cancelAnimationFrame(rafId));
+      rafId = requestAnimationFrame((time) => {
+        remove2();
+        handler(time);
+      });
+      return rafId;
+    };
     const disposeAll = () => {
       disposers.forEach((dispose) => dispose());
       disposers.length = 0;
     };
-    return { add, addListener, disposeAll };
+    return { add, addListener, addTimeout, addInterval, addRaf, disposeAll };
   };
 
   // src/core/constants.ts
@@ -38,6 +68,20 @@
     glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
     scrambleCharacters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   };
+  var TIMINGS = {
+    glitch: {
+      baseIntervalMs: 80,
+      maxTicks: 18,
+      settleOffsetStart: 4,
+      singleLetterDelayMs: 1e3,
+      singleLetterDurationMs: 1e3,
+      singleLetterMinPauseMs: 5e3,
+      singleLetterJitterMs: 1e4
+    },
+    bottomBlock: {
+      scrambleDurationMs: 500
+    }
+  };
 
   // src/core/dom.ts
   function qs(selector, root2 = document) {
@@ -48,6 +92,9 @@
   }
   function prefersReducedMotion() {
     return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  function shouldAnimate() {
+    return !prefersReducedMotion();
   }
 
   // src/core/random.ts
@@ -462,12 +509,49 @@
     return values.filter((v) => v && typeof v === "object");
   }
 
+  // src/features/bottomBlock/render.ts
+  var renderParagraphs = (element, paragraphs) => {
+    element.innerHTML = "";
+    paragraphs.forEach((text) => {
+      const p = document.createElement("p");
+      p.textContent = text;
+      element.appendChild(p);
+    });
+  };
+  var applyBottomBlockCopy = (elements, copy) => {
+    if (typeof copy.headline === "string" && copy.headline.trim()) {
+      elements.headline.textContent = copy.headline;
+    }
+    if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
+      renderParagraphs(elements.sub, copy.paragraphs);
+    }
+  };
+  var ensureParagraphElements = (container, count) => {
+    const existing = qsa(SELECTORS.bottomSubParagraphs, container);
+    while (existing.length < count) {
+      const p = document.createElement("p");
+      container.appendChild(p);
+      existing.push(p);
+    }
+    return existing;
+  };
+
+  // src/features/bottomBlock/selection.ts
+  var createBottomBlockPicker = (copies) => {
+    return (current) => {
+      var _a, _b;
+      if (copies.length === 0) return null;
+      if (copies.length === 1) return (_a = copies[0]) != null ? _a : null;
+      return (_b = pickRandomAvoid(copies, current, 10)) != null ? _b : null;
+    };
+  };
+
   // src/features/textScramble.ts
   var createTextScrambler = (options) => {
-    const { prefersReducedMotion: prefersReducedMotion2, randomChar } = options;
+    const { shouldAnimate: shouldAnimate2, randomChar } = options;
     const scrambleTokens = /* @__PURE__ */ new WeakMap();
     return (element, fromText, toText, durationMs = 500) => {
-      if (prefersReducedMotion2()) {
+      if (!shouldAnimate2()) {
         element.textContent = toText;
         return Promise.resolve();
       }
@@ -533,54 +617,39 @@
     if (!bottomHeadlineElement || !bottomSubElement || !bottomBlockElement) return;
     const getRandomChar = () => pickRandomChar(TEXT.scrambleCharacters);
     const animateScrambleText = createTextScrambler({
-      prefersReducedMotion,
+      shouldAnimate,
       randomChar: getRandomChar
     });
-    const renderParagraphs = (element, paragraphs) => {
-      element.innerHTML = "";
-      paragraphs.forEach((text) => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        element.appendChild(p);
-      });
-    };
-    const applyBottomBlockCopy = (copy) => {
-      if (typeof copy.headline === "string" && copy.headline.trim()) {
-        bottomHeadlineElement.textContent = copy.headline;
-      }
-      if (Array.isArray(copy.paragraphs) && copy.paragraphs.length > 0) {
-        renderParagraphs(bottomSubElement, copy.paragraphs);
-      }
-    };
     const bottomCopies = getBottomBlockCopies();
     if (bottomCopies.length === 0) return;
     let currentBottomCopy = null;
-    const pickNextBottomCopy = () => {
-      var _a, _b;
-      if (bottomCopies.length === 1) return (_a = bottomCopies[0]) != null ? _a : null;
-      return (_b = pickRandomAvoid(bottomCopies, currentBottomCopy, 10)) != null ? _b : null;
-    };
+    const pickNextBottomCopy = createBottomBlockPicker(bottomCopies);
     const transitionBottomBlockCopy = async (copy) => {
       var _a, _b, _c;
       const headlineTo = typeof copy.headline === "string" ? copy.headline : "";
       const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
       const headlineFrom = (_a = bottomHeadlineElement.textContent) != null ? _a : "";
       const jobs = [];
-      jobs.push(animateScrambleText(bottomHeadlineElement, headlineFrom, headlineTo, 500));
-      const existing = Array.from(
-        bottomSubElement.querySelectorAll(SELECTORS.bottomSubParagraphs)
+      jobs.push(
+        animateScrambleText(
+          bottomHeadlineElement,
+          headlineFrom,
+          headlineTo,
+          TIMINGS.bottomBlock.scrambleDurationMs
+        )
       );
-      while (existing.length < paragraphsTo.length) {
-        const p = document.createElement("p");
-        bottomSubElement.appendChild(p);
-        existing.push(p);
-      }
+      const existing = ensureParagraphElements(bottomSubElement, paragraphsTo.length);
       for (let i = 0; i < existing.length; i++) {
         const element = existing[i];
         const from = (_b = element.textContent) != null ? _b : "";
         const nextText = (_c = paragraphsTo[i]) != null ? _c : "";
         jobs.push(
-          animateScrambleText(element, from, nextText, 500).then(() => {
+          animateScrambleText(
+            element,
+            from,
+            nextText,
+            TIMINGS.bottomBlock.scrambleDurationMs
+          ).then(() => {
             if (i >= paragraphsTo.length) element.remove();
           })
         );
@@ -588,15 +657,21 @@
       await Promise.all(jobs);
       currentBottomCopy = copy;
     };
-    const initial = pickNextBottomCopy();
+    const initial = pickNextBottomCopy(currentBottomCopy);
     if (initial) {
       currentBottomCopy = initial;
-      applyBottomBlockCopy(initial);
+      applyBottomBlockCopy(
+        {
+          headline: bottomHeadlineElement,
+          sub: bottomSubElement
+        },
+        initial
+      );
     }
     const onBottomBlockActivate = (event) => {
       var _a, _b;
       if ((_b = (_a = event == null ? void 0 : event.target) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "a")) return;
-      const next = pickNextBottomCopy();
+      const next = pickNextBottomCopy(currentBottomCopy);
       if (!next) return;
       transitionBottomBlockCopy(next);
     };
@@ -772,6 +847,39 @@
       opacityMin: 0.35,
       opacityMax: 0.9
     }
+  };
+
+  // src/features/parallax/observer.ts
+  var createLayerObserver = (options) => {
+    const { layers, states, onVisibilityChange } = options;
+    let observer = null;
+    const observeAll = () => {
+      if (observer) observer.disconnect();
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const target = entry.target;
+            const state = states.get(target);
+            if (!state) continue;
+            state.isVisible = entry.isIntersecting;
+            onVisibilityChange(state, entry.isIntersecting);
+          }
+        },
+        {
+          root: null,
+          rootMargin: "200px",
+          threshold: 0.01
+        }
+      );
+      for (const layer of layers) {
+        observer.observe(layer);
+      }
+    };
+    const disconnect = () => {
+      if (observer) observer.disconnect();
+      observer = null;
+    };
+    return { observeAll, disconnect };
   };
 
   // node_modules/d3-array/src/range.js
@@ -3389,6 +3497,33 @@
   });
   var getOrbitPhase = () => Math.random() * TAU;
 
+  // src/features/parallax/scroll.ts
+  var createParallaxScroller = (options) => {
+    const { layers, getScrollRatio, setContainerSize } = options;
+    let ticking = false;
+    let latestScroll = window.scrollY;
+    const update = () => {
+      const scrollRatio = getScrollRatio();
+      setContainerSize(scrollRatio);
+      const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
+      const frontLayer = layers[layers.length - 1];
+      for (const layer of layers) {
+        const { speed, shrink } = getLayerConfig(layer);
+        const effectiveShrink = layer === frontLayer ? 0 : shrink;
+        const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
+        layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
+      }
+      ticking = false;
+    };
+    return () => {
+      latestScroll = window.scrollY;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+  };
+
   // src/features/parallax/buildLayer.ts
   var buildLayer = (layer) => {
     const width = Math.max(1, layer.clientWidth);
@@ -3459,76 +3594,12 @@
     return { layer, simulation, destroy };
   };
 
-  // src/features/parallax/observer.ts
-  var createLayerObserver = (options) => {
-    const { layers, states, onVisibilityChange } = options;
-    let observer = null;
-    const observeAll = () => {
-      if (observer) observer.disconnect();
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            const target = entry.target;
-            const state = states.get(target);
-            if (!state) continue;
-            state.isVisible = entry.isIntersecting;
-            onVisibilityChange(state, entry.isIntersecting);
-          }
-        },
-        {
-          root: null,
-          rootMargin: "200px",
-          threshold: 0.01
-        }
-      );
-      for (const layer of layers) {
-        observer.observe(layer);
-      }
-    };
-    const disconnect = () => {
-      if (observer) observer.disconnect();
-      observer = null;
-    };
-    return { observeAll, disconnect };
-  };
-
-  // src/features/parallax/scroll.ts
-  var createParallaxScroller = (options) => {
-    const { layers, getScrollRatio, setContainerSize } = options;
-    let ticking = false;
-    let latestScroll = window.scrollY;
-    const update = () => {
-      const scrollRatio = getScrollRatio();
-      setContainerSize(scrollRatio);
-      const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
-      const frontLayer = layers[layers.length - 1];
-      for (const layer of layers) {
-        const { speed, shrink } = getLayerConfig(layer);
-        const effectiveShrink = layer === frontLayer ? 0 : shrink;
-        const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
-        layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
-      }
-      ticking = false;
-    };
-    return () => {
-      latestScroll = window.scrollY;
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    };
-  };
-
-  // src/features/parallax/index.ts
-  var initParallax = () => {
-    const container = qs(PARALLAX_CONFIG.containerSelector);
-    if (!container) return;
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const layers = qsa(PARALLAX_CONFIG.layerSelector, container);
-    if (layers.length === 0) return;
+  // src/features/parallax/state.ts
+  var createParallaxStateManager = (options) => {
+    const { layers, getScrollRatio, setContainerSize, refreshContainerSizeBounds } = options;
     const states = /* @__PURE__ */ new Map();
     const startSimulation = (state) => {
-      if (prefersReducedMotion()) return;
+      if (!shouldAnimate()) return;
       if (state.running) return;
       state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart();
       state.running = true;
@@ -3538,6 +3609,55 @@
       state.simulation.stop();
       state.running = false;
     };
+    const rebuild = () => {
+      refreshContainerSizeBounds();
+      setContainerSize(getScrollRatio());
+      for (const state of states.values()) {
+        stopSimulation(state);
+        state.destroy();
+      }
+      states.clear();
+      for (const layer of layers) {
+        const svg = qs(SELECTORS.parallaxLayerSvg, layer);
+        if (svg) {
+          svg.remove();
+        }
+        const state = buildLayer(layer);
+        const running = shouldAnimate();
+        if (!running) {
+          state.simulation.stop();
+        }
+        states.set(layer, {
+          ...state,
+          isVisible: true,
+          running
+        });
+      }
+    };
+    const destroy = () => {
+      for (const state of states.values()) {
+        stopSimulation(state);
+        state.destroy();
+      }
+      states.clear();
+    };
+    return {
+      states,
+      rebuild,
+      destroy,
+      startSimulation,
+      stopSimulation
+    };
+  };
+
+  // src/features/parallax/index.ts
+  var initParallax = () => {
+    const container = qs(PARALLAX_CONFIG.containerSelector);
+    if (!container) return;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const disposer = createDisposer();
+    const layers = qsa(PARALLAX_CONFIG.layerSelector, container);
+    if (layers.length === 0) return;
     const getScrollRatio = () => {
       const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       return Math.min(1, Math.max(0, window.scrollY / scrollMax));
@@ -3555,41 +3675,25 @@
       const sizePx = containerSizePx.start + (containerSizePx.end - containerSizePx.start) * scrollRatio;
       container.style.setProperty("--parallax-size", `${Math.max(0, sizePx)}px`);
     };
+    const stateManager = createParallaxStateManager({
+      layers,
+      getScrollRatio,
+      setContainerSize,
+      refreshContainerSizeBounds
+    });
     const observerControls = createLayerObserver({
       layers,
-      states,
+      states: stateManager.states,
       onVisibilityChange: (state, isVisible) => {
         if (isVisible) {
-          startSimulation(state);
+          stateManager.startSimulation(state);
         } else {
-          stopSimulation(state);
+          stateManager.stopSimulation(state);
         }
       }
     });
     const rebuild = () => {
-      refreshContainerSizeBounds();
-      setContainerSize(getScrollRatio());
-      for (const state of states.values()) {
-        stopSimulation(state);
-        state.destroy();
-      }
-      states.clear();
-      for (const layer of layers) {
-        const svg = layer.querySelector(SELECTORS.parallaxLayerSvg);
-        if (svg) {
-          svg.remove();
-        }
-        const state = buildLayer(layer);
-        const running = !prefersReducedMotion();
-        if (!running) {
-          state.simulation.stop();
-        }
-        states.set(layer, {
-          ...state,
-          isVisible: true,
-          running
-        });
-      }
+      stateManager.rebuild();
       observerControls.observeAll();
     };
     const applyParallax = createParallaxScroller({
@@ -3597,31 +3701,27 @@
       getScrollRatio,
       setContainerSize
     });
-    const handleResize = /* @__PURE__ */ (() => {
-      let raf = 0;
-      return () => {
-        if (raf) cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(() => {
-          rebuild();
-          applyParallax();
-        });
-      };
-    })();
+    let resizeRaf = 0;
+    const handleResize = () => {
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(() => {
+        rebuild();
+        applyParallax();
+      });
+    };
     rebuild();
     applyParallax();
-    window.addEventListener("scroll", applyParallax, { passive: true });
-    window.addEventListener("resize", handleResize);
-    motionQuery.addEventListener("change", rebuild);
+    disposer.addListener(window, "scroll", applyParallax, { passive: true });
+    disposer.addListener(window, "resize", handleResize);
+    disposer.addListener(motionQuery, "change", rebuild);
     return () => {
-      window.removeEventListener("scroll", applyParallax);
-      window.removeEventListener("resize", handleResize);
-      motionQuery.removeEventListener("change", rebuild);
-      observerControls.disconnect();
-      for (const state of states.values()) {
-        stopSimulation(state);
-        state.destroy();
+      if (resizeRaf) {
+        cancelAnimationFrame(resizeRaf);
+        resizeRaf = 0;
       }
-      states.clear();
+      disposer.disposeAll();
+      observerControls.disconnect();
+      stateManager.destroy();
     };
   };
 
@@ -3680,9 +3780,10 @@
     };
   };
 
-  // src/features/textGlitch.ts
+  // src/features/textGlitch/scheduler.ts
   var createSingleLetterScheduler = (options) => {
     const { protocolLetters, baseIntervalMs, getRandomChar } = options;
+    const disposer = createDisposer();
     let singleLetterActive = false;
     let singleLetterTimeoutId;
     let singleLetterIntervalId;
@@ -3713,12 +3814,12 @@
         return;
       }
       targetLetter.textContent = getRandomChar(finalChar);
-      singleLetterTimeoutId = window.setTimeout(() => {
-        singleLetterIntervalId = window.setInterval(() => {
+      singleLetterTimeoutId = disposer.addTimeout(() => {
+        singleLetterIntervalId = disposer.addInterval(() => {
           const nextChar = getRandomChar();
           targetLetter.textContent = nextChar;
         }, baseIntervalMs);
-        singleLetterTimeoutId = window.setTimeout(() => {
+        singleLetterTimeoutId = disposer.addTimeout(() => {
           if (singleLetterIntervalId) {
             window.clearInterval(singleLetterIntervalId);
             singleLetterIntervalId = void 0;
@@ -3726,13 +3827,13 @@
           targetLetter.textContent = finalChar;
           singleLetterActive = false;
           onDone();
-        }, 1e3);
-      }, 1e3);
+        }, TIMINGS.glitch.singleLetterDurationMs);
+      }, TIMINGS.glitch.singleLetterDelayMs);
     };
     const scheduleNextSingleLetter = () => {
       if (schedulerTimeoutId) window.clearTimeout(schedulerTimeoutId);
-      const delayMs = 5e3 + Math.random() * 1e4;
-      schedulerTimeoutId = window.setTimeout(() => {
+      const delayMs = TIMINGS.glitch.singleLetterMinPauseMs + Math.random() * TIMINGS.glitch.singleLetterJitterMs;
+      schedulerTimeoutId = disposer.addTimeout(() => {
         runSingleLetterGlitch(scheduleNextSingleLetter);
       }, delayMs);
     };
@@ -3746,21 +3847,33 @@
       singleLetterTimeoutId = void 0;
       singleLetterIntervalId = void 0;
       schedulerTimeoutId = void 0;
+      disposer.disposeAll();
     };
     return { start: start2, dispose };
   };
+
+  // src/features/textGlitch.ts
   var initTextGlitch = () => {
     const protocolText = qs(SELECTORS.protocolText);
     const letters = qsa(SELECTORS.glitchLetters);
     if (letters.length === 0) return;
-    const protocolLetters = protocolText ? Array.from(protocolText.querySelectorAll(SELECTORS.protocolTextLetters)) : [];
-    const baseIntervalMs = 80;
+    const protocolLetters = protocolText ? qsa(SELECTORS.protocolTextLetters, protocolText) : [];
+    const baseIntervalMs = TIMINGS.glitch.baseIntervalMs;
+    const disposer = createDisposer();
+    let runTextEffectIntervalId;
     const getRandomChar = (avoidChar = "") => pickRandomChar(TEXT.glitchCharacters, avoidChar);
     const runTextEffect = () => {
       let tick = 0;
-      const maxTicks = 18;
-      const settleOffsets = Array.from({ length: letters.length }, (_, i) => i + 4);
-      const timer2 = window.setInterval(() => {
+      const maxTicks = TIMINGS.glitch.maxTicks;
+      const settleOffsets = Array.from(
+        { length: letters.length },
+        (_, i) => i + TIMINGS.glitch.settleOffsetStart
+      );
+      if (runTextEffectIntervalId) {
+        window.clearInterval(runTextEffectIntervalId);
+        runTextEffectIntervalId = void 0;
+      }
+      runTextEffectIntervalId = disposer.addInterval(() => {
         tick++;
         letters.forEach((letter, index) => {
           const finalChar = letter.dataset.final || letter.textContent || "";
@@ -3771,7 +3884,10 @@
           }
         });
         if (tick > maxTicks + letters.length) {
-          window.clearInterval(timer2);
+          if (runTextEffectIntervalId) {
+            window.clearInterval(runTextEffectIntervalId);
+            runTextEffectIntervalId = void 0;
+          }
         }
       }, baseIntervalMs);
     };
@@ -3789,6 +3905,9 @@
     return () => {
       if (protocolText) protocolText.removeEventListener("click", runTextEffect);
       scheduler.dispose();
+      if (runTextEffectIntervalId) window.clearInterval(runTextEffectIntervalId);
+      runTextEffectIntervalId = void 0;
+      disposer.disposeAll();
     };
   };
 

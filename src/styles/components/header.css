@@ -67,7 +67,7 @@
 .desktop .header .logo-button {
     display: inline-block;
     appearance: none;
-    margin-top: calc(var(--size-8) * -1);
+    margin-top: -12px;
     padding: var(--size-0);
     transform: translateY(var(--logo-pop-translate));
     border: none;

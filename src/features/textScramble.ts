@@ -6,14 +6,14 @@ export type ScrambleText = (
 ) => Promise<void>
 
 export const createTextScrambler = (options: {
-    prefersReducedMotion: () => boolean
+    shouldAnimate: () => boolean
     randomChar: () => string
 }): ScrambleText => {
-    const { prefersReducedMotion, randomChar } = options
+    const { shouldAnimate, randomChar } = options
     const scrambleTokens = new WeakMap<Element, number>()
 
     return (element, fromText, toText, durationMs = 500) => {
-        if (prefersReducedMotion()) {
+        if (!shouldAnimate()) {
             element.textContent = toText
             return Promise.resolve()
         }
