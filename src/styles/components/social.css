@@ -2,14 +2,14 @@
     display: flex;
     z-index: var(--z-social);
     position: absolute;
-    bottom: var(--size-20px);
+    bottom: var(--size-20);
     flex-direction: row;
     justify-content: center;
     width: var(--size-full);
 }
 
 .social > div {
-    padding: var(--size-20px);
+    padding: var(--size-20);
     opacity: var(--opacity-muted);
 }
 

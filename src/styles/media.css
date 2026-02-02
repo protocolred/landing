@@ -1,21 +1,21 @@
 @media only screen and (width <= 900px) {
     .legal-header {
-        padding: var(--size-14px) var(--size-14px)
-            calc(var(--size-14px) + env(safe-area-inset-top, var(--size-0)));
+        padding: var(--size-16) var(--size-16)
+            calc(var(--size-16) + env(safe-area-inset-top, var(--size-0)));
     }
 
     .legal-container {
-        padding-right: calc(var(--size-16px) + env(safe-area-inset-right, var(--size-0)));
-        padding-bottom: calc(var(--size-90px) + env(safe-area-inset-bottom, var(--size-0)));
-        padding-left: calc(var(--size-16px) + env(safe-area-inset-left, var(--size-0)));
+        padding-right: calc(var(--size-16) + env(safe-area-inset-right, var(--size-0)));
+        padding-bottom: calc(var(--size-88) + env(safe-area-inset-bottom, var(--size-0)));
+        padding-left: calc(var(--size-16) + env(safe-area-inset-left, var(--size-0)));
     }
 
     .legal-container h1 {
-        font-size: clamp(var(--size-34px), var(--size-8-5vw), var(--size-48px));
+        font-size: clamp(var(--type-display-small), var(--size-8-5vw), var(--type-display-medium));
     }
 
     .legal-container h2 {
-        font-size: clamp(var(--size-24px), var(--size-6-5vw), var(--size-34px));
+        font-size: clamp(var(--type-headline-small), var(--size-6-5vw), var(--type-display-small));
     }
 
     body {
@@ -26,21 +26,21 @@
     .desktop > .list > .block {
         height: auto;
         min-height: var(--size-100dvh);
-        padding: var(--size-120px) var(--size-0)
-            calc(var(--size-140px) + env(safe-area-inset-bottom, var(--size-0)));
+        padding: var(--size-120) var(--size-0)
+            calc(var(--size-140) + env(safe-area-inset-bottom, var(--size-0)));
     }
 
     .desktop > .list > .app {
         min-width: 0;
-        padding-top: var(--size-120px);
-        padding-bottom: var(--size-140px);
+        padding-top: var(--size-120);
+        padding-bottom: var(--size-140);
     }
 
     .app .app-sub {
         align-items: stretch;
         width: var(--size-full);
-        padding-right: calc(var(--size-16px) + env(safe-area-inset-right, var(--size-0)));
-        padding-left: calc(var(--size-16px) + env(safe-area-inset-left, var(--size-0)));
+        padding-right: calc(var(--size-16) + env(safe-area-inset-right, var(--size-0)));
+        padding-left: calc(var(--size-16) + env(safe-area-inset-left, var(--size-0)));
         text-align: left;
     }
 
@@ -56,11 +56,11 @@
     }
 
     .main-text {
-        top: var(--size-80px);
+        top: var(--size-80);
         right: var(--size-0);
         left: var(--size-0);
         transform: none;
-        font-size: var(--font-giant);
+        font-size: var(--type-display-large);
         line-height: var(--size-120pct);
         text-align: center;
     }
@@ -70,29 +70,29 @@
     }
 
     .main-text-row div {
-        width: var(--size-40px);
+        width: var(--size-40);
     }
 
     .store {
         flex-wrap: wrap;
         height: auto;
         margin-top: var(--size-0);
-        padding: var(--size-0) var(--size-12px);
-        gap: var(--size-12px);
+        padding: var(--size-0) var(--size-12);
+        gap: var(--size-12);
     }
 
     .store img {
-        height: var(--size-60px);
+        height: var(--size-60);
     }
 
     .ios-store img {
-        padding: var(--size-10px);
+        padding: var(--size-8);
     }
 
     .store-main {
         position: fixed;
         right: var(--size-0);
-        bottom: var(--size-200px);
+        bottom: var(--size-200);
         left: var(--size-0);
     }
 
@@ -100,42 +100,44 @@
         top: auto;
         bottom: var(--size-0);
         justify-content: center;
-        height: calc(var(--size-69px) + env(safe-area-inset-bottom, var(--size-0)));
-        padding: var(--size-0) var(--size-18px) env(safe-area-inset-bottom, var(--size-0));
-        gap: var(--size-21px);
+        height: calc(var(--size-72) + env(safe-area-inset-bottom, var(--size-0)));
+        padding: var(--size-0) var(--size-40) env(safe-area-inset-bottom, var(--size-0));
+        gap: var(--size-20);
         background: var(--color-black-6);
-        font-size: var(--size-14px);
-        line-height: var(--size-70px);
-        letter-spacing: var(--size-1-5px);
+        font-size: var(--type-label-large);
+        line-height: var(--size-72);
+        letter-spacing: var(--size-2);
     }
 
     .desktop .header > [data-target] {
         border-top: var(--size-0) solid var(--color-transparent);
         border-bottom: var(--size-0) solid var(--color-transparent);
+        margin-right: 0 var(--size-12);
+        /*padding: var(--size-0);*/
     }
 
     .desktop .header > [data-target]:hover {
         border-top: var(--size-0);
-        border-bottom: var(--size-2px) solid var(--color-white-solid);
+        border-bottom: var(--size-2) solid var(--color-white-solid);
     }
 
     .desktop .header > [data-target].active {
         border-top: var(--size-0);
-        border-bottom: var(--size-5px) solid var(--color-white-solid);
+        border-bottom: var(--size-4) solid var(--color-white-solid);
     }
 
     .desktop .header .logo {
         padding-top: var(--size-0);
-        padding-bottom: var(--size-20px);
+        padding-bottom: var(--size-20);
         border-top: var(--size-0);
-        border-bottom: var(--size-20px) solid var(--color-red);
+        border-bottom: var(--size-20) solid var(--color-red);
     }
 
     .desktop .header .logo.logo-button {
         padding-top: var(--size-0);
-        padding-bottom: var(--size-2px);
+        padding-bottom: var(--size-2);
         border-top: var(--size-0);
-        border-bottom: var(--size-5px) solid var(--color-red);
+        border-bottom: var(--size-4) solid var(--color-red);
     }
 
     .social {
@@ -154,25 +156,25 @@
 
 @media only screen and (width <= 390px) {
     .desktop .header {
-        gap: var(--size-16px);
-        font-size: var(--size-12px);
-        line-height: var(--size-64px);
+        gap: var(--size-16);
+        font-size: var(--type-label-medium);
+        line-height: var(--size-64);
     }
 
     .main-text {
-        top: var(--size-64px);
-        font-size: clamp(var(--size-36px), var(--size-14vw), var(--size-48px));
+        top: var(--size-64);
+        font-size: clamp(var(--type-display-small), var(--size-14vw), var(--type-display-medium));
     }
 
     .main-text-row div {
-        width: var(--size-34px);
+        width: var(--size-36);
     }
 
     .store img {
-        height: var(--size-52px);
+        height: var(--size-52);
     }
 
     .ios-store img {
-        padding: var(--size-8px);
+        padding: var(--size-8);
     }
 }

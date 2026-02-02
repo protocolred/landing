@@ -35,9 +35,9 @@ body {
     margin: var(--size-0);
     background-color: var(--color-black);
     color: var(--color-white-solid);
-    font-size: var(--font-normal);
+    font-size: var(--type-body-large);
     font-family: var(--font);
-    letter-spacing: var(--size-1px);
+    letter-spacing: var(--size-1);
     user-select: none;
     -webkit-tap-highlight-color: var(--color-black-0);
     overscroll-behavior: none;
@@ -75,11 +75,11 @@ img {
 }
 
 body.legal-body::-webkit-scrollbar {
-    width: var(--size-8px);
+    width: var(--size-8);
 }
 
 body.legal-body::-webkit-scrollbar-thumb {
-    border-radius: var(--size-8px);
+    border-radius: var(--size-8);
     background: var(--color-white-22);
 }
 

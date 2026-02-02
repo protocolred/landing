@@ -1,12 +1,12 @@
 .protocol-lines {
     font-weight: 600;
-    font-size: clamp(var(--size-18px), var(--size-3-2vw), var(--size-44px));
+    font-size: clamp(var(--type-title-large), var(--size-3-2vw), var(--type-display-medium));
     line-height: var(--size-120pct);
-    letter-spacing: var(--size-1-5px);
+    letter-spacing: var(--size-2);
 }
 
 .protocol-line {
-    margin: var(--size-10px) var(--size-0);
+    margin: var(--size-8) var(--size-0);
 }
 
 .protocol-joke {
@@ -19,11 +19,11 @@
 .desktop > .list > .app {
     align-items: center;
     justify-content: flex-start;
-    min-width: var(--size-800px);
+    min-width: var(--size-800);
     max-width: var(--size-full);
-    padding-top: var(--size-160px);
-    padding-bottom: var(--size-160px);
-    gap: var(--size-16px);
+    padding-top: var(--size-160);
+    padding-bottom: var(--size-160);
+    gap: var(--size-16);
     text-align: center;
     cursor: pointer;
 }
@@ -36,8 +36,8 @@
 .app .app-headline {
     min-height: var(--app-headline-min-height, var(--size-0));
     font-weight: 600;
-    font-size: var(--font-big);
-    letter-spacing: var(--size-3px);
+    font-size: var(--type-display-small);
+    letter-spacing: var(--size-4);
     cursor: pointer;
 }
 
@@ -53,26 +53,26 @@
 }
 
 .app .app-sub p {
-    min-width: var(--size-400px);
+    min-width: var(--size-400);
     margin: var(--size-0);
 }
 
 .app .app-sub p + p {
-    margin-top: var(--size-10px);
+    margin-top: var(--size-8);
 }
 
 .app .app-sub p:nth-child(1) {
-    min-width: var(--size-800px);
+    min-width: var(--size-800);
     text-align: left;
 }
 
 .app .app-sub p:nth-child(2) {
-    min-width: var(--size-600px);
+    min-width: var(--size-600);
     text-align: center;
 }
 
 .app .app-sub p:nth-child(3) {
-    min-width: var(--size-400px);
+    min-width: var(--size-400);
     text-align: right;
 }
 

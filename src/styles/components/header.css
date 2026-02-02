@@ -8,15 +8,15 @@
     flex-direction: row;
     justify-content: right;
     width: var(--size-full);
-    height: var(--size-100px);
-    padding: var(--size-0) var(--size-40px);
+    height: var(--size-96);
+    padding: var(--size-0) var(--size-40);
     color: var(--color-white-solid);
-    line-height: var(--size-100px);
-    letter-spacing: var(--size-3px);
+    line-height: var(--size-96);
+    letter-spacing: var(--size-4);
 }
 
 .desktop .header > [data-target] {
-    margin-right: var(--size-60px);
+    margin-right: var(--size-60);
     border-top: var(--size-0) solid var(--color-transparent);
     color: inherit;
     font-weight: 600;
@@ -29,17 +29,17 @@
 }
 
 .desktop .header > [data-target]:hover {
-    border-top: var(--size-2px) solid var(--color-white-solid);
+    border-top: var(--size-2) solid var(--color-white-solid);
 }
 
 .desktop .header > [data-target].active {
-    border-top: var(--size-5px) solid var(--color-white-solid);
+    border-top: var(--size-4) solid var(--color-white-solid);
 }
 
 .desktop .header .logo {
     margin-right: auto;
-    padding-top: var(--size-20px);
-    border-top: var(--size-20px) solid var(--color-red);
+    padding-top: var(--size-20);
+    border-top: var(--size-20) solid var(--color-red);
     color: var(--color-red);
     font-weight: 600;
 }
@@ -47,7 +47,7 @@
 .desktop .header .logo-button {
     display: inline-block;
     appearance: none;
-    margin-top: calc(var(--size-10px) * -1);
+    margin-top: calc(var(--size-8) * -1);
     padding: var(--size-0);
     border: none;
     background: var(--color-transparent);
@@ -60,8 +60,8 @@
 }
 
 .desktop .header .logo.logo-button {
-    padding-top: var(--size-2px);
-    border-top: var(--size-5px) solid var(--color-red);
+    padding-top: var(--size-2);
+    border-top: var(--size-4) solid var(--color-red);
 }
 
 .desktop .header .logo-button.is-expanded {
@@ -102,6 +102,6 @@
 }
 
 .desktop .header .logo-button:focus-visible {
-    outline: var(--size-2px) solid var(--color-red-light);
-    outline-offset: var(--size-6px);
+    outline: var(--size-2) solid var(--color-red-light);
+    outline-offset: var(--size-8);
 }

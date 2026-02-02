@@ -1,14 +1,14 @@
 .main-text {
     z-index: var(--z-content);
     position: absolute;
-    top: var(--size-120px);
+    top: var(--size-120);
     left: var(--size-50pct);
     transform: translateX(calc(var(--size-50pct) * -1));
     font-weight: 700;
-    font-size: var(--font-180);
+    font-size: var(--type-display-large);
     line-height: var(--size-90pct);
     text-align: center;
-    text-shadow: var(--size-2px) var(--size-2px) var(--size-4px) var(--color-black-3);
+    text-shadow: var(--size-2) var(--size-2) var(--size-4) var(--color-black-3);
 }
 
 .main-text-row {
@@ -19,19 +19,19 @@
 }
 
 .main-text-row div {
-    width: var(--size-80px);
+    width: var(--size-80);
     text-align: center;
 }
 
 .main-text-sub {
     display: flex;
     justify-content: center;
-    gap: var(--size-18px);
-    margin-top: var(--size-14px);
+    gap: var(--size-20);
+    margin-top: var(--size-16);
     font-weight: 600;
-    font-size: var(--font-normal);
+    font-size: var(--type-body-large);
     line-height: var(--size-120pct);
-    letter-spacing: var(--size-1-5px);
+    letter-spacing: var(--size-2);
     text-transform: uppercase;
     opacity: var(--opacity-faint);
 }

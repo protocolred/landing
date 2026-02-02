@@ -1,0 +1,11 @@
+:root {
+    --font: 'Titillium Web', sans-serif;
+    --type-display-large: 57px;
+    --type-display-medium: 45px;
+    --type-display-small: 36px;
+    --type-headline-small: 24px;
+    --type-title-large: 22px;
+    --type-body-large: 16px;
+    --type-label-large: 14px;
+    --type-label-medium: 12px;
+}
