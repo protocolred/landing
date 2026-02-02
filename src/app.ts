@@ -6,6 +6,7 @@ import { initParallax } from '@/features/parallax'
 import { initRedButton } from '@/features/redButton'
 import { initStoreVisibility } from '@/features/storeVisibility'
 import { initTextGlitch } from '@/features/textGlitch'
+import { initThreeBody } from '@/features/threeBody'
 
 const init = () => {
     const disposer = createDisposer()
@@ -17,6 +18,7 @@ const init = () => {
     disposer.add(initBottomBlock())
     disposer.add(initRedButton())
     disposer.add(initParallax())
+    disposer.add(initThreeBody())
 
     window.addEventListener('pagehide', disposer.disposeAll, { once: true })
 }

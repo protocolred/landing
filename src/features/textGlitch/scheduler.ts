@@ -63,7 +63,8 @@ export const createSingleLetterScheduler = (options: {
     const scheduleNextSingleLetter = () => {
         if (schedulerTimeoutId) window.clearTimeout(schedulerTimeoutId)
         const delayMs =
-            TIMINGS.glitch.singleLetterMinPauseMs + Math.random() * TIMINGS.glitch.singleLetterJitterMs
+            TIMINGS.glitch.singleLetterMinPauseMs +
+            Math.random() * TIMINGS.glitch.singleLetterJitterMs
         schedulerTimeoutId = disposer.addTimeout(() => {
             runSingleLetterGlitch(scheduleNextSingleLetter)
         }, delayMs)

@@ -30,3 +30,11 @@ declare module 'd3' {
     export function range(count: number): number[]
     export function interpolateRgb(a: string, b: string): (t: number) => string
 }
+
+declare module 'd3-timer' {
+    export interface Timer {
+        stop(): void
+    }
+
+    export function timer(callback: (elapsed: number) => void): Timer
+}

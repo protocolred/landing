@@ -54,11 +54,12 @@
 
 .app .app-sub p {
     --app-sub-min-width: var(--size-400);
-    --app-sub-align: center;
+    --app-sub-align: left;
 
+    width: 100%;
     min-width: var(--app-sub-min-width);
     margin: var(--size-0);
-    text-align: var(--app-sub-align);
+    text-align: left;
 }
 
 .app .app-sub p + p {
@@ -67,17 +68,14 @@
 
 .app .app-sub p:nth-child(1) {
     --app-sub-min-width: var(--size-800);
-    --app-sub-align: left;
 }
 
 .app .app-sub p:nth-child(2) {
     --app-sub-min-width: var(--size-600);
-    --app-sub-align: center;
 }
 
 .app .app-sub p:nth-child(3) {
     --app-sub-min-width: var(--size-400);
-    --app-sub-align: right;
 }
 
 .desktop > .list > .app .store.store-bottom {
