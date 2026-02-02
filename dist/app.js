@@ -3316,15 +3316,6 @@
     speed: parseNumber(layer.dataset.speed, PARALLAX_CONFIG.motion.defaultSpeed),
     shrink: parseNumber(layer.dataset.shrink, PARALLAX_CONFIG.motion.defaultShrink)
   });
-  var getOrbitOffset = (node, t) => {
-    const angle = node.orbitPhase + node.orbitSpeedRad * t;
-    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
-    const r = node.orbitRadiusPx * wobble;
-    return {
-      dx: Math.cos(angle) * r,
-      dy: Math.sin(angle) * r
-    };
-  };
   var getOrbitPhase = () => Math.random() * TAU;
 
   // src/features/parallax/buildLayer.ts
@@ -3352,25 +3343,43 @@
       ),
       orbitWobblePhase: getOrbitPhase()
     }));
-    const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity);
+    const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity).attr("cx", 0).attr("cy", 0);
     const padding = PARALLAX_CONFIG.padding;
-    const simulation = simulation_default(nodes).force("x", x_default(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("y", y_default(height / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("jitter", createJitterForce(jitter)).velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay).alpha(PARALLAX_CONFIG.simulation.alpha).alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay).on("tick", () => {
-      const t = performance.now() / 1e3;
+    let rafId = 0;
+    let latestTime = 0;
+    const updateFrame = () => {
+      rafId = 0;
+      const t = latestTime;
       for (const node of nodes) {
         if (node.x < -padding) node.x = width + padding;
         if (node.x > width + padding) node.x = -padding;
         if (node.y < -padding) node.y = height + padding;
         if (node.y > height + padding) node.y = -padding;
       }
-      circles.attr("cx", (node) => {
-        const { dx } = getOrbitOffset(node, t);
-        return node.x + dx;
-      }).attr("cy", (node) => {
-        const { dy } = getOrbitOffset(node, t);
-        return node.y + dy;
+      circles.attr("transform", (node) => {
+        const angle = node.orbitPhase + node.orbitSpeedRad * t;
+        const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
+        const r = node.orbitRadiusPx * wobble;
+        const dx = Math.cos(angle) * r;
+        const dy = Math.sin(angle) * r;
+        return `translate(${node.x + dx}, ${node.y + dy})`;
       });
+    };
+    const scheduleFrame = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(updateFrame);
+    };
+    const simulation = simulation_default(nodes).force("x", x_default(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("y", y_default(height / 2).strength(PARALLAX_CONFIG.simulation.forceStrength)).force("jitter", createJitterForce(jitter)).velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay).alpha(PARALLAX_CONFIG.simulation.alpha).alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay).on("tick", () => {
+      latestTime = performance.now() / 1e3;
+      scheduleFrame();
     });
-    return { layer, simulation };
+    const destroy = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+    return { layer, simulation, destroy };
   };
 
   // src/features/parallax/index.ts
@@ -3383,6 +3392,18 @@
     );
     if (layers.length === 0) return;
     const states = /* @__PURE__ */ new Map();
+    let observer = null;
+    const startSimulation = (state) => {
+      if (prefersReducedMotion2.matches) return;
+      if (state.running) return;
+      state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart();
+      state.running = true;
+    };
+    const stopSimulation = (state) => {
+      if (!state.running) return;
+      state.simulation.stop();
+      state.running = false;
+    };
     const getScrollRatio = () => {
       const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       return Math.min(1, Math.max(0, window.scrollY / scrollMax));
@@ -3404,7 +3425,8 @@
       refreshContainerSizeBounds();
       setContainerSize(getScrollRatio());
       for (const state of states.values()) {
-        state.simulation.stop();
+        stopSimulation(state);
+        state.destroy();
       }
       states.clear();
       for (const layer of layers) {
@@ -3413,10 +3435,42 @@
           svg.remove();
         }
         const state = buildLayer(layer);
-        if (prefersReducedMotion2.matches) {
+        const running = !prefersReducedMotion2.matches;
+        if (!running) {
           state.simulation.stop();
         }
-        states.set(layer, state);
+        states.set(layer, {
+          ...state,
+          isVisible: true,
+          running
+        });
+      }
+      setupObserver();
+    };
+    const setupObserver = () => {
+      if (observer) observer.disconnect();
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const target = entry.target;
+            const state = states.get(target);
+            if (!state) continue;
+            state.isVisible = entry.isIntersecting;
+            if (entry.isIntersecting) {
+              startSimulation(state);
+            } else {
+              stopSimulation(state);
+            }
+          }
+        },
+        {
+          root: null,
+          rootMargin: "200px",
+          threshold: 0.01
+        }
+      );
+      for (const layer of layers) {
+        observer.observe(layer);
       }
     };
     const applyParallax = (() => {

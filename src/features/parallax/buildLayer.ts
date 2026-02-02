@@ -6,7 +6,6 @@ import {
     createColorSampler,
     createJitterForce,
     getLayerConfig,
-    getOrbitOffset,
     getOrbitPhase,
     randomBetween,
 } from './utils'
@@ -56,8 +55,39 @@ export const buildLayer = (layer: HTMLElement) => {
         .attr('r', (node: DotNode) => node.r)
         .attr('fill', (node: DotNode) => node.color)
         .attr('opacity', (node: DotNode) => node.opacity)
+        .attr('cx', 0)
+        .attr('cy', 0)
 
     const padding = PARALLAX_CONFIG.padding
+    let rafId = 0
+    let latestTime = 0
+    const updateFrame = () => {
+        rafId = 0
+        const t = latestTime
+        for (const node of nodes) {
+            if (node.x < -padding) node.x = width + padding
+            if (node.x > width + padding) node.x = -padding
+            if (node.y < -padding) node.y = height + padding
+            if (node.y > height + padding) node.y = -padding
+        }
+
+        circles.attr('transform', (node: DotNode) => {
+            const angle = node.orbitPhase + node.orbitSpeedRad * t
+            const wobble =
+                0.75 +
+                0.25 *
+                    Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
+            const r = node.orbitRadiusPx * wobble
+            const dx = Math.cos(angle) * r
+            const dy = Math.sin(angle) * r
+            return `translate(${node.x + dx}, ${node.y + dy})`
+        })
+    }
+
+    const scheduleFrame = () => {
+        if (rafId) return
+        rafId = requestAnimationFrame(updateFrame)
+    }
     const simulation = d3
         .forceSimulation(nodes)
         .force('x', d3.forceX(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength))
@@ -67,24 +97,16 @@ export const buildLayer = (layer: HTMLElement) => {
         .alpha(PARALLAX_CONFIG.simulation.alpha)
         .alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay)
         .on('tick', () => {
-            const t = performance.now() / 1000
-            for (const node of nodes) {
-                if (node.x < -padding) node.x = width + padding
-                if (node.x > width + padding) node.x = -padding
-                if (node.y < -padding) node.y = height + padding
-                if (node.y > height + padding) node.y = -padding
-            }
-
-            circles
-                .attr('cx', (node: DotNode) => {
-                    const { dx } = getOrbitOffset(node, t)
-                    return node.x + dx
-                })
-                .attr('cy', (node: DotNode) => {
-                    const { dy } = getOrbitOffset(node, t)
-                    return node.y + dy
-                })
+            latestTime = performance.now() / 1000
+            scheduleFrame()
         })
 
-    return { layer, simulation }
+    const destroy = () => {
+        if (rafId) {
+            cancelAnimationFrame(rafId)
+            rafId = 0
+        }
+    }
+
+    return { layer, simulation, destroy }
 }

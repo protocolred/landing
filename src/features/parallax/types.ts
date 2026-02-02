@@ -18,6 +18,9 @@ export interface DotNode extends d3.SimulationNodeDatum {
 export interface LayerState {
     layer: HTMLElement
     simulation: d3.Simulation<DotNode, undefined>
+    isVisible: boolean
+    running: boolean
+    destroy: () => void
 }
 
 export type SizeUnit = 'px' | 'dvh' | 'dwh' | 'dvw' | 'vh' | 'vw' | '%'

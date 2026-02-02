@@ -14,6 +14,20 @@ export const initParallax = () => {
     if (layers.length === 0) return
 
     const states = new Map<HTMLElement, LayerState>()
+    let observer: IntersectionObserver | null = null
+
+    const startSimulation = (state: LayerState) => {
+        if (prefersReducedMotion.matches) return
+        if (state.running) return
+        state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart()
+        state.running = true
+    }
+
+    const stopSimulation = (state: LayerState) => {
+        if (!state.running) return
+        state.simulation.stop()
+        state.running = false
+    }
 
     const getScrollRatio = () => {
         // 0..1 value used for container size + layer scaling
@@ -43,7 +57,8 @@ export const initParallax = () => {
         refreshContainerSizeBounds()
         setContainerSize(getScrollRatio())
         for (const state of states.values()) {
-            state.simulation.stop()
+            stopSimulation(state)
+            state.destroy()
         }
         states.clear()
 
@@ -53,10 +68,43 @@ export const initParallax = () => {
                 svg.remove()
             }
             const state = buildLayer(layer)
-            if (prefersReducedMotion.matches) {
+            const running = !prefersReducedMotion.matches
+            if (!running) {
                 state.simulation.stop()
             }
-            states.set(layer, state)
+            states.set(layer, {
+                ...state,
+                isVisible: true,
+                running,
+            })
+        }
+        setupObserver()
+    }
+
+    const setupObserver = () => {
+        if (observer) observer.disconnect()
+        observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    const target = entry.target as HTMLElement
+                    const state = states.get(target)
+                    if (!state) continue
+                    state.isVisible = entry.isIntersecting
+                    if (entry.isIntersecting) {
+                        startSimulation(state)
+                    } else {
+                        stopSimulation(state)
+                    }
+                }
+            },
+            {
+                root: null,
+                rootMargin: '200px',
+                threshold: 0.01,
+            }
+        )
+        for (const layer of layers) {
+            observer.observe(layer)
         }
     }
 
