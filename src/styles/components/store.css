@@ -11,6 +11,7 @@
     align-items: center;
     justify-content: center;
     height: var(--size-80px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 #store-main {

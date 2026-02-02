@@ -41,7 +41,7 @@
     padding-top: var(--size-20px);
     border-top: var(--size-20px) solid var(--color-red);
     color: var(--color-red);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .desktop .header .logo-button {
@@ -52,10 +52,11 @@
     border: none;
     background: var(--color-transparent);
     font: inherit;
+    font-weight: 600;
     line-height: inherit;
     letter-spacing: inherit;
     cursor: pointer;
-    transition: transform 0.2s ease-out;
+    transition: transform 0.2s ease-out, font-weight 0.2s ease-out;
 }
 
 .desktop .header .logo.logo-button {
@@ -71,6 +72,7 @@
             var(--logo-pop-max)
         )
     );
+    font-weight: 700;
 }
 
 .desktop .header .logo-button.is-expanded:hover {
@@ -96,6 +98,7 @@
             var(--logo-pop-max)
         )
     );
+    font-weight: 700;
 }
 
 .desktop .header .logo-button:focus-visible {

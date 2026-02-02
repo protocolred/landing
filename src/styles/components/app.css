@@ -61,14 +61,17 @@
 
 #app .app-sub p:nth-child(1) {
     min-width: var(--size-800px);
+    text-align: left;
 }
 
 #app .app-sub p:nth-child(2) {
     min-width: var(--size-600px);
+    text-align: center;
 }
 
 #app .app-sub p:nth-child(3) {
     min-width: var(--size-400px);
+    text-align: right;
 }
 
 .desktop > #list > #app {

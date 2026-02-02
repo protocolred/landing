@@ -125,6 +125,21 @@
         letter-spacing: var(--size-1-5px);
     }
 
+    .desktop .header > [data-target] {
+        border-top: var(--size-0) solid var(--color-transparent);
+        border-bottom: var(--size-0) solid var(--color-transparent);
+    }
+
+    .desktop .header > [data-target]:hover {
+        border-top: var(--size-0);
+        border-bottom: var(--size-2px) solid var(--color-white-solid);
+    }
+
+    .desktop .header > [data-target].active {
+        border-top: var(--size-0);
+        border-bottom: var(--size-5px) solid var(--color-white-solid);
+    }
+
     .desktop .header .logo {
         padding-top: var(--size-0);
         padding-bottom: var(--size-20px);
