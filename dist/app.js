@@ -510,11 +510,23 @@
   }
 
   // src/features/bottomBlock/render.ts
+  var normalizeBottomSubParagraphs = (paragraphs) => {
+    var _a, _b;
+    if (paragraphs.length >= 3) {
+      return {
+        lines: [`${(_a = paragraphs[0]) != null ? _a : ""} ${(_b = paragraphs[1]) != null ? _b : ""}`.trim(), ...paragraphs.slice(2)],
+        rightAlignedLineIndex: 1
+      };
+    }
+    return { lines: paragraphs, rightAlignedLineIndex: null };
+  };
   var renderParagraphs = (element, paragraphs) => {
+    const { lines, rightAlignedLineIndex } = normalizeBottomSubParagraphs(paragraphs);
     element.innerHTML = "";
-    paragraphs.forEach((text) => {
+    lines.forEach((text, index) => {
       const p = document.createElement("p");
       p.textContent = text;
+      if (rightAlignedLineIndex === index) p.classList.add("app-sub-right");
       element.appendChild(p);
     });
   };
@@ -527,8 +539,12 @@
     }
   };
   var ensureParagraphElements = (container, count) => {
+    const normalizedCount = count >= 3 ? (
+      // first 2 paragraphs are rendered as a single line
+      Math.max(1, count - 1)
+    ) : count;
     const existing = qsa(SELECTORS.bottomSubParagraphs, container);
-    while (existing.length < count) {
+    while (existing.length < normalizedCount) {
       const p = document.createElement("p");
       container.appendChild(p);
       existing.push(p);
@@ -627,7 +643,8 @@
     const transitionBottomBlockCopy = async (copy) => {
       var _a, _b, _c;
       const headlineTo = typeof copy.headline === "string" ? copy.headline : "";
-      const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
+      const rawParagraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : [];
+      const { lines: paragraphsTo, rightAlignedLineIndex } = normalizeBottomSubParagraphs(rawParagraphsTo);
       const headlineFrom = (_a = bottomHeadlineElement.textContent) != null ? _a : "";
       const jobs = [];
       jobs.push(
@@ -638,11 +655,12 @@
           TIMINGS.bottomBlock.scrambleDurationMs
         )
       );
-      const existing = ensureParagraphElements(bottomSubElement, paragraphsTo.length);
+      const existing = ensureParagraphElements(bottomSubElement, rawParagraphsTo.length);
       for (let i = 0; i < existing.length; i++) {
         const element = existing[i];
         const from = (_b = element.textContent) != null ? _b : "";
         const nextText = (_c = paragraphsTo[i]) != null ? _c : "";
+        element.classList.toggle("app-sub-right", rightAlignedLineIndex === i);
         jobs.push(
           animateScrambleText(
             element,

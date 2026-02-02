@@ -17,6 +17,9 @@
 }
 
 .desktop > .list > .app {
+    --app-headline-min-height: var(--size-0);
+    --app-sub-min-height: var(--size-0);
+
     align-items: center;
     justify-content: flex-start;
     min-width: var(--size-800);
@@ -44,7 +47,8 @@
 .app .app-sub {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;
     max-width: none;
     min-height: var(--app-sub-min-height, var(--size-0));
     line-height: 1.5;
@@ -53,29 +57,17 @@
 }
 
 .app .app-sub p {
-    --app-sub-min-width: var(--size-400);
-    --app-sub-align: left;
-
     width: 100%;
-    min-width: var(--app-sub-min-width);
     margin: var(--size-0);
     text-align: left;
 }
 
+.app .app-sub p.app-sub-right {
+    text-align: right;
+}
+
 .app .app-sub p + p {
     margin-top: var(--size-8);
-}
-
-.app .app-sub p:nth-child(1) {
-    --app-sub-min-width: var(--size-800);
-}
-
-.app .app-sub p:nth-child(2) {
-    --app-sub-min-width: var(--size-600);
-}
-
-.app .app-sub p:nth-child(3) {
-    --app-sub-min-width: var(--size-400);
 }
 
 .desktop > .list > .app .store.store-bottom {

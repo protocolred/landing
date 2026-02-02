@@ -27,14 +27,10 @@
 
     .app .app-sub p {
         width: var(--size-full);
-
-        --app-sub-min-width: var(--size-0);
     }
 
-    .app .app-sub p:nth-child(1),
-    .app .app-sub p:nth-child(2),
-    .app .app-sub p:nth-child(3) {
-        --app-sub-min-width: var(--size-0);
+    .app .app-sub p.app-sub-right {
+        text-align: left;
     }
 
     .main-text {

@@ -3,7 +3,11 @@ import { qs, shouldAnimate } from '@/core/dom'
 import type { FeatureInit } from '@/core/feature'
 import { pickRandomChar } from '@/core/random'
 import { getBottomBlockCopies, type BottomBlockCopy } from '@/data/api'
-import { applyBottomBlockCopy, ensureParagraphElements } from '@/features/bottomBlock/render'
+import {
+    applyBottomBlockCopy,
+    ensureParagraphElements,
+    normalizeBottomSubParagraphs,
+} from '@/features/bottomBlock/render'
 import { createBottomBlockPicker } from '@/features/bottomBlock/selection'
 import { createTextScrambler } from '@/features/textScramble'
 
@@ -29,7 +33,9 @@ export const initBottomBlock: FeatureInit = () => {
 
     const transitionBottomBlockCopy = async (copy: BottomBlockCopy) => {
         const headlineTo = typeof copy.headline === 'string' ? copy.headline : ''
-        const paragraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : []
+        const rawParagraphsTo = Array.isArray(copy.paragraphs) ? copy.paragraphs : []
+        const { lines: paragraphsTo, rightAlignedLineIndex } =
+            normalizeBottomSubParagraphs(rawParagraphsTo)
 
         const headlineFrom = bottomHeadlineElement.textContent ?? ''
         const jobs: Array<Promise<void>> = []
@@ -42,12 +48,13 @@ export const initBottomBlock: FeatureInit = () => {
             )
         )
 
-        const existing = ensureParagraphElements(bottomSubElement, paragraphsTo.length)
+        const existing = ensureParagraphElements(bottomSubElement, rawParagraphsTo.length)
 
         for (let i = 0; i < existing.length; i++) {
             const element = existing[i]!
             const from = element.textContent ?? ''
             const nextText = paragraphsTo[i] ?? ''
+            element.classList.toggle('app-sub-right', rightAlignedLineIndex === i)
             jobs.push(
                 animateScrambleText(
                     element,
