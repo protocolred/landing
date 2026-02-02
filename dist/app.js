@@ -621,6 +621,79 @@
     jokeElement.addEventListener("click", setRandomJoke);
   }
 
+  // src/data/parallax.ts
+  var PARALLAX_CONFIG = {
+    // Root container for the parallax stack
+    containerSelector: ".parallax",
+    // Individual layers inside container; each layer gets its own SVG + simulation
+    layerSelector: ".parallax-layer",
+    // Class applied to generated SVG
+    svgClassName: "parallax-svg",
+    // Parallax container size interpolation across scroll (used for CSS variable --parallax-size)
+    containerSize: {
+      start: "100dvw",
+      end: "100dvw"
+    },
+    // Extra margin beyond viewport before dots wrap around to the other side (px)
+    padding: 12,
+    // Defaults for a layer when no data-* attrs are provided on `.parallax-layer`
+    defaultLayer: {
+      // How many dots to spawn in the layer (can be overridden by `data-count`)
+      count: 10,
+      // Dot radius range in px (overridden by `data-size-min` / `data-size-max`)
+      sizeMin: 0.1,
+      sizeMax: 4,
+      // Random velocity "noise" strength (overridden by `data-jitter`)
+      jitter: 0.35
+    },
+    // Scroll-driven parallax transform settings
+    motion: {
+      // Maximum layer shrink factor applied via scale()
+      maxShrink: -0.9,
+      // Translate speed multiplier for layer (overridden by `data-speed`)
+      defaultSpeed: -0.01,
+      // Shrink multiplier for layer (overridden by `data-shrink`)
+      defaultShrink: 1
+    },
+    // D3 physics simulation parameters (how dots drift/settle)
+    simulation: {
+      forceStrength: 1e-4,
+      velocityDecay: 0.1,
+      alpha: 0.9,
+      alphaDecay: 4e-3
+    },
+    // Per-dot circular micro-motion (atom-like orbit) drawn on top of simulated position
+    orbit: {
+      // Orbit radius range in px
+      radiusPxMin: 1.5,
+      radiusPxMax: 10,
+      // Angular speed range in rad/s (negative means opposite direction)
+      speedRadMin: -2.2,
+      speedRadMax: 2.2,
+      // Extra "breathing" wobble of orbit radius (rad/s)
+      wobbleSpeedRadMin: 0.6,
+      wobbleSpeedRadMax: 1.6
+    },
+    // Dot color distribution
+    colorSampler: {
+      grayStart: "rgba(204,61,61,0.5)",
+      grayEnd: "rgba(179,110,110,0.5)",
+      redStart: "rgba(0,0,0,0.1)",
+      redEnd: "rgba(210, 50, 50, .9)",
+      // Probability thresholds:
+      // - roll < grayChance  => pick from gray gradient
+      // - roll < redChance   => pick from red gradient
+      // - otherwise          => mix gray+red
+      grayChance: 0.55,
+      redChance: 0.85
+    },
+    // Dot opacity range
+    defaults: {
+      opacityMin: 0.35,
+      opacityMax: 0.9
+    }
+  };
+
   // node_modules/d3-array/src/range.js
   function range(start2, stop, step) {
     start2 = +start2, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start2, start2 = 0, 1) : n < 3 ? 1 : +step;
@@ -3144,80 +3217,8 @@
     return node.__zoom;
   }
 
-  // src/data/parallax.ts
-  var PARALLAX_CONFIG = {
-    // Root container for the parallax stack
-    containerSelector: ".parallax",
-    // Individual layers inside container; each layer gets its own SVG + simulation
-    layerSelector: ".parallax-layer",
-    // Class applied to generated SVG
-    svgClassName: "parallax-svg",
-    // Parallax container size interpolation across scroll (used for CSS variable --parallax-size)
-    containerSize: {
-      start: "100dvw",
-      end: "100dvw"
-    },
-    // Extra margin beyond viewport before dots wrap around to the other side (px)
-    padding: 12,
-    // Defaults for a layer when no data-* attrs are provided on `.parallax-layer`
-    defaultLayer: {
-      // How many dots to spawn in the layer (can be overridden by `data-count`)
-      count: 10,
-      // Dot radius range in px (overridden by `data-size-min` / `data-size-max`)
-      sizeMin: 0.1,
-      sizeMax: 4,
-      // Random velocity "noise" strength (overridden by `data-jitter`)
-      jitter: 0.35
-    },
-    // Scroll-driven parallax transform settings
-    motion: {
-      // Maximum layer shrink factor applied via scale()
-      maxShrink: -0.9,
-      // Translate speed multiplier for layer (overridden by `data-speed`)
-      defaultSpeed: -0.01,
-      // Shrink multiplier for layer (overridden by `data-shrink`)
-      defaultShrink: 1
-    },
-    // D3 physics simulation parameters (how dots drift/settle)
-    simulation: {
-      forceStrength: 1e-4,
-      velocityDecay: 0.1,
-      alpha: 0.9,
-      alphaDecay: 4e-3
-    },
-    // Per-dot circular micro-motion (atom-like orbit) drawn on top of simulated position
-    orbit: {
-      // Orbit radius range in px
-      radiusPxMin: 1.5,
-      radiusPxMax: 10,
-      // Angular speed range in rad/s (negative means opposite direction)
-      speedRadMin: -2.2,
-      speedRadMax: 2.2,
-      // Extra "breathing" wobble of orbit radius (rad/s)
-      wobbleSpeedRadMin: 0.6,
-      wobbleSpeedRadMax: 1.6
-    },
-    // Dot color distribution
-    colorSampler: {
-      grayStart: "rgba(204,61,61,0.5)",
-      grayEnd: "rgba(179,110,110,0.5)",
-      redStart: "rgba(0,0,0,0.1)",
-      redEnd: "rgba(210, 50, 50, .9)",
-      // Probability thresholds:
-      // - roll < grayChance  => pick from gray gradient
-      // - roll < redChance   => pick from red gradient
-      // - otherwise          => mix gray+red
-      grayChance: 0.55,
-      redChance: 0.85
-    },
-    // Dot opacity range
-    defaults: {
-      opacityMin: 0.35,
-      opacityMax: 0.9
-    }
-  };
-
-  // src/features/parallax.ts
+  // src/features/parallax/utils.ts
+  var TAU = Math.PI * 2;
   var createJitterForce = (strength) => {
     let nodes = [];
     const force = (alpha) => {
@@ -3234,7 +3235,16 @@
     return force;
   };
   var randomBetween = (min2, max2) => min2 + Math.random() * (max2 - min2);
-  var TAU = Math.PI * 2;
+  var parseNumber = (value, fallback) => {
+    if (!value) return fallback;
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+  var parseCount = (value, fallback) => {
+    if (!value) return fallback;
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
   var parseSizeValue = (value) => {
     var _a;
     const trimmed = value.trim();
@@ -3289,23 +3299,30 @@
       return mix(Math.random());
     };
   };
+  var getLayerConfig = (layer) => ({
+    count: parseCount(layer.dataset.count, PARALLAX_CONFIG.defaultLayer.count),
+    sizeMin: parseNumber(layer.dataset.sizeMin, PARALLAX_CONFIG.defaultLayer.sizeMin),
+    sizeMax: parseNumber(layer.dataset.sizeMax, PARALLAX_CONFIG.defaultLayer.sizeMax),
+    jitter: parseNumber(layer.dataset.jitter, PARALLAX_CONFIG.defaultLayer.jitter),
+    speed: parseNumber(layer.dataset.speed, PARALLAX_CONFIG.motion.defaultSpeed),
+    shrink: parseNumber(layer.dataset.shrink, PARALLAX_CONFIG.motion.defaultShrink)
+  });
+  var getOrbitOffset = (node, t) => {
+    const angle = node.orbitPhase + node.orbitSpeedRad * t;
+    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
+    const r = node.orbitRadiusPx * wobble;
+    return {
+      dx: Math.cos(angle) * r,
+      dy: Math.sin(angle) * r
+    };
+  };
+  var getOrbitPhase = () => Math.random() * TAU;
+
+  // src/features/parallax/buildLayer.ts
   var buildLayer = (layer) => {
-    var _a, _b, _c, _d;
     const width = Math.max(1, layer.clientWidth);
     const height = Math.max(1, layer.clientHeight);
-    const count = Number.parseInt(
-      (_a = layer.dataset.count) != null ? _a : String(PARALLAX_CONFIG.defaultLayer.count),
-      10
-    );
-    const sizeMin = Number.parseFloat(
-      (_b = layer.dataset.sizeMin) != null ? _b : String(PARALLAX_CONFIG.defaultLayer.sizeMin)
-    );
-    const sizeMax = Number.parseFloat(
-      (_c = layer.dataset.sizeMax) != null ? _c : String(PARALLAX_CONFIG.defaultLayer.sizeMax)
-    );
-    const jitter = Number.parseFloat(
-      (_d = layer.dataset.jitter) != null ? _d : String(PARALLAX_CONFIG.defaultLayer.jitter)
-    );
+    const { count, sizeMin, sizeMax, jitter } = getLayerConfig(layer);
     const svg = select_default2(layer).selectAll("svg").data([null]).join("svg").attr("class", PARALLAX_CONFIG.svgClassName).attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "none");
     const colorSampler = createColorSampler();
     const nodes = range(count).map(() => ({
@@ -3319,12 +3336,12 @@
       ),
       orbitRadiusPx: randomBetween(PARALLAX_CONFIG.orbit.radiusPxMin, PARALLAX_CONFIG.orbit.radiusPxMax),
       orbitSpeedRad: randomBetween(PARALLAX_CONFIG.orbit.speedRadMin, PARALLAX_CONFIG.orbit.speedRadMax),
-      orbitPhase: Math.random() * TAU,
+      orbitPhase: getOrbitPhase(),
       orbitWobbleSpeedRad: randomBetween(
         PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
         PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
       ),
-      orbitWobblePhase: Math.random() * TAU
+      orbitWobblePhase: getOrbitPhase()
     }));
     const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity);
     const padding = PARALLAX_CONFIG.padding;
@@ -3337,19 +3354,17 @@
         if (node.y > height + padding) node.y = -padding;
       }
       circles.attr("cx", (node) => {
-        const angle = node.orbitPhase + node.orbitSpeedRad * t;
-        const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
-        const r = node.orbitRadiusPx * wobble;
-        return node.x + Math.cos(angle) * r;
+        const { dx } = getOrbitOffset(node, t);
+        return node.x + dx;
       }).attr("cy", (node) => {
-        const angle = node.orbitPhase + node.orbitSpeedRad * t;
-        const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
-        const r = node.orbitRadiusPx * wobble;
-        return node.y + Math.sin(angle) * r;
+        const { dy } = getOrbitOffset(node, t);
+        return node.y + dy;
       });
     });
     return { layer, simulation };
   };
+
+  // src/features/parallax/index.ts
   var initParallax = () => {
     const container = document.querySelector(PARALLAX_CONFIG.containerSelector);
     if (!container) return;
@@ -3363,14 +3378,21 @@
       const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       return Math.min(1, Math.max(0, window.scrollY / scrollMax));
     };
+    const containerSizePx = {
+      start: null,
+      end: null
+    };
+    const refreshContainerSizeBounds = () => {
+      containerSizePx.start = resolveSizePx(PARALLAX_CONFIG.containerSize.start);
+      containerSizePx.end = resolveSizePx(PARALLAX_CONFIG.containerSize.end);
+    };
     const setContainerSize = (scrollRatio) => {
-      const startSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.start);
-      const endSizePx = resolveSizePx(PARALLAX_CONFIG.containerSize.end);
-      if (startSizePx === null || endSizePx === null) return;
-      const sizePx = startSizePx + (endSizePx - startSizePx) * scrollRatio;
+      if (containerSizePx.start === null || containerSizePx.end === null) return;
+      const sizePx = containerSizePx.start + (containerSizePx.end - containerSizePx.start) * scrollRatio;
       container.style.setProperty("--parallax-size", `${Math.max(0, sizePx)}px`);
     };
     const rebuild = () => {
+      refreshContainerSizeBounds();
       setContainerSize(getScrollRatio());
       for (const state of states.values()) {
         state.simulation.stop();
@@ -3392,18 +3414,12 @@
       let ticking = false;
       let latestScroll = window.scrollY;
       const update = () => {
-        var _a, _b;
         const scrollRatio = getScrollRatio();
         setContainerSize(scrollRatio);
         const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
         const frontLayer = layers[layers.length - 1];
         for (const layer of layers) {
-          const speed = Number.parseFloat(
-            (_a = layer.dataset.speed) != null ? _a : String(PARALLAX_CONFIG.motion.defaultSpeed)
-          );
-          const shrink = Number.parseFloat(
-            (_b = layer.dataset.shrink) != null ? _b : String(PARALLAX_CONFIG.motion.defaultShrink)
-          );
+          const { speed, shrink } = getLayerConfig(layer);
           const effectiveShrink = layer === frontLayer ? 0 : shrink;
           const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
           layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
