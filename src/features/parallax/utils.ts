@@ -23,18 +23,6 @@ export const createJitterForce = (strength: number) => {
 
 export const randomBetween = (min: number, max: number) => min + Math.random() * (max - min)
 
-const parseNumber = (value: string | undefined, fallback: number) => {
-    if (!value) return fallback
-    const parsed = Number.parseFloat(value)
-    return Number.isFinite(parsed) ? parsed : fallback
-}
-
-const parseCount = (value: string | undefined, fallback: number) => {
-    if (!value) return fallback
-    const parsed = Number.parseInt(value, 10)
-    return Number.isFinite(parsed) ? parsed : fallback
-}
-
 const parseSizeValue = (value: string): SizeValue | null => {
     const trimmed = value.trim()
     const match = trimmed.match(/^(-?\d*\.?\d+)(px|dvh|dwh|dvw|vh|vw|%)?$/)
@@ -81,24 +69,27 @@ export const createColorSampler = () => {
     return () => {
         const roll = Math.random()
         if (roll < PARALLAX_CONFIG.colorSampler.grayChance) {
-            return gray(Math.random())
+            return { color: gray(Math.random()) }
         }
         if (roll < PARALLAX_CONFIG.colorSampler.redChance) {
-            return red(Math.random())
+            return { color: red(Math.random()) }
         }
         const mix = d3.interpolateRgb(gray(Math.random()), red(Math.random()))
-        return mix(Math.random())
+        return { color: mix(Math.random()) }
     }
 }
 
-export const getLayerConfig = (layer: HTMLElement): LayerConfig => ({
-    count: parseCount(layer.dataset.count, PARALLAX_CONFIG.defaultLayer.count),
-    sizeMin: parseNumber(layer.dataset.sizeMin, PARALLAX_CONFIG.defaultLayer.sizeMin),
-    sizeMax: parseNumber(layer.dataset.sizeMax, PARALLAX_CONFIG.defaultLayer.sizeMax),
-    jitter: parseNumber(layer.dataset.jitter, PARALLAX_CONFIG.defaultLayer.jitter),
-    speed: parseNumber(layer.dataset.speed, PARALLAX_CONFIG.motion.defaultSpeed),
-    shrink: parseNumber(layer.dataset.shrink, PARALLAX_CONFIG.motion.defaultShrink),
-})
+export const getLayerConfig = (layerIndex: number): LayerConfig => {
+    const layerParams = PARALLAX_CONFIG.layerParams[layerIndex]
+    return {
+        count: layerParams?.count ?? PARALLAX_CONFIG.defaultLayer.count,
+        sizeMin: layerParams?.sizeMin ?? PARALLAX_CONFIG.defaultLayer.sizeMin,
+        sizeMax: layerParams?.sizeMax ?? PARALLAX_CONFIG.defaultLayer.sizeMax,
+        jitter: layerParams?.jitter ?? PARALLAX_CONFIG.defaultLayer.jitter,
+        speed: layerParams?.speed ?? PARALLAX_CONFIG.motion.defaultSpeed,
+        shrink: layerParams?.shrink ?? PARALLAX_CONFIG.motion.defaultShrink,
+    }
+}
 
 export const getOrbitOffset = (node: DotNode, t: number) => {
     const angle = node.orbitPhase + node.orbitSpeedRad * t

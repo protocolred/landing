@@ -2,21 +2,21 @@ import * as d3 from 'd3'
 
 import { PARALLAX_CONFIG } from '@/data/parallax'
 
-import type { DotNode, SimulationWithRestart } from './types'
+import type { DotNode, LayerConfig, SimulationWithRestart } from './types'
 import {
     createColorSampler,
     createJitterForce,
-    getLayerConfig,
+    getOrbitOffset,
     getOrbitPhase,
     randomBetween,
 } from './utils'
 
-export const buildLayer = (layer: HTMLElement) => {
+export const buildLayer = (layer: HTMLElement, config: LayerConfig) => {
     // Layer viewport size (dots are positioned in this coordinate system)
     const width = Math.max(1, layer.clientWidth)
     const height = Math.max(1, layer.clientHeight)
 
-    const { count, sizeMin, sizeMax, jitter } = getLayerConfig(layer)
+    const { count, sizeMin, sizeMax, jitter } = config
 
     const svg = d3
         .select(layer)
@@ -30,38 +30,53 @@ export const buildLayer = (layer: HTMLElement) => {
         .attr('preserveAspectRatio', 'none')
 
     const colorSampler = createColorSampler()
-    const nodes: DotNode[] = d3.range(count).map(() => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: randomBetween(sizeMin, sizeMax),
-        color: colorSampler(),
-        opacity: randomBetween(
-            PARALLAX_CONFIG.defaults.opacityMin,
-            PARALLAX_CONFIG.defaults.opacityMax
-        ),
-        orbitRadiusPx: randomBetween(
-            PARALLAX_CONFIG.orbit.radiusPxMin,
-            PARALLAX_CONFIG.orbit.radiusPxMax
-        ),
-        orbitSpeedRad: randomBetween(
-            PARALLAX_CONFIG.orbit.speedRadMin,
-            PARALLAX_CONFIG.orbit.speedRadMax
-        ),
-        orbitPhase: getOrbitPhase(),
-        orbitWobbleSpeedRad: randomBetween(
-            PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
-            PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
-        ),
-        orbitWobblePhase: getOrbitPhase(),
-    }))
+    const nodes: DotNode[] = d3.range(count).map(() => {
+        const sample = colorSampler()
+        return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            r: randomBetween(sizeMin, sizeMax),
+            color: sample.color,
+            opacity: randomBetween(
+                PARALLAX_CONFIG.defaults.opacityMin,
+                PARALLAX_CONFIG.defaults.opacityMax
+            ),
+            orbitRadiusPx: randomBetween(
+                PARALLAX_CONFIG.orbit.radiusPxMin,
+                PARALLAX_CONFIG.orbit.radiusPxMax
+            ),
+            orbitSpeedRad: randomBetween(
+                PARALLAX_CONFIG.orbit.speedRadMin,
+                PARALLAX_CONFIG.orbit.speedRadMax
+            ),
+            orbitPhase: getOrbitPhase(),
+            orbitWobbleSpeedRad: randomBetween(
+                PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
+                PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
+            ),
+            orbitWobblePhase: getOrbitPhase(),
+        }
+    })
 
-    const circles = svg
-        .selectAll('circle')
-        .data(nodes)
+    const dots = svg.selectAll('g.parallax-dot').data(nodes).join('g').attr('class', 'parallax-dot')
+
+    dots.selectAll('circle.parallax-dot__outer')
+        .data((node: DotNode) => [node])
         .join('circle')
+        .attr('class', 'parallax-dot__outer')
         .attr('r', (node: DotNode) => node.r)
         .attr('fill', (node: DotNode) => node.color)
         .attr('opacity', (node: DotNode) => node.opacity)
+        .attr('cx', 0)
+        .attr('cy', 0)
+
+    dots.selectAll('circle.parallax-dot__inner')
+        .data((node: DotNode) => [node])
+        .join('circle')
+        .attr('class', 'parallax-dot__inner')
+        .attr('r', (node: DotNode) => node.r * 0.75)
+        .attr('fill', (node: DotNode) => node.color)
+        .attr('opacity', (node: DotNode) => Math.min(1, node.opacity * 1.6))
         .attr('cx', 0)
         .attr('cy', 0)
 
@@ -78,13 +93,8 @@ export const buildLayer = (layer: HTMLElement) => {
             if (node.y > height + padding) node.y = -padding
         }
 
-        circles.attr('transform', (node: DotNode) => {
-            const angle = node.orbitPhase + node.orbitSpeedRad * t
-            const wobble =
-                0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t)
-            const r = node.orbitRadiusPx * wobble
-            const dx = Math.cos(angle) * r
-            const dy = Math.sin(angle) * r
+        dots.attr('transform', (node: DotNode) => {
+            const { dx, dy } = getOrbitOffset(node, t)
             return `translate(${node.x + dx}, ${node.y + dy})`
         })
     }

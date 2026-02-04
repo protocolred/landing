@@ -21,6 +21,7 @@ export type SimulationWithRestart = d3.Simulation<DotNode, undefined> & {
 
 export interface LayerState {
     layer: HTMLElement
+    config: LayerConfig
     simulation: SimulationWithRestart
     isVisible: boolean
     running: boolean

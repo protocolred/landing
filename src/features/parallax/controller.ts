@@ -1,5 +1,5 @@
-import { createDisposer } from '@/core/dispose'
 import { SELECTORS } from '@/core/constants'
+import { createDisposer } from '@/core/dispose'
 import { shouldAnimate } from '@/core/dom'
 import { createLogger } from '@/core/log'
 import { PARALLAX_CONFIG } from '@/data/parallax'
@@ -90,16 +90,18 @@ export const createParallaxController = (options: {
         }
         states.clear()
 
-        for (const layer of layers) {
+        for (const [layerIndex, layer] of layers.entries()) {
             const svg = layer.querySelector(SELECTORS.parallaxLayerSvg)
             if (svg) svg.remove()
-            const state = buildLayer(layer)
+            const config = getLayerConfig(layerIndex)
+            const state = buildLayer(layer, config)
             const running = shouldAnimate()
             if (!running) {
                 state.simulation.stop()
             }
             states.set(layer, {
                 ...state,
+                config,
                 isVisible: true,
                 running,
             })
@@ -113,8 +115,9 @@ export const createParallaxController = (options: {
         setContainerSize(scrollRatio)
         const maxShrink = PARALLAX_CONFIG.motion.maxShrink
         const frontLayer = layers[layers.length - 1]
-        for (const layer of layers) {
-            const { speed, shrink } = getLayerConfig(layer)
+        for (const state of states.values()) {
+            const { layer, config } = state
+            const { speed, shrink } = config
             const effectiveShrink = layer === frontLayer ? 0 : shrink
             const scale = 1 - scrollRatio * maxShrink * effectiveShrink
             layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`
