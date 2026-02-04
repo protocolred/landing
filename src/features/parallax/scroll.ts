@@ -8,6 +8,7 @@ export const createParallaxScroller = (options: {
     setContainerSize: (scrollRatio: number) => void
 }) => {
     const { layers, getScrollRatio, setContainerSize } = options
+
     let ticking = false
     let latestScroll = window.scrollY
 

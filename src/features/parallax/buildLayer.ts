@@ -101,10 +101,11 @@ export const buildLayer = (layer: HTMLElement) => {
         .velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay)
         .alpha(PARALLAX_CONFIG.simulation.alpha)
         .alphaDecay(PARALLAX_CONFIG.simulation.alphaDecay)
-        .on('tick', () => {
-            latestTime = performance.now() / 1000
-            scheduleFrame()
-        })
+
+    simulation.on('tick', () => {
+        latestTime = performance.now() / 1000
+        scheduleFrame()
+    })
 
     const destroy = () => {
         if (rafId) {
