@@ -56,6 +56,10 @@
     opacity: var(--opacity-soft);
 }
 
+.app .app-sub.bottom-sub {
+    max-width: 600px;
+}
+
 .app .app-sub p {
     width: 100%;
     margin: var(--size-0);
