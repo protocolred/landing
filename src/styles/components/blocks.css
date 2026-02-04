@@ -91,8 +91,8 @@
 
 .phone-screen.phone-ui {
     gap: var(--size-16);
-    text-transform: uppercase;
     letter-spacing: var(--size-2);
+    text-transform: uppercase;
 }
 
 .phone-ui-top {
@@ -125,9 +125,9 @@
 }
 
 .phone-ui-panel-title {
+    margin-bottom: var(--size-8);
     font-weight: 700;
     font-size: var(--type-label-medium);
-    margin-bottom: var(--size-8);
     opacity: var(--opacity-strong);
 }
 
@@ -167,8 +167,8 @@
 .phone-ui-controls {
     display: flex;
     justify-content: center;
-    gap: var(--size-16);
     margin-top: auto;
+    gap: var(--size-16);
 }
 
 .phone-ui-button {
@@ -177,8 +177,8 @@
     justify-content: center;
     width: clamp(64px, 18vw, 88px);
     height: clamp(64px, 18vw, 88px);
-    border-radius: 999px;
     border: var(--size-1) solid var(--color-white-12);
+    border-radius: 999px;
     background: var(--color-black-35);
     font-weight: 700;
     font-size: var(--type-label-medium);
@@ -211,8 +211,8 @@
 .phone-body {
     display: flex;
     flex-direction: column;
-    gap: var(--size-16);
     margin-bottom: auto;
+    gap: var(--size-16);
     text-align: left;
 }
 
@@ -223,8 +223,8 @@
 .phone-metric {
     display: flex;
     flex-direction: column;
-    gap: var(--size-8);
     padding: var(--size-12);
+    gap: var(--size-8);
     border: var(--size-1) solid var(--color-white-12);
     border-radius: var(--size-12);
     background: var(--color-black-25);
@@ -244,9 +244,9 @@
 .phone-progress {
     width: var(--size-full);
     height: var(--size-12);
+    overflow: hidden;
     border-radius: var(--size-12);
     background: var(--color-black-26);
-    overflow: hidden;
 }
 
 .phone-progress-bar {

@@ -12,8 +12,12 @@ export const createLogger = (scope: string, enabled = false) => {
         }
 
     return {
+        // Console access is centralized here and gated by the `enabled` flag.
+        // eslint-disable-next-line no-console
         info: logIfEnabled(console.info),
+        // eslint-disable-next-line no-console
         warn: logIfEnabled(console.warn),
+        // eslint-disable-next-line no-console
         error: logIfEnabled(console.error),
     }
 }

@@ -47,7 +47,7 @@ export const applyBottomBlockCopy = (
 export const ensureParagraphElements = (container: HTMLElement, count: number) => {
     const normalizedCount =
         count >= 3
-            ? // first 2 paragraphs are rendered as a single line
+            ? // First 2 paragraphs are rendered as a single line
               Math.max(1, count - 1)
             : count
 
