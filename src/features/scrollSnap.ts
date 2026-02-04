@@ -1,13 +1,12 @@
 import { createDisposer } from '@/core/dispose'
 import { qsa, shouldAnimate } from '@/core/dom'
 import type { FeatureInit } from '@/core/feature'
-import { SCROLL_SNAP_CONFIG } from '@/data/scrollSnap'
+import { SCROLL_SNAP_CONFIG, type ScrollSnapEasing } from '@/data/scrollSnap'
 
 type EasingFn = (t: number) => number
 
-const EASINGS: Record<string, EasingFn> = {
-    easeInOutCubic: (t: number) =>
-        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+const EASINGS: Record<ScrollSnapEasing, EasingFn> = {
+    easeInOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
     easeOutCubic: (t: number) => 1 - Math.pow(1 - t, 3),
 }
 
@@ -78,8 +77,7 @@ export const initScrollSnap: FeatureInit = () => {
 
         const startTime = performance.now()
         const duration = getDuration(distance)
-        const easing =
-            EASINGS[SCROLL_SNAP_CONFIG.easing] ?? EASINGS.easeInOutCubic
+        const easing = EASINGS[SCROLL_SNAP_CONFIG.easing]
 
         const step = (now: number) => {
             const elapsed = now - startTime

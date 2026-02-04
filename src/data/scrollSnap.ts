@@ -1,3 +1,5 @@
+export type ScrollSnapEasing = 'easeInOutCubic' | 'easeOutCubic'
+
 export const SCROLL_SNAP_CONFIG = {
     // Enable/disable scroll snapping behavior
     enabled: true,
@@ -14,5 +16,5 @@ export const SCROLL_SNAP_CONFIG = {
         msPerPx: 0.45,
     },
     // Easing curve for snap animation
-    easing: 'easeInOutCubic',
+    easing: 'easeInOutCubic' as ScrollSnapEasing,
 } as const

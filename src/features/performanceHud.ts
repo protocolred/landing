@@ -1,5 +1,7 @@
+import { CLASSES } from '@/core/constants'
 import { createDisposer } from '@/core/dispose'
 import type { FeatureInit } from '@/core/feature'
+import { PERFORMANCE_HUD_CONFIG } from '@/data/performanceHud'
 
 type PerformanceMemory = {
     usedJSHeapSize: number
@@ -8,8 +10,9 @@ type PerformanceMemory = {
 }
 
 const isChrome = () => {
-    const userAgentData = (navigator as Navigator & { userAgentData?: { brands?: { brand: string }[] } })
-        .userAgentData
+    const userAgentData = (
+        navigator as Navigator & { userAgentData?: { brands?: { brand: string }[] } }
+    ).userAgentData
     if (userAgentData?.brands?.length) {
         const brands = userAgentData.brands
         const hasChrome = brands.some((brand) => brand.brand === 'Google Chrome')
@@ -26,19 +29,19 @@ const isChrome = () => {
     return isChromium && !isEdge && !isOpera && !isBrave
 }
 
-const isDesktopView = () =>
-    typeof window.matchMedia === 'function' && window.matchMedia('(width > 900px)').matches
-
-
 export const initPerformanceHud: FeatureInit = () => {
+    if (!PERFORMANCE_HUD_CONFIG.enabled) return
     if (!isChrome()) return
     if (typeof PerformanceObserver === 'undefined') return
-    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) return
+    if (
+        !PerformanceObserver.supportedEntryTypes?.includes(PERFORMANCE_HUD_CONFIG.longTaskEntryType)
+    )
+        return
 
     const memory = (performance as Performance & { memory?: PerformanceMemory }).memory
     if (!memory) return
 
-    const media = window.matchMedia('(width > 900px)')
+    const media = window.matchMedia(PERFORMANCE_HUD_CONFIG.desktopMediaQuery)
     let stopHud: (() => void) | null = null
 
     const syncHud = () => {
@@ -66,27 +69,26 @@ export const initPerformanceHud: FeatureInit = () => {
 
 const startHud = () => {
     const disposer = createDisposer()
-    if (!isDesktopView()) return disposer.disposeAll
 
     const container = document.createElement('div')
-    container.className = 'perf-hud'
+    container.className = CLASSES.performanceHud
 
     const makeRow = (label: string) => {
         const row = document.createElement('div')
-        row.className = 'perf-hud-row'
+        row.className = CLASSES.performanceHudRow
         const labelEl = document.createElement('span')
-        labelEl.className = 'perf-hud-label'
+        labelEl.className = CLASSES.performanceHudLabel
         labelEl.textContent = label
         const valueEl = document.createElement('span')
-        valueEl.className = 'perf-hud-value'
+        valueEl.className = CLASSES.performanceHudValue
         valueEl.textContent = '...'
         row.append(labelEl, valueEl)
         return { row, valueEl }
     }
 
-    const cpuRow = makeRow('CPU')
-    const memoryRow = makeRow('MEM')
-    const fpsRow = makeRow('FPS')
+    const cpuRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.cpu)
+    const memoryRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.memory)
+    const fpsRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.fps)
 
     container.append(cpuRow.row, memoryRow.row, fpsRow.row)
     document.body.appendChild(container)
@@ -99,7 +101,7 @@ const startHud = () => {
             if (duration > 0) busyTimeMs += duration
         })
     })
-    observer.observe({ type: 'longtask', buffered: true })
+    observer.observe({ type: PERFORMANCE_HUD_CONFIG.longTaskEntryType, buffered: true })
     disposer.add(() => observer.disconnect())
 
     let frameCount = 0
@@ -132,7 +134,7 @@ const startHud = () => {
     }
 
     update()
-    disposer.addInterval(update, 1000)
+    disposer.addInterval(update, PERFORMANCE_HUD_CONFIG.updateIntervalMs)
 
     return disposer.disposeAll
 }

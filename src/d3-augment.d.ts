@@ -7,12 +7,12 @@ declare module 'd3' {
         index?: number
     }
 
-    export interface Force<NodeDatum extends SimulationNodeDatum, LinkDatum> {
+    export interface Force<NodeDatum extends SimulationNodeDatum, _LinkDatum> {
         (alpha: number): void
         initialize?(nodes: NodeDatum[]): void
     }
 
-    export interface Simulation<NodeDatum extends SimulationNodeDatum, LinkDatum> {
+    export interface Simulation<_NodeDatum extends SimulationNodeDatum, _LinkDatum> {
         force(name: string, force: unknown): this
         velocityDecay(decay: number): this
         alpha(alpha: number): this
