@@ -13,8 +13,11 @@ import {
 
 export const buildLayer = (layer: HTMLElement, config: LayerConfig) => {
     // Layer viewport size (dots are positioned in this coordinate system)
-    const width = Math.max(1, layer.clientWidth)
-    const height = Math.max(1, layer.clientHeight)
+    const rect = layer.getBoundingClientRect()
+    const rawWidth = Math.max(layer.clientWidth, rect.width)
+    const rawHeight = Math.max(layer.clientHeight, rect.height)
+    const width = Math.max(1, rawWidth > 1 ? rawWidth : window.innerWidth)
+    const height = Math.max(1, rawHeight > 1 ? rawHeight : window.innerHeight)
 
     const { count, sizeMin, sizeMax, jitter } = config
 
@@ -27,7 +30,6 @@ export const buildLayer = (layer: HTMLElement, config: LayerConfig) => {
         .attr('width', width)
         .attr('height', height)
         .attr('viewBox', `0 0 ${width} ${height}`)
-        .attr('preserveAspectRatio', 'none')
 
     const colorSampler = createColorSampler()
     const nodes: DotNode[] = d3.range(count).map(() => {
@@ -105,8 +107,6 @@ export const buildLayer = (layer: HTMLElement, config: LayerConfig) => {
     }
     const simulation = d3
         .forceSimulation(nodes)
-        .force('x', d3.forceX(width / 2).strength(PARALLAX_CONFIG.simulation.forceStrength))
-        .force('y', d3.forceY(height / 2).strength(PARALLAX_CONFIG.simulation.forceStrength))
         .force('jitter', createJitterForce(jitter))
         .velocityDecay(PARALLAX_CONFIG.simulation.velocityDecay)
         .alpha(PARALLAX_CONFIG.simulation.alpha)

@@ -113,14 +113,10 @@ export const createParallaxController = (options: {
     const updateParallax = () => {
         const scrollRatio = getScrollRatio()
         setContainerSize(scrollRatio)
-        const maxShrink = PARALLAX_CONFIG.motion.maxShrink
-        const frontLayer = layers[layers.length - 1]
         for (const state of states.values()) {
             const { layer, config } = state
-            const { speed, shrink } = config
-            const effectiveShrink = layer === frontLayer ? 0 : shrink
-            const scale = 1 - scrollRatio * maxShrink * effectiveShrink
-            layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`
+            const { speed } = config
+            layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0)`
         }
         ticking = false
     }

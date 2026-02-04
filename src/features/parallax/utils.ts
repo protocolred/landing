@@ -8,11 +8,10 @@ const TAU = Math.PI * 2
 
 export const createJitterForce = (strength: number) => {
     let nodes: DotNode[] = []
-    const force = (alpha: number) => {
-        const scaled = strength * alpha
+    const force = (_alpha: number) => {
         for (const node of nodes) {
-            node.vx = (node.vx ?? 0) + (Math.random() - 0.5) * scaled
-            node.vy = (node.vy ?? 0) + (Math.random() - 0.5) * scaled
+            node.vx = (node.vx ?? 0) + (Math.random() - 0.5) * strength
+            node.vy = (node.vy ?? 0) + (Math.random() - 0.5) * strength
         }
     }
     force.initialize = (newNodes: DotNode[]) => {
