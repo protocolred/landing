@@ -51,7 +51,8 @@
 
   // src/core/constants.ts
   var SELECTORS = {
-    headerNavItems: ".header [data-target]",
+    header: ".header",
+    headerNavItems: ".header-nav-item",
     headerLogoButton: ".header .logo-button",
     glitchLetters: ".glitch-letter",
     protocolTextLetters: ".main-text-row .glitch-letter",
@@ -63,6 +64,13 @@
     bottomSubParagraphs: "p",
     appSection: ".app",
     parallaxLayerSvg: "svg"
+  };
+  var CLASSES = {
+    headerNavItem: "header-nav-item",
+    performanceHud: "perf-hud",
+    performanceHudRow: "perf-hud-row",
+    performanceHudLabel: "perf-hud-label",
+    performanceHudValue: "perf-hud-value"
   };
   var TEXT = {
     glitchCharacters: "2470ABCDEFGHIJKLNOPQRSTUVXYZ",
@@ -540,7 +548,7 @@
   };
   var ensureParagraphElements = (container, count) => {
     const normalizedCount = count >= 3 ? (
-      // first 2 paragraphs are rendered as a single line
+      // First 2 paragraphs are rendered as a single line
       Math.max(1, count - 1)
     ) : count;
     const existing = qsa(SELECTORS.bottomSubParagraphs, container);
@@ -709,15 +717,38 @@
     };
   };
 
+  // src/data/headerNav.ts
+  var HEADER_NAV_CONFIG = {
+    // Header nav items rendered by code.
+    items: [
+      { label: "THE", target: "intro" },
+      { label: "HOW", target: "how" },
+      { label: "APP", target: "app-showcase" },
+      { label: "GET", target: "consent" }
+    ]
+  };
+
   // src/features/headerNav.ts
   var initHeaderNav = () => {
-    const headerItems = qsa(SELECTORS.headerNavItems);
+    const header = qs(SELECTORS.header);
+    if (!header) return;
+    qsa(SELECTORS.headerNavItems, header).forEach((item) => item.remove());
+    HEADER_NAV_CONFIG.items.forEach((itemConfig) => {
+      const item = document.createElement("div");
+      item.className = CLASSES.headerNavItem;
+      item.textContent = itemConfig.label;
+      header.append(item);
+    });
+    const headerItems = qsa(SELECTORS.headerNavItems, header);
     if (headerItems.length === 0) return;
     const sections = [];
     const sectionIds = /* @__PURE__ */ new Map();
-    headerItems.forEach((item) => {
-      const targetClass = item.getAttribute("data-target");
+    const itemTargets = /* @__PURE__ */ new Map();
+    headerItems.forEach((item, index) => {
+      var _a;
+      const targetClass = (_a = HEADER_NAV_CONFIG.items[index]) == null ? void 0 : _a.target;
       if (!targetClass) return;
+      itemTargets.set(item, targetClass);
       const matches = qsa(`.${targetClass}`);
       matches.forEach((section) => {
         sections.push(section);
@@ -726,7 +757,7 @@
     });
     const setActive = (id2) => {
       headerItems.forEach((item) => {
-        const isActive = item.getAttribute("data-target") === id2;
+        const isActive = itemTargets.get(item) === id2;
         item.classList.toggle("active", isActive);
       });
     };
@@ -759,7 +790,7 @@
           if (mouseEvent.metaKey || mouseEvent.ctrlKey || mouseEvent.shiftKey || mouseEvent.altKey)
             return;
         }
-        const targetId = item.getAttribute("data-target");
+        const targetId = itemTargets.get(item);
         if (!targetId) return;
         const element = qs(`.${targetId}`);
         if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -796,13 +827,98 @@
   };
 
   // src/data/parallax.ts
+  var lerp = (range2, t) => range2[0] + (range2[1] - range2[0]) * t;
+  var valueByIndex = (range2, index, total, curvePower) => {
+    if (total <= 1) return range2[0];
+    const linearT = index / (total - 1);
+    const easedT = Math.pow(linearT, curvePower);
+    return lerp(range2, easedT);
+  };
+  var roundTo = (value, digits) => {
+    const factor = 10 ** digits;
+    return Math.round(value * factor) / factor;
+  };
+  var LAYER_SERIES = {
+    layerCount: 4,
+    ranges: {
+      speed: [0.06, 0.24],
+      shrink: [0.75, 0],
+      count: [70, 130],
+      sizeMin: [0.8, 2.2],
+      sizeMax: [2.4, 5.6],
+      jitter: [0.45, 0.22]
+    },
+    curves: {
+      speed: 1.35,
+      shrink: 1,
+      count: 1,
+      sizeMin: 1.12,
+      sizeMax: 1.24,
+      jitter: 0.9
+    }
+  };
+  var buildLayerParams = () => Array.from({ length: LAYER_SERIES.layerCount }, (_, index) => ({
+    speed: roundTo(
+      valueByIndex(
+        LAYER_SERIES.ranges.speed,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.speed
+      ),
+      3
+    ),
+    shrink: roundTo(
+      valueByIndex(
+        LAYER_SERIES.ranges.shrink,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.shrink
+      ),
+      3
+    ),
+    count: Math.round(
+      valueByIndex(
+        LAYER_SERIES.ranges.count,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.count
+      )
+    ),
+    sizeMin: roundTo(
+      valueByIndex(
+        LAYER_SERIES.ranges.sizeMin,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.sizeMin
+      ),
+      3
+    ),
+    sizeMax: roundTo(
+      valueByIndex(
+        LAYER_SERIES.ranges.sizeMax,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.sizeMax
+      ),
+      3
+    ),
+    jitter: roundTo(
+      valueByIndex(
+        LAYER_SERIES.ranges.jitter,
+        index,
+        LAYER_SERIES.layerCount,
+        LAYER_SERIES.curves.jitter
+      ),
+      3
+    )
+  }));
   var PARALLAX_CONFIG = {
     // Enable extra debug logs for the parallax controller
     debug: false,
     // Root container for the parallax stack
     containerSelector: ".parallax",
-    // Individual layers inside container; each layer gets its own SVG + simulation
-    layerSelector: ".parallax-layer",
+    // Class for generated layer nodes (each layer gets its own SVG + simulation)
+    layerClassName: "parallax-layer",
     // Class applied to generated SVG
     svgClassName: "parallax-svg",
     // Parallax container size interpolation across scroll (used for CSS variable --parallax-size)
@@ -812,25 +928,27 @@
     },
     // Extra margin beyond viewport before dots wrap around to the other side (px)
     padding: 12,
-    // Defaults for a layer when no data-* attrs are provided on `.parallax-layer`
+    // Base fallback values for layer params when index-specific params are omitted.
     defaultLayer: {
-      // How many dots to spawn in the layer (can be overridden by `data-count`)
-      count: 10,
-      // Dot radius range in px (overridden by `data-size-min` / `data-size-max`)
-      sizeMin: 0.1,
-      sizeMax: 4,
-      // Random velocity "noise" strength (overridden by `data-jitter`)
-      jitter: 0.35
+      count: 1,
+      // Dot radius range in px
+      sizeMin: 0.02,
+      sizeMax: 2,
+      // Random velocity "noise" strength
+      jitter: 0.8
     },
     // Scroll-driven parallax transform settings
     motion: {
       // Maximum layer shrink factor applied via scale()
       maxShrink: -0.9,
-      // Translate speed multiplier for layer (overridden by `data-speed`)
+      // Translate speed multiplier for layer
       defaultSpeed: -0.01,
-      // Shrink multiplier for layer (overridden by `data-shrink`)
+      // Shrink multiplier for layer
       defaultShrink: 1
     },
+    // Layer params are generated from one normalized series config.
+    // To retune all layers, edit `LAYER_SERIES` above.
+    layerParams: buildLayerParams(),
     // D3 physics simulation parameters (how dots drift/settle)
     simulation: {
       forceStrength: 1e-4,
@@ -852,10 +970,10 @@
     },
     // Dot color distribution
     colorSampler: {
-      grayStart: "rgba(204,61,61,0.5)",
-      grayEnd: "rgba(179,110,110,0.5)",
-      redStart: "rgba(0,0,0,0.1)",
-      redEnd: "rgba(210, 50, 50, .9)",
+      grayStart: "rgba(180,180,185,0.5)",
+      grayEnd: "rgba(140,145,150,0.5)",
+      redStart: "rgba(30,30,35,0.1)",
+      redEnd: "rgba(170, 100, 100, .9)",
       // Probability thresholds:
       // - roll < grayChance  => pick from gray gradient
       // - roll < redChance   => pick from red gradient
@@ -879,8 +997,12 @@
       method(prefix, ...args);
     };
     return {
+      // Console access is centralized here and gated by the `enabled` flag.
+      // eslint-disable-next-line no-console
       info: logIfEnabled(console.info),
+      // eslint-disable-next-line no-console
       warn: logIfEnabled(console.warn),
+      // eslint-disable-next-line no-console
       error: logIfEnabled(console.error)
     };
   };
@@ -3426,16 +3548,6 @@
     return force;
   };
   var randomBetween = (min2, max2) => min2 + Math.random() * (max2 - min2);
-  var parseNumber = (value, fallback) => {
-    if (!value) return fallback;
-    const parsed = Number.parseFloat(value);
-    return Number.isFinite(parsed) ? parsed : fallback;
-  };
-  var parseCount = (value, fallback) => {
-    if (!value) return fallback;
-    const parsed = Number.parseInt(value, 10);
-    return Number.isFinite(parsed) ? parsed : fallback;
-  };
   var parseSizeValue = (value) => {
     var _a;
     const trimmed = value.trim();
@@ -3481,57 +3593,75 @@
     return () => {
       const roll = Math.random();
       if (roll < PARALLAX_CONFIG.colorSampler.grayChance) {
-        return gray(Math.random());
+        return { color: gray(Math.random()) };
       }
       if (roll < PARALLAX_CONFIG.colorSampler.redChance) {
-        return red(Math.random());
+        return { color: red(Math.random()) };
       }
       const mix = rgb_default(gray(Math.random()), red(Math.random()));
-      return mix(Math.random());
+      return { color: mix(Math.random()) };
     };
   };
-  var getLayerConfig = (layer) => ({
-    count: parseCount(layer.dataset.count, PARALLAX_CONFIG.defaultLayer.count),
-    sizeMin: parseNumber(layer.dataset.sizeMin, PARALLAX_CONFIG.defaultLayer.sizeMin),
-    sizeMax: parseNumber(layer.dataset.sizeMax, PARALLAX_CONFIG.defaultLayer.sizeMax),
-    jitter: parseNumber(layer.dataset.jitter, PARALLAX_CONFIG.defaultLayer.jitter),
-    speed: parseNumber(layer.dataset.speed, PARALLAX_CONFIG.motion.defaultSpeed),
-    shrink: parseNumber(layer.dataset.shrink, PARALLAX_CONFIG.motion.defaultShrink)
-  });
+  var getLayerConfig = (layerIndex) => {
+    var _a, _b, _c, _d, _e, _f;
+    const layerParams = PARALLAX_CONFIG.layerParams[layerIndex];
+    return {
+      count: (_a = layerParams == null ? void 0 : layerParams.count) != null ? _a : PARALLAX_CONFIG.defaultLayer.count,
+      sizeMin: (_b = layerParams == null ? void 0 : layerParams.sizeMin) != null ? _b : PARALLAX_CONFIG.defaultLayer.sizeMin,
+      sizeMax: (_c = layerParams == null ? void 0 : layerParams.sizeMax) != null ? _c : PARALLAX_CONFIG.defaultLayer.sizeMax,
+      jitter: (_d = layerParams == null ? void 0 : layerParams.jitter) != null ? _d : PARALLAX_CONFIG.defaultLayer.jitter,
+      speed: (_e = layerParams == null ? void 0 : layerParams.speed) != null ? _e : PARALLAX_CONFIG.motion.defaultSpeed,
+      shrink: (_f = layerParams == null ? void 0 : layerParams.shrink) != null ? _f : PARALLAX_CONFIG.motion.defaultShrink
+    };
+  };
+  var getOrbitOffset = (node, t) => {
+    const angle = node.orbitPhase + node.orbitSpeedRad * t;
+    const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
+    const r = node.orbitRadiusPx * wobble;
+    return {
+      dx: Math.cos(angle) * r,
+      dy: Math.sin(angle) * r
+    };
+  };
   var getOrbitPhase = () => Math.random() * TAU;
 
   // src/features/parallax/buildLayer.ts
-  var buildLayer = (layer) => {
+  var buildLayer = (layer, config) => {
     const width = Math.max(1, layer.clientWidth);
     const height = Math.max(1, layer.clientHeight);
-    const { count, sizeMin, sizeMax, jitter } = getLayerConfig(layer);
+    const { count, sizeMin, sizeMax, jitter } = config;
     const svg = select_default2(layer).selectAll("svg").data([null]).join("svg").attr("class", PARALLAX_CONFIG.svgClassName).attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "none");
     const colorSampler = createColorSampler();
-    const nodes = range(count).map(() => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      r: randomBetween(sizeMin, sizeMax),
-      color: colorSampler(),
-      opacity: randomBetween(
-        PARALLAX_CONFIG.defaults.opacityMin,
-        PARALLAX_CONFIG.defaults.opacityMax
-      ),
-      orbitRadiusPx: randomBetween(
-        PARALLAX_CONFIG.orbit.radiusPxMin,
-        PARALLAX_CONFIG.orbit.radiusPxMax
-      ),
-      orbitSpeedRad: randomBetween(
-        PARALLAX_CONFIG.orbit.speedRadMin,
-        PARALLAX_CONFIG.orbit.speedRadMax
-      ),
-      orbitPhase: getOrbitPhase(),
-      orbitWobbleSpeedRad: randomBetween(
-        PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
-        PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
-      ),
-      orbitWobblePhase: getOrbitPhase()
-    }));
-    const circles = svg.selectAll("circle").data(nodes).join("circle").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity).attr("cx", 0).attr("cy", 0);
+    const nodes = range(count).map(() => {
+      const sample = colorSampler();
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: randomBetween(sizeMin, sizeMax),
+        color: sample.color,
+        opacity: randomBetween(
+          PARALLAX_CONFIG.defaults.opacityMin,
+          PARALLAX_CONFIG.defaults.opacityMax
+        ),
+        orbitRadiusPx: randomBetween(
+          PARALLAX_CONFIG.orbit.radiusPxMin,
+          PARALLAX_CONFIG.orbit.radiusPxMax
+        ),
+        orbitSpeedRad: randomBetween(
+          PARALLAX_CONFIG.orbit.speedRadMin,
+          PARALLAX_CONFIG.orbit.speedRadMax
+        ),
+        orbitPhase: getOrbitPhase(),
+        orbitWobbleSpeedRad: randomBetween(
+          PARALLAX_CONFIG.orbit.wobbleSpeedRadMin,
+          PARALLAX_CONFIG.orbit.wobbleSpeedRadMax
+        ),
+        orbitWobblePhase: getOrbitPhase()
+      };
+    });
+    const dots = svg.selectAll("g.parallax-dot").data(nodes).join("g").attr("class", "parallax-dot");
+    dots.selectAll("circle.parallax-dot__outer").data((node) => [node]).join("circle").attr("class", "parallax-dot__outer").attr("r", (node) => node.r).attr("fill", (node) => node.color).attr("opacity", (node) => node.opacity).attr("cx", 0).attr("cy", 0);
+    dots.selectAll("circle.parallax-dot__inner").data((node) => [node]).join("circle").attr("class", "parallax-dot__inner").attr("r", (node) => node.r * 0.75).attr("fill", (node) => node.color).attr("opacity", (node) => Math.min(1, node.opacity * 1.6)).attr("cx", 0).attr("cy", 0);
     const padding = PARALLAX_CONFIG.padding;
     let rafId = 0;
     let latestTime = 0;
@@ -3544,12 +3674,8 @@
         if (node.y < -padding) node.y = height + padding;
         if (node.y > height + padding) node.y = -padding;
       }
-      circles.attr("transform", (node) => {
-        const angle = node.orbitPhase + node.orbitSpeedRad * t;
-        const wobble = 0.75 + 0.25 * Math.sin(node.orbitWobblePhase + node.orbitWobbleSpeedRad * t);
-        const r = node.orbitRadiusPx * wobble;
-        const dx = Math.cos(angle) * r;
-        const dy = Math.sin(angle) * r;
+      dots.attr("transform", (node) => {
+        const { dx, dy } = getOrbitOffset(node, t);
         return `translate(${node.x + dx}, ${node.y + dy})`;
       });
     };
@@ -3638,16 +3764,18 @@
         state.destroy();
       }
       states.clear();
-      for (const layer of layers) {
+      for (const [layerIndex, layer] of layers.entries()) {
         const svg = layer.querySelector(SELECTORS.parallaxLayerSvg);
         if (svg) svg.remove();
-        const state = buildLayer(layer);
+        const config = getLayerConfig(layerIndex);
+        const state = buildLayer(layer, config);
         const running = shouldAnimate();
         if (!running) {
           state.simulation.stop();
         }
         states.set(layer, {
           ...state,
+          config,
           isVisible: true,
           running
         });
@@ -3660,8 +3788,9 @@
       setContainerSize(scrollRatio);
       const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
       const frontLayer = layers[layers.length - 1];
-      for (const layer of layers) {
-        const { speed, shrink } = getLayerConfig(layer);
+      for (const state of states.values()) {
+        const { layer, config } = state;
+        const { speed, shrink } = config;
         const effectiveShrink = layer === frontLayer ? 0 : shrink;
         const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
         layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
@@ -3716,15 +3845,150 @@
   var initParallax = () => {
     const container = qs(PARALLAX_CONFIG.containerSelector);
     if (!container) return;
+    const layerSelector = `.${PARALLAX_CONFIG.layerClassName}`;
+    const desiredLayerCount = Math.max(1, PARALLAX_CONFIG.layerParams.length);
+    const existingLayers = qsa(layerSelector, container);
+    if (existingLayers.length !== desiredLayerCount) {
+      existingLayers.forEach((layer) => layer.remove());
+      for (let i = 0; i < desiredLayerCount; i += 1) {
+        const layer = document.createElement("div");
+        layer.className = PARALLAX_CONFIG.layerClassName;
+        container.append(layer);
+      }
+    }
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const disposer = createDisposer();
-    const layers = qsa(PARALLAX_CONFIG.layerSelector, container);
+    const layers = qsa(layerSelector, container);
     if (layers.length === 0) return;
     const controller = createParallaxController({ container, layers, motionQuery });
     disposer.add(controller.destroy);
     return () => {
       disposer.disposeAll();
     };
+  };
+
+  // src/data/performanceHud.ts
+  var PERFORMANCE_HUD_CONFIG = {
+    // Enable HUD bootstrap; runtime capability checks still apply.
+    enabled: true,
+    // Show HUD only on desktop viewport.
+    desktopMediaQuery: "(width > 900px)",
+    // Long task entry type used for rough CPU load estimate.
+    longTaskEntryType: "longtask",
+    // UI refresh interval.
+    updateIntervalMs: 1e3,
+    labels: {
+      cpu: "CPU",
+      memory: "MEM",
+      fps: "FPS"
+    }
+  };
+
+  // src/features/performanceHud.ts
+  var isChrome = () => {
+    var _a;
+    const userAgentData = navigator.userAgentData;
+    if ((_a = userAgentData == null ? void 0 : userAgentData.brands) == null ? void 0 : _a.length) {
+      const brands = userAgentData.brands;
+      const hasChrome = brands.some((brand) => brand.brand === "Google Chrome");
+      const hasEdge = brands.some((brand) => brand.brand === "Microsoft Edge");
+      const hasOpera = brands.some((brand) => brand.brand === "Opera");
+      return hasChrome && !hasEdge && !hasOpera;
+    }
+    const ua = navigator.userAgent;
+    const isChromium = ua.includes("Chrome");
+    const isEdge = ua.includes("Edg/");
+    const isOpera = ua.includes("OPR/");
+    const isBrave = ua.includes("Brave");
+    return isChromium && !isEdge && !isOpera && !isBrave;
+  };
+  var initPerformanceHud = () => {
+    var _a;
+    if (!PERFORMANCE_HUD_CONFIG.enabled) return;
+    if (!isChrome()) return;
+    if (typeof PerformanceObserver === "undefined") return;
+    if (!((_a = PerformanceObserver.supportedEntryTypes) == null ? void 0 : _a.includes(PERFORMANCE_HUD_CONFIG.longTaskEntryType)))
+      return;
+    const memory = performance.memory;
+    if (!memory) return;
+    const media = window.matchMedia(PERFORMANCE_HUD_CONFIG.desktopMediaQuery);
+    let stopHud = null;
+    const syncHud = () => {
+      if (!media.matches) {
+        if (stopHud) {
+          stopHud();
+          stopHud = null;
+        }
+        return;
+      }
+      if (stopHud) return;
+      stopHud = startHud();
+    };
+    const onChange = () => syncHud();
+    media.addEventListener("change", onChange);
+    syncHud();
+    return () => {
+      media.removeEventListener("change", onChange);
+      if (stopHud) stopHud();
+    };
+  };
+  var startHud = () => {
+    const disposer = createDisposer();
+    const container = document.createElement("div");
+    container.className = CLASSES.performanceHud;
+    const makeRow = (label) => {
+      const row = document.createElement("div");
+      row.className = CLASSES.performanceHudRow;
+      const labelEl = document.createElement("span");
+      labelEl.className = CLASSES.performanceHudLabel;
+      labelEl.textContent = label;
+      const valueEl = document.createElement("span");
+      valueEl.className = CLASSES.performanceHudValue;
+      valueEl.textContent = "...";
+      row.append(labelEl, valueEl);
+      return { row, valueEl };
+    };
+    const cpuRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.cpu);
+    const memoryRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.memory);
+    const fpsRow = makeRow(PERFORMANCE_HUD_CONFIG.labels.fps);
+    container.append(cpuRow.row, memoryRow.row, fpsRow.row);
+    document.body.appendChild(container);
+    disposer.add(() => container.remove());
+    let busyTimeMs = 0;
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        const duration = entry.duration;
+        if (duration > 0) busyTimeMs += duration;
+      });
+    });
+    observer.observe({ type: PERFORMANCE_HUD_CONFIG.longTaskEntryType, buffered: true });
+    disposer.add(() => observer.disconnect());
+    let frameCount = 0;
+    let rafId = 0;
+    let lastTick = performance.now();
+    const onFrame = () => {
+      frameCount += 1;
+      rafId = requestAnimationFrame(onFrame);
+    };
+    rafId = requestAnimationFrame(onFrame);
+    disposer.add(() => cancelAnimationFrame(rafId));
+    const update = () => {
+      const now2 = performance.now();
+      const delta = Math.max(1, now2 - lastTick);
+      const fps = Math.round(frameCount * 1e3 / delta);
+      const cpu = Math.min(100, Math.round(busyTimeMs / delta * 100));
+      frameCount = 0;
+      busyTimeMs = 0;
+      lastTick = now2;
+      const memory = performance.memory;
+      const usedMb = memory ? Math.max(0, memory.usedJSHeapSize) / 1048576 : 0;
+      cpuRow.valueEl.textContent = `${cpu}%`;
+      memoryRow.valueEl.textContent = `${usedMb.toFixed(1)} MB`;
+      fpsRow.valueEl.textContent = `${fps}`;
+    };
+    update();
+    disposer.addInterval(update, PERFORMANCE_HUD_CONFIG.updateIntervalMs);
+    return disposer.disposeAll;
   };
 
   // src/features/redButton.ts
@@ -3764,6 +4028,140 @@
     redButton.addEventListener("click", onClick);
     return () => {
       redButton.removeEventListener("click", onClick);
+    };
+  };
+
+  // src/data/scrollSnap.ts
+  var SCROLL_SNAP_CONFIG = {
+    // Enable/disable scroll snapping behavior
+    enabled: true,
+    // Selector for the snap sections (expected 4 blocks)
+    sectionSelector: ".desktop .list > .block",
+    // Wait after last scroll event before snapping (ms)
+    settleDelayMs: 140,
+    // Ignore tiny distances to avoid micro-snaps (px)
+    minDistancePx: 12,
+    // Duration tuning: duration = clamp(min, max, distance * msPerPx)
+    duration: {
+      minMs: 220,
+      maxMs: 520,
+      msPerPx: 0.45
+    },
+    // Easing curve for snap animation
+    easing: "easeInOutCubic"
+  };
+
+  // src/features/scrollSnap.ts
+  var EASINGS = {
+    easeInOutCubic: (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+    easeOutCubic: (t) => 1 - Math.pow(1 - t, 3)
+  };
+  var clamp = (value, min2, max2) => Math.min(max2, Math.max(min2, value));
+  var initScrollSnap = () => {
+    if (!SCROLL_SNAP_CONFIG.enabled) return;
+    if (!shouldAnimate()) return;
+    const sections = qsa(SCROLL_SNAP_CONFIG.sectionSelector);
+    if (sections.length === 0) return;
+    const disposer = createDisposer();
+    let positions = sections.map(
+      (section) => Math.round(section.getBoundingClientRect().top + window.scrollY)
+    );
+    let scrollTimeout = 0;
+    let animationRaf = 0;
+    let isAnimating = false;
+    let previousScrollBehavior = "";
+    const getDuration = (distance) => {
+      const { minMs, maxMs, msPerPx } = SCROLL_SNAP_CONFIG.duration;
+      return clamp(distance * msPerPx, minMs, maxMs);
+    };
+    const stopAnimation = () => {
+      if (animationRaf) {
+        cancelAnimationFrame(animationRaf);
+        animationRaf = 0;
+      }
+      if (isAnimating) {
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+        isAnimating = false;
+      }
+    };
+    const refreshPositions = () => {
+      positions = sections.map(
+        (section) => Math.round(section.getBoundingClientRect().top + window.scrollY)
+      );
+    };
+    const getNearestTarget = (currentY) => {
+      var _a;
+      let nearest = (_a = positions[0]) != null ? _a : 0;
+      let minDistance = Math.abs(currentY - nearest);
+      for (let i = 1; i < positions.length; i += 1) {
+        const distance = Math.abs(currentY - positions[i]);
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearest = positions[i];
+        }
+      }
+      return { nearest, minDistance };
+    };
+    const animateTo = (targetY) => {
+      const startY = window.scrollY;
+      const delta = targetY - startY;
+      const distance = Math.abs(delta);
+      if (distance < SCROLL_SNAP_CONFIG.minDistancePx) return;
+      stopAnimation();
+      isAnimating = true;
+      previousScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      const startTime = performance.now();
+      const duration = getDuration(distance);
+      const easing = EASINGS[SCROLL_SNAP_CONFIG.easing];
+      const step = (now2) => {
+        const elapsed = now2 - startTime;
+        const t = clamp(elapsed / duration, 0, 1);
+        const eased = easing(t);
+        window.scrollTo(0, Math.round(startY + delta * eased));
+        if (t < 1) {
+          animationRaf = requestAnimationFrame(step);
+          return;
+        }
+        stopAnimation();
+      };
+      animationRaf = requestAnimationFrame(step);
+    };
+    const maybeSnap = () => {
+      if (!shouldAnimate()) return;
+      if (isAnimating) return;
+      const { nearest, minDistance } = getNearestTarget(window.scrollY);
+      if (minDistance < SCROLL_SNAP_CONFIG.minDistancePx) return;
+      animateTo(nearest);
+    };
+    const scheduleSnap = () => {
+      if (scrollTimeout) window.clearTimeout(scrollTimeout);
+      scrollTimeout = window.setTimeout(maybeSnap, SCROLL_SNAP_CONFIG.settleDelayMs);
+    };
+    const onScroll = () => {
+      if (isAnimating) return;
+      scheduleSnap();
+    };
+    const cancelOnUserInput = () => {
+      stopAnimation();
+      scheduleSnap();
+    };
+    const handleResize = () => {
+      refreshPositions();
+      scheduleSnap();
+    };
+    refreshPositions();
+    scheduleSnap();
+    disposer.addListener(window, "scroll", onScroll, { passive: true });
+    disposer.addListener(window, "resize", handleResize);
+    disposer.addListener(window, "wheel", cancelOnUserInput, { passive: true });
+    disposer.addListener(window, "touchstart", cancelOnUserInput, { passive: true });
+    disposer.addListener(window, "keydown", cancelOnUserInput);
+    disposer.addListener(window, "load", refreshPositions);
+    return () => {
+      if (scrollTimeout) window.clearTimeout(scrollTimeout);
+      stopAnimation();
+      disposer.disposeAll();
     };
   };
 
@@ -3922,7 +4320,9 @@
     disposer.add(initJokes());
     disposer.add(initBottomBlock());
     disposer.add(initRedButton());
+    disposer.add(initScrollSnap());
     disposer.add(initParallax());
+    disposer.add(initPerformanceHud());
     window.addEventListener("pagehide", disposer.disposeAll, { once: true });
   };
   if (document.readyState === "loading") {
