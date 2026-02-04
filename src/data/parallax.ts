@@ -1,4 +1,6 @@
 export const PARALLAX_CONFIG = {
+    // Enable extra debug logs for the parallax controller
+    debug: false,
     // Root container for the parallax stack
     containerSelector: '.parallax',
     // Individual layers inside container; each layer gets its own SVG + simulation

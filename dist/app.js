@@ -797,6 +797,8 @@
 
   // src/data/parallax.ts
   var PARALLAX_CONFIG = {
+    // Enable extra debug logs for the parallax controller
+    debug: false,
     // Root container for the parallax stack
     containerSelector: ".parallax",
     // Individual layers inside container; each layer gets its own SVG + simulation
@@ -868,37 +870,19 @@
     }
   };
 
-  // src/features/parallax/observer.ts
-  var createLayerObserver = (options) => {
-    const { layers, states, onVisibilityChange } = options;
-    let observer = null;
-    const observeAll = () => {
-      if (observer) observer.disconnect();
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            const target = entry.target;
-            const state = states.get(target);
-            if (!state) continue;
-            state.isVisible = entry.isIntersecting;
-            onVisibilityChange(state, entry.isIntersecting);
-          }
-        },
-        {
-          root: null,
-          rootMargin: "200px",
-          threshold: 0.01
-        }
-      );
-      for (const layer of layers) {
-        observer.observe(layer);
-      }
+  // src/core/log.ts
+  var buildPrefix = (scope) => `[${scope}]`;
+  var createLogger = (scope, enabled = false) => {
+    const prefix = buildPrefix(scope);
+    const logIfEnabled = (method) => (...args) => {
+      if (!enabled) return;
+      method(prefix, ...args);
     };
-    const disconnect = () => {
-      if (observer) observer.disconnect();
-      observer = null;
+    return {
+      info: logIfEnabled(console.info),
+      warn: logIfEnabled(console.warn),
+      error: logIfEnabled(console.error)
     };
-    return { observeAll, disconnect };
   };
 
   // node_modules/d3-array/src/range.js
@@ -3516,33 +3500,6 @@
   });
   var getOrbitPhase = () => Math.random() * TAU;
 
-  // src/features/parallax/scroll.ts
-  var createParallaxScroller = (options) => {
-    const { layers, getScrollRatio, setContainerSize } = options;
-    let ticking = false;
-    let latestScroll = window.scrollY;
-    const update = () => {
-      const scrollRatio = getScrollRatio();
-      setContainerSize(scrollRatio);
-      const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
-      const frontLayer = layers[layers.length - 1];
-      for (const layer of layers) {
-        const { speed, shrink } = getLayerConfig(layer);
-        const effectiveShrink = layer === frontLayer ? 0 : shrink;
-        const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
-        layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
-      }
-      ticking = false;
-    };
-    return () => {
-      latestScroll = window.scrollY;
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    };
-  };
-
   // src/features/parallax/buildLayer.ts
   var buildLayer = (layer) => {
     const width = Math.max(1, layer.clientWidth);
@@ -3614,70 +3571,12 @@
     return { layer, simulation, destroy };
   };
 
-  // src/features/parallax/state.ts
-  var createParallaxStateManager = (options) => {
-    const { layers, getScrollRatio, setContainerSize, refreshContainerSizeBounds } = options;
-    const states = /* @__PURE__ */ new Map();
-    const startSimulation = (state) => {
-      if (!shouldAnimate()) return;
-      if (state.running) return;
-      state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart();
-      state.running = true;
-    };
-    const stopSimulation = (state) => {
-      if (!state.running) return;
-      state.simulation.stop();
-      state.running = false;
-    };
-    const rebuild = () => {
-      refreshContainerSizeBounds();
-      setContainerSize(getScrollRatio());
-      for (const state of states.values()) {
-        stopSimulation(state);
-        state.destroy();
-      }
-      states.clear();
-      for (const layer of layers) {
-        const svg = qs(SELECTORS.parallaxLayerSvg, layer);
-        if (svg) {
-          svg.remove();
-        }
-        const state = buildLayer(layer);
-        const running = shouldAnimate();
-        if (!running) {
-          state.simulation.stop();
-        }
-        states.set(layer, {
-          ...state,
-          isVisible: true,
-          running
-        });
-      }
-    };
-    const destroy = () => {
-      for (const state of states.values()) {
-        stopSimulation(state);
-        state.destroy();
-      }
-      states.clear();
-    };
-    return {
-      states,
-      rebuild,
-      destroy,
-      startSimulation,
-      stopSimulation
-    };
-  };
-
-  // src/features/parallax/index.ts
-  var initParallax = () => {
-    const container = qs(PARALLAX_CONFIG.containerSelector);
-    if (!container) return;
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // src/features/parallax/controller.ts
+  var createParallaxController = (options) => {
+    const { layers, motionQuery, container } = options;
     const disposer = createDisposer();
-    const layers = qsa(PARALLAX_CONFIG.layerSelector, container);
-    if (layers.length === 0) return;
+    const states = /* @__PURE__ */ new Map();
+    const logger = createLogger("parallax", PARALLAX_CONFIG.debug);
     const getScrollRatio = () => {
       const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       return Math.min(1, Math.max(0, window.scrollY / scrollMax));
@@ -3695,32 +3594,87 @@
       const sizePx = containerSizePx.start + (containerSizePx.end - containerSizePx.start) * scrollRatio;
       container.style.setProperty("--parallax-size", `${Math.max(0, sizePx)}px`);
     };
-    const stateManager = createParallaxStateManager({
-      layers,
-      getScrollRatio,
-      setContainerSize,
-      refreshContainerSizeBounds
-    });
-    const observerControls = createLayerObserver({
-      layers,
-      states: stateManager.states,
-      onVisibilityChange: (state, isVisible) => {
-        if (isVisible) {
-          stateManager.startSimulation(state);
-        } else {
-          stateManager.stopSimulation(state);
-        }
-      }
-    });
-    const rebuild = () => {
-      stateManager.rebuild();
-      observerControls.observeAll();
+    const startSimulation = (state) => {
+      if (!shouldAnimate()) return;
+      if (state.running) return;
+      state.simulation.alpha(PARALLAX_CONFIG.simulation.alpha).restart();
+      state.running = true;
     };
-    const applyParallax = createParallaxScroller({
-      layers,
-      getScrollRatio,
-      setContainerSize
-    });
+    const stopSimulation = (state) => {
+      if (!state.running) return;
+      state.simulation.stop();
+      state.running = false;
+    };
+    let observer = null;
+    const observeAll = () => {
+      if (observer) observer.disconnect();
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const target = entry.target;
+            const state = states.get(target);
+            if (!state) continue;
+            state.isVisible = entry.isIntersecting;
+            if (entry.isIntersecting && shouldAnimate()) {
+              startSimulation(state);
+            } else {
+              stopSimulation(state);
+            }
+          }
+        },
+        {
+          root: null,
+          rootMargin: "200px",
+          threshold: 0.01
+        }
+      );
+      for (const layer of layers) observer.observe(layer);
+    };
+    const rebuild = () => {
+      refreshContainerSizeBounds();
+      setContainerSize(getScrollRatio());
+      for (const state of states.values()) {
+        stopSimulation(state);
+        state.destroy();
+      }
+      states.clear();
+      for (const layer of layers) {
+        const svg = layer.querySelector(SELECTORS.parallaxLayerSvg);
+        if (svg) svg.remove();
+        const state = buildLayer(layer);
+        const running = shouldAnimate();
+        if (!running) {
+          state.simulation.stop();
+        }
+        states.set(layer, {
+          ...state,
+          isVisible: true,
+          running
+        });
+      }
+    };
+    let ticking = false;
+    let latestScroll = window.scrollY;
+    const updateParallax = () => {
+      const scrollRatio = getScrollRatio();
+      setContainerSize(scrollRatio);
+      const maxShrink = PARALLAX_CONFIG.motion.maxShrink;
+      const frontLayer = layers[layers.length - 1];
+      for (const layer of layers) {
+        const { speed, shrink } = getLayerConfig(layer);
+        const effectiveShrink = layer === frontLayer ? 0 : shrink;
+        const scale = 1 - scrollRatio * maxShrink * effectiveShrink;
+        layer.style.transform = `translate3d(0, ${latestScroll * speed}px, 0) scale(${scale})`;
+      }
+      ticking = false;
+    };
+    const applyParallax = () => {
+      latestScroll = window.scrollY;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateParallax);
+      }
+    };
     let resizeRaf = 0;
     const handleResize = () => {
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
@@ -3729,19 +3683,47 @@
         applyParallax();
       });
     };
+    const handleMotionChange = () => {
+      const enabled = shouldAnimate();
+      logger.info(`motion ${enabled ? "enabled" : "reduced"}`);
+      rebuild();
+      observeAll();
+    };
     rebuild();
+    observeAll();
     applyParallax();
     disposer.addListener(window, "scroll", applyParallax, { passive: true });
     disposer.addListener(window, "resize", handleResize);
-    disposer.addListener(motionQuery, "change", rebuild);
-    return () => {
+    disposer.addListener(motionQuery, "change", handleMotionChange);
+    const destroy = () => {
       if (resizeRaf) {
         cancelAnimationFrame(resizeRaf);
         resizeRaf = 0;
       }
+      if (observer) observer.disconnect();
+      observer = null;
+      for (const state of states.values()) {
+        stopSimulation(state);
+        state.destroy();
+      }
+      states.clear();
       disposer.disposeAll();
-      observerControls.disconnect();
-      stateManager.destroy();
+    };
+    return { destroy };
+  };
+
+  // src/features/parallax/index.ts
+  var initParallax = () => {
+    const container = qs(PARALLAX_CONFIG.containerSelector);
+    if (!container) return;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const disposer = createDisposer();
+    const layers = qsa(PARALLAX_CONFIG.layerSelector, container);
+    if (layers.length === 0) return;
+    const controller = createParallaxController({ container, layers, motionQuery });
+    disposer.add(controller.destroy);
+    return () => {
+      disposer.disposeAll();
     };
   };
 
