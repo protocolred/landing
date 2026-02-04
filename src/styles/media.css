@@ -104,15 +104,15 @@
         letter-spacing: var(--size-2);
     }
 
-    .desktop .header > [data-target] {
+    .desktop .header > .header-nav-item {
         margin-right: 0 var(--size-12);
 
         /* padding: var(--size-0); */
     }
 
     .desktop .header .logo-button {
-        margin-top: 0;
         height: 84px;
+        margin-top: 0;
     }
 
     .desktop .header .logo {

@@ -1,5 +1,6 @@
 export const SELECTORS = {
-    headerNavItems: '.header [data-target]',
+    header: '.header',
+    headerNavItems: '.header-nav-item',
     headerLogoButton: '.header .logo-button',
     glitchLetters: '.glitch-letter',
     protocolTextLetters: '.main-text-row .glitch-letter',
@@ -11,6 +12,14 @@ export const SELECTORS = {
     bottomSubParagraphs: 'p',
     appSection: '.app',
     parallaxLayerSvg: 'svg',
+} as const
+
+export const CLASSES = {
+    headerNavItem: 'header-nav-item',
+    performanceHud: 'perf-hud',
+    performanceHudRow: 'perf-hud-row',
+    performanceHudLabel: 'perf-hud-label',
+    performanceHudValue: 'perf-hud-value',
 } as const
 
 export const TEXT = {

@@ -1,16 +1,29 @@
-import { SELECTORS } from '@/core/constants'
+import { CLASSES, SELECTORS } from '@/core/constants'
 import { qs, qsa } from '@/core/dom'
 import type { FeatureInit } from '@/core/feature'
+import { HEADER_NAV_CONFIG } from '@/data/headerNav'
 
 export const initHeaderNav: FeatureInit = () => {
-    const headerItems = qsa<HTMLElement>(SELECTORS.headerNavItems)
+    const header = qs<HTMLElement>(SELECTORS.header)
+    if (!header) return
+    // Keep nav structure in one source of truth: HEADER_NAV_CONFIG.items.
+    qsa<HTMLElement>(SELECTORS.headerNavItems, header).forEach((item) => item.remove())
+    HEADER_NAV_CONFIG.items.forEach((itemConfig) => {
+        const item = document.createElement('div')
+        item.className = CLASSES.headerNavItem
+        item.textContent = itemConfig.label
+        header.append(item)
+    })
+    const headerItems = qsa<HTMLElement>(SELECTORS.headerNavItems, header)
     if (headerItems.length === 0) return
 
     const sections: HTMLElement[] = []
     const sectionIds = new Map<HTMLElement, string>()
-    headerItems.forEach((item) => {
-        const targetClass = item.getAttribute('data-target')
+    const itemTargets = new Map<HTMLElement, string>()
+    headerItems.forEach((item, index) => {
+        const targetClass = HEADER_NAV_CONFIG.items[index]?.target
         if (!targetClass) return
+        itemTargets.set(item, targetClass)
         const matches = qsa<HTMLElement>(`.${targetClass}`)
         matches.forEach((section) => {
             sections.push(section)
@@ -20,7 +33,7 @@ export const initHeaderNav: FeatureInit = () => {
 
     const setActive = (id: string) => {
         headerItems.forEach((item) => {
-            const isActive = item.getAttribute('data-target') === id
+            const isActive = itemTargets.get(item) === id
             item.classList.toggle('active', isActive)
         })
     }
@@ -65,7 +78,7 @@ export const initHeaderNav: FeatureInit = () => {
                     return
             }
 
-            const targetId = item.getAttribute('data-target')
+            const targetId = itemTargets.get(item)
             if (!targetId) return
             const element = qs<HTMLElement>(`.${targetId}`)
             if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
