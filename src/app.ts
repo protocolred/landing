@@ -5,6 +5,7 @@ import { initJokes } from '@/features/jokes'
 import { initParallax } from '@/features/parallax'
 import { initPerformanceHud } from '@/features/performanceHud'
 import { initRedButton } from '@/features/redButton'
+import { initScrollSnap } from '@/features/scrollSnap'
 import { initStoreVisibility } from '@/features/storeVisibility'
 import { initTextGlitch } from '@/features/textGlitch'
 
@@ -17,6 +18,7 @@ const init = () => {
     disposer.add(initJokes())
     disposer.add(initBottomBlock())
     disposer.add(initRedButton())
+    disposer.add(initScrollSnap())
     disposer.add(initParallax())
     disposer.add(initPerformanceHud())
 
