@@ -3,7 +3,7 @@
     position: absolute;
 
     --main-text-top: var(--size-120);
-    --main-text-size: var(--type-display-large);
+    --main-text-size: var(--type-display-giant);
     --main-text-line: var(--size-90pct);
     --main-text-row-width: var(--size-80);
 

@@ -1,5 +1,6 @@
 :root {
     --font: 'Titillium Web', sans-serif;
+    --type-display-giant: 100px;
     --type-display-large: 57px;
     --type-display-medium: 45px;
     --type-display-small: 36px;

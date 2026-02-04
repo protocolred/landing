@@ -26,8 +26,8 @@ const LAYER_SERIES: {
         speed: [0.06, 0.24],
         shrink: [0.75, 0],
         count: [70, 130],
-        sizeMin: [0.8, 2.2],
-        sizeMax: [2.4, 5.6],
+        sizeMin: [0.8, 1.6],
+        sizeMax: [2.0, 3],
         jitter: [0.45, 0.22],
     },
     curves: {
