@@ -187,12 +187,18 @@
 
 .phone-ui-button.red {
     border-color: var(--color-red-light);
-    background: var(--color-red-065);
+    background: var(--color-black-35);
 }
 
 .phone-ui-button.gray {
     border-color: var(--color-white-22);
     background: var(--color-black-25);
+}
+
+.phone-ui-button.red.is-active,
+.phone-ui-button.red:active {
+    background: var(--color-red-065);
+    font-weight: 700;
 }
 
 .phone-title {

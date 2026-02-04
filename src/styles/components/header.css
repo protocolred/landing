@@ -84,6 +84,8 @@
     padding-top: var(--logo-padding-start-expanded);
     border-block-start: var(--logo-border-start-expanded) solid var(--color-red);
     border-block-end: var(--logo-border-end-expanded) solid var(--color-red);
+
+    font-weight: 200;
 }
 
 .desktop .header .logo-button.is-expanded {
