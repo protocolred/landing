@@ -42,6 +42,10 @@
     padding: var(--store-img-padding);
 }
 
+.android-store img {
+    transform: scale(1.05);
+}
+
 .store img:hover {
     transform: scale(1.05);
 }
