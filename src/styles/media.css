@@ -92,6 +92,7 @@
         --logo-border-end-expanded: var(--size-4);
         --logo-padding-start: var(--size-0);
         --logo-padding-start-expanded: var(--size-0);
+        --logo-pop-dir: -1;
 
         top: auto;
         bottom: var(--size-0);
@@ -107,6 +108,11 @@
         margin-right: 0 var(--size-12);
 
         /* padding: var(--size-0); */
+    }
+
+    .desktop .header .logo-button {
+        margin-top: 0;
+        height: 84px;
     }
 
     .desktop .header .logo {
