@@ -127,6 +127,10 @@
         display: none;
     }
 
+    .perf-hud {
+        display: none;
+    }
+
     .block-create {
         flex-direction: column;
         align-items: center;
